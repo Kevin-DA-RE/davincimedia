@@ -16,8 +16,7 @@
         v-for="movie in moviesList"
         :movie="movie"
         :key="movie.id"
-        :movieUpdated="movieUpdated"
-        @change-movie="changeMovie"
+        :getMovieWithGenre="getMovieWithGenre"
       />
     </div>
   </div>
@@ -62,11 +61,6 @@ export default {
           }
         });
       });
-    },
-
-    async changeMovie (value) {
-        console.log(`dans parent ${value}`);
-        this.movieUpdated = await this.getMovieWithGenre(value);
     },
 
     // Recherche du film et de son/ses genre(s)

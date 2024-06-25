@@ -60,19 +60,19 @@ export default {
         this.movie.url_img = this.movieUrlImg,
         this.movieSynopsis = this.movie.synopsis
       },
-      
+
       // Recherche du film et de son/ses genre(s)
       async getMovieWithGenre(name){
         const movieData = await this.getMovie(name);
         if (!movieData) {
           return `Le film n'a pas été trouvé`;
         }
-        
+
         const genreData = await this.getGenre(movieData.genre_id);
         if (!genreData) {
           return `Le genre n'a pas été trouvé`;
         }
-        
+
         movieData.genre_name = genreData;
         return movieData;
       },
@@ -93,7 +93,7 @@ export default {
                                           Authorization: `Bearer ${this.apiTMDB.token}`,
                                           accept: 'application/json',
                                           'Content-Type': 'application/json'
-  
+
                                         }})
                                         .then(movie => movie.data.results)
                                         .catch(error => console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`));
@@ -107,14 +107,14 @@ export default {
                         "genre_id": movie[0].genre_ids,
                         "genre_name" : []
                       }
-             
+
         },
-        
+
         async getGenre(arrayId) {
           /**
          * Recuperation data category
          */
-  
+
          var category = await axios.get(`${this.apiTMDB.url_genres}`,{
                                           params: {
                                             query: ""
@@ -123,7 +123,7 @@ export default {
                                           Authorization: `Bearer ${this.apiTMDB.token}`,
                                           accept: 'application/json',
                                           'Content-Type': 'application/json'
-  
+
                                         }})
                                         .then(category => category.data.genres)
                                         .catch(error => console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`));
@@ -137,7 +137,7 @@ export default {
                                 });
                             }
                           );
-            
+
          return genre.map(item => ({name: item}));
         }
   }
