@@ -18,6 +18,7 @@
         :key="movie.id"
         :getMovieWithGenre="getMovieWithGenre"
       />
+
     </div>
   </div>
 </template>
@@ -66,8 +67,10 @@ export default {
     // Recherche du film et de son/ses genre(s)
     async getMovieWithGenre(name) {
       const movieData = await this.getMovie(name);
-      if (!movieData) {
-        return `Le film n'a pas été trouvé`;
+      if (movieData.code == '400') {
+
+      } else {
+
       }
 
       const genreData = await this.getGenre(movieData.genre_id);
@@ -102,17 +105,21 @@ export default {
         .catch((error) =>
           console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
         );
+        if (movie.length > 0) {
+            var urlImg = movie[0].poster_path;
+                this.urlImgComplete = `https://image.tmdb.org/t/p/original${urlImg}`;
+                return {
+                    id: movie[0].id,
+                    name: movie[0].title,
+                    synopsis: movie[0].overview,
+                    url_img: this.urlImgComplete,
+                    genre_id: movie[0].genre_ids,
+                    genre_name: [],
+                };
+        } else {
+            return {'code': 400, 'message': 'Aucun film correspond à la recherche'}
+        }
 
-      var urlImg = movie[0].poster_path;
-      this.urlImgComplete = `https://image.tmdb.org/t/p/original${urlImg}`;
-      return {
-        id: movie[0].id,
-        name: movie[0].title,
-        synopsis: movie[0].overview,
-        url_img: this.urlImgComplete,
-        genre_id: movie[0].genre_ids,
-        genre_name: [],
-      };
     },
 
     async getGenre(arrayId) {
