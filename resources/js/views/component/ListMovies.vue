@@ -1,47 +1,38 @@
-<template>
-  <q-card class="my-card" style="width: 50vh;">
-    <q-btn label="Modifier" color="primary" @click="modal = true" />
-    <Movie :movie="movieOrigin" />
+<script setup>
+import EditMovie from "./EditMovie.vue";
+import Movie from "./Movie.vue";
 
-        <q-dialog v-model="modal" persistent>
-            <EditMovie :getMovieWithGenre="getMovieWithGenre" :movie="movie" @update-movie="updateMovie"/>
-        </q-dialog>
-    </q-card>
-</template>
-<script >
-import EditMovie from './EditMovie.vue';
-import  Movie from './Movie.vue';
-export default {
-  name: "ListMovies",
-  props: {
-    movie: {
-      type: Object,
-      required: true,
-    },
-    getMovieWithGenre: {
-        type: Function
-    }
+let props = defineProps({
+  movie: {
+    type: Object,
+    required: true,
   },
-  components: {
-    Movie,
-    EditMovie
+  getMovieWithGenre: {
+    type: Function,
   },
-  data() {
-    return{
-      modal: false,
-      movieOrigin: this.movie,
-    }
+});
+let dialog = ref(false);
+let movieOrigin = props.movie;
 
-  },
-  methods: {
-    updateMovie(movieupdated){
-        if (movieupdated.id) {
-        this.movieOrigin = movieupdated;
-        }
-    },
-    reset(){
-     this.movieTitleChange= this.movie.name
-    }
+function updateMovie(movieupdated) {
+  if (movieupdated.id) {
+    movieOrigin.value = movieupdated;
   }
 }
+function showDialog() {
+  dialog.value = true;
+}
 </script>
+
+<template>
+  <q-card class="my-card" style="width: 50vh">
+    <q-btn label="Modifier" color="primary" @click="showDialog" />
+    <Movie :movie="movieOrigin" />
+    <EditMovie
+      :getMovieWithGenre="getMovieWithGenre"
+      :movie="movie"
+      @update-movie="updateMovie"
+      :dialog="dialog"
+    />
+  </q-card>
+</template>

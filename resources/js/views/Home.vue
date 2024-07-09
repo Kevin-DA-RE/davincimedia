@@ -18,38 +18,32 @@
         :key="movie.id"
         :getMovieWithGenre="getMovieWithGenre"
       />
-
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import axios from "axios";
 import ListMovies from "./component/ListMovies.vue";
 import { ref } from "vue";
-export default {
-  components: {
-    ListMovies,
-  },
-  data() {
-    return {
-      name: "",
-      apiTMDB: {
-        token:
+
+        let api = ref({
+        tokenApiTMDB:
           "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTFlMjdhNzVhZTY1ZTNjNDUxNjdlMmVkOTYwMmU3MSIsInN1YiI6IjY1ZThlZmEzM2Q3NDU0MDE3ZGI4MzczNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GNY6Ryp_gInMIzeoedzI7ooJHMdm1wX9YSTQyODot9s",
+        tokenApiNLP: "2e37b5e1a4ac8f9d4af69758c05b295183d51337",
         url_movies: "https://api.themoviedb.org/3/search/movie",
         url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
-      },
-      urlImgComplete: "",
-      moviesList: ref([]),
-      movieUpdated: {},
-      visible: false,
-      prompt: false,
-    };
-  },
-  methods: {
-    async sendApi(files) {
-      if (this.visible == false) {
-        this.visible = true;
+        url_movie_correction:
+          "https://api.nlpcloud.io/v1/gpu/finetuned-llama-3-70b/gs-correction",
+      })
+      let urlImgComplete = ref()
+      let moviesList= ref([])
+      let visible = ref(false)
+      let modal = ref(false)
+
+
+    async function sendApi(files) {
+      if (visible.value == false) {
+        visible.value = true;
       }
       const extension = [".mp4", ".mkv", ".avi", ".mpeg", ".mpg"];
 
@@ -57,38 +51,63 @@ export default {
         extension.forEach(async (ext) => {
           if (file.name.includes(ext)) {
             var name = file.name.split(ext)[0];
-            const data = await this.getMovieWithGenre(name);
-            this.moviesList.push(data);
+            var data = await getMovieWithGenre(name);
+            if (data.code == 400) {
+            var correction = await correctionMovie(name);
+            data = await getMovieWithGenre(correction);
+            moviesList.push(data);
+            } else {
+                moviesList.push(data);
+            }
           }
         });
       });
-    },
+    }
 
     // Recherche du film et de son/ses genre(s)
-    async getMovieWithGenre(name) {
-      const movieData = await this.getMovie(name);
-      if (movieData.code == '400') {
+    async function getMovieWithGenre(name) {
+      const movieData = await getMovie(name);
 
+      if (movieData.code == "400") {
+        console.log("pb lors de la recherche d'infos !");
+        return {
+          code: 400,
+          message: "Problème lors de la récupération de film",
+          name: name,
+        };
       } else {
-
+        console.log("Aucun pb lors de la recherche!");
+        const genreData = await getGenre(movieData.genre_id);
+        movieData.genre_name = genreData;
+        return movieData;
       }
+    }
 
-      const genreData = await this.getGenre(movieData.genre_id);
-      if (!genreData) {
-        return `Le genre n'a pas été trouvé`;
-      }
+    async function correctionMovie(name) {
+      const param = {
+        headers: {
+                'Authorization': `Token ${api.tokenApiNLP}`,
+                'Content-Type': 'application/json'
+              }
+      };
+      const data = {
+            text: name,
+      };
+      const movie = await axios.post(`${api.url_movie_correction}`,data, param)
+        .then((movie) => movie.data.correction)
+        .catch((error) =>
+          console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+        );
 
-      movieData.genre_name = genreData;
-      return movieData;
-    },
+        return movie;
+    }
 
     //Recherche du film
-    async getMovie(name) {
+    async function getMovie(name) {
       /**
        * Recuperation data movie
        */
-      var movie = await axios
-        .get(`${this.apiTMDB.url_movies}`, {
+      const movie = await axios.get(`${api.url_movies}`, {
           params: {
             query: name,
             include_adult: false,
@@ -96,7 +115,7 @@ export default {
             page: 1,
           },
           headers: {
-            Authorization: `Bearer ${this.apiTMDB.token}`,
+            Authorization: `Bearer ${api.tokenApiTMDB}`,
             accept: "application/json",
             "Content-Type": "application/json",
           },
@@ -105,35 +124,33 @@ export default {
         .catch((error) =>
           console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
         );
-        if (movie.length > 0) {
-            var urlImg = movie[0].poster_path;
-                this.urlImgComplete = `https://image.tmdb.org/t/p/original${urlImg}`;
-                return {
-                    id: movie[0].id,
-                    name: movie[0].title,
-                    synopsis: movie[0].overview,
-                    url_img: this.urlImgComplete,
-                    genre_id: movie[0].genre_ids,
-                    genre_name: [],
-                };
-        } else {
-            return {'code': 400, 'message': 'Aucun film correspond à la recherche'}
-        }
+      if (movie.length > 0) {
+        var urlImg = movie[0].poster_path;
+        urlImgComplete.value = `https://image.tmdb.org/t/p/original${urlImg}`;
+        return {
+          id: movie[0].id,
+          name: movie[0].title,
+          synopsis: movie[0].overview,
+          url_img: urlImgComplete,
+          genre_id: movie[0].genre_ids,
+          genre_name: [],
+        };
+      } else {
+        return { code: 400, message: "Aucun film correspond à la recherche" };
+      }
+    }
 
-    },
-
-    async getGenre(arrayId) {
+    async function getGenre(arrayId) {
       /**
        * Recuperation data category
        */
 
-      var category = await axios
-        .get(`${this.apiTMDB.url_genres}`, {
+      const category = await axios.get(`${api.url_genres}`, {
           params: {
             query: "",
           },
           headers: {
-            Authorization: `Bearer ${this.apiTMDB.token}`,
+            Authorization: `Bearer ${api.tokenApiTMDB}`,
             accept: "application/json",
             "Content-Type": "application/json",
           },
@@ -153,13 +170,12 @@ export default {
       });
 
       return genre.map((item) => ({ name: item }));
-    },
-    sendMovies() {
+    }
+    function sendMovies() {
       /**
        * Envoi data pour créer un film
        */
-      axios
-        .post("http://127.0.0.1:8000/movie/get-information", this.moviesList, {
+      axios.post("http://127.0.0.1:8000/movie/get-information", moviesList, {
           headers: {
             accept: "application/json",
             "Content-Type": "application/json",
@@ -167,31 +183,28 @@ export default {
         })
         .then((movie) => console.log(movie.data))
         .catch((e) => `Erreur lors de la récupération de données \n ${e}`);
-    },
-    reset() {
-      this.name = "";
-    },
-  },
-  mounted() {
-    /*
-              axios.get("http://127.0.0.1:8000/movie/get-movie")
-              .then(r => {
-                console.log(r.data);
-                if (lengtResponse > 0)
-                {
-                  this.visible = true;
-                  this.movies = r.data;
-                } else {
-                  this.visible = false;
-                  this.movies = [];
-                }
-              })
-              .catch( e => {
-                  console.log(`erreur lors de la recuperation des données : \n ${e}`);
-              })
-              */
-  },
-};
+    }
+
+    function mounted() {
+        /*
+                axios.get("http://127.0.0.1:8000/movie/get-movie")
+                .then(r => {
+                    console.log(r.data);
+                    if (lengtResponse > 0)
+                    {
+                    visible = true;
+                    movies = r.data;
+                    } else {
+                    visible = false;
+                    movies = [];
+                    }
+                })
+                .catch( e => {
+                    console.log(`erreur lors de la recuperation des données : \n ${e}`);
+                })
+                */
+    }
+
 </script>
 <style>
 #qImg {
