@@ -28,7 +28,7 @@ import { ref } from "vue";
 
         let api = ref({
         tokenApiTMDB:
-          "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTFlMjdhNzVhZTY1ZTNjNDUxNjdlMmVkOTYwMmU3MSIsInN1YiI6IjY1ZThlZmEzM2Q3NDU0MDE3ZGI4MzczNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GNY6Ryp_gInMIzeoedzI7ooJHMdm1wX9YSTQyODot9s",
+        "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTFlMjdhNzVhZTY1ZTNjNDUxNjdlMmVkOTYwMmU3MSIsInN1YiI6IjY1ZThlZmEzM2Q3NDU0MDE3ZGI4MzczNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GNY6Ryp_gInMIzeoedzI7ooJHMdm1wX9YSTQyODot9s",
         tokenApiNLP: "2e37b5e1a4ac8f9d4af69758c05b295183d51337",
         url_movies: "https://api.themoviedb.org/3/search/movie",
         url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
@@ -38,7 +38,6 @@ import { ref } from "vue";
       let urlImgComplete = ref()
       let moviesList= ref([])
       let visible = ref(false)
-      let modal = ref(false)
 
 
     async function sendApi(files) {
@@ -55,9 +54,9 @@ import { ref } from "vue";
             if (data.code == 400) {
             var correction = await correctionMovie(name);
             data = await getMovieWithGenre(correction);
-            moviesList.push(data);
+            moviesList.value.push(data);
             } else {
-                moviesList.push(data);
+                moviesList.value.push(data);
             }
           }
         });
@@ -76,7 +75,6 @@ import { ref } from "vue";
           name: name,
         };
       } else {
-        console.log("Aucun pb lors de la recherche!");
         const genreData = await getGenre(movieData.genre_id);
         movieData.genre_name = genreData;
         return movieData;
@@ -86,7 +84,7 @@ import { ref } from "vue";
     async function correctionMovie(name) {
       const param = {
         headers: {
-                'Authorization': `Token ${api.tokenApiNLP}`,
+                'Authorization': `Token ${api.value.tokenApiNLP}`,
                 'Content-Type': 'application/json'
               }
       };
@@ -107,7 +105,7 @@ import { ref } from "vue";
       /**
        * Recuperation data movie
        */
-      const movie = await axios.get(`${api.url_movies}`, {
+      const movie = await axios.get(`${api.value.url_movies}`, {
           params: {
             query: name,
             include_adult: false,
@@ -115,7 +113,7 @@ import { ref } from "vue";
             page: 1,
           },
           headers: {
-            Authorization: `Bearer ${api.tokenApiTMDB}`,
+            Authorization: `Bearer ${api.value.tokenApiTMDB}`,
             accept: "application/json",
             "Content-Type": "application/json",
           },
@@ -145,12 +143,12 @@ import { ref } from "vue";
        * Recuperation data category
        */
 
-      const category = await axios.get(`${api.url_genres}`, {
+      const category = await axios.get(`${api.value.url_genres}`, {
           params: {
             query: "",
           },
           headers: {
-            Authorization: `Bearer ${api.tokenApiTMDB}`,
+            Authorization: `Bearer ${api.value.tokenApiTMDB}`,
             accept: "application/json",
             "Content-Type": "application/json",
           },

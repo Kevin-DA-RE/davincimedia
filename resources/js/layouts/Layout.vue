@@ -1,7 +1,5 @@
 <template>
     <div>
-        <h1>Ultron</h1>
- 
         <p>
             <router-link :to="{ name: 'home' }">Home</router-link> |
             <router-link :to="{ name: 'media' }">media</router-link> |

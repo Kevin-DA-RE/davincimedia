@@ -1,5 +1,6 @@
 <script setup>
 import Movie from "./Movie.vue";
+import { ref } from "vue";
 
 let props = defineProps({
   movie: {

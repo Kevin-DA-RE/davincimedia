@@ -1,6 +1,7 @@
 <script setup>
 import EditMovie from "./EditMovie.vue";
 import Movie from "./Movie.vue";
+import { ref } from "vue";
 
 let props = defineProps({
   movie: {
@@ -11,6 +12,7 @@ let props = defineProps({
     type: Function,
   },
 });
+
 let dialog = ref(false);
 let movieOrigin = props.movie;
 

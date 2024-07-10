@@ -1,3 +1,16 @@
+
+<script setup>
+
+
+let props = defineProps({
+  movie: {
+    type: Object,
+    required: true,
+  }
+});
+
+</script>
+
 <template>
   <!--Card pour afficher les éléments-->
   <q-card class="my-card" style="width: 50vh">
@@ -15,14 +28,3 @@
         </q-card-section>
     </q-card>
 </template>
-<script>
-export default {
-  name: "Movie",
-  props: {
-    movie: {
-        type: Object,
-        required: true,
-    }
-  }
- }
-</script>
