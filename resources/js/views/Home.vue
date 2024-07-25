@@ -12,9 +12,10 @@
       </div>
     </q-form>
     <div v-show="visible">
-      <div v-for="movie in moviesList" :key="movie.id">
+      <div v-for="(movie, index) in moviesList" :key="movie.id">
         <q-card class="my-card" style="width: 50vh">
-          <q-btn label="Modifier" color="primary" @click="showDialog(movie)" />
+          <q-btn label="Modifier" color="primary" @click="showDialog(movie, index)" />
+
           <Movie :movie="movie" />
 
           <q-dialog v-model="dialog">
@@ -39,8 +40,8 @@
               </q-card-section>
 
               <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Annuler" v-close-popup @click="reset" />
-                <q-btn flat label="Valider" v-close-popup @click="updateMovie(movie.id)" />
+                <q-btn flat label="Annuler" v-close-popup @click="reset"/>
+                <q-btn flat label="Valider" v-close-popup @click="updateMovie" />
               </q-card-actions>
             </q-card>
           </q-dialog>
@@ -69,9 +70,11 @@ let api = ref({
 let moviesList = ref([]);
 let visible = ref(false);
 let movieTitleChange = ref()
+let movieIndex = ref()
 let movieOrigin = ref({});
 let movieUpdated = ref({});
 let dialog = ref(false)
+
 
 async function sendApi(files) {
   if (visible.value == false) {
@@ -95,7 +98,10 @@ async function sendApi(files) {
     });
   });
 }
-function showDialog(movie) {
+
+// Fonctions pour q-dialog
+function showDialog(movie, index) {
+    movieIndex.value = index
     movieTitleChange = movie.name
     movieOrigin.value = ref({...movie})
     dialog.value = true;
@@ -103,12 +109,18 @@ function showDialog(movie) {
 async function changeMovie() {
   movieUpdated.value = await getMovieWithGenre(movieTitleChange);
 }
-function updateMovie(index) {
-  moviesList[index] =   movieUpdated.value
+function updateMovie() {
+    if(moviesList.value[movieIndex.value])
+        {
+                moviesList.value[movieIndex.value] = movieUpdated.value
+                dialog.value = false;
+        }
 }
 function reset() {
-
+    movieOrigin.value = ref({})
+    movieUpdated.value = ref({})
 }
+
 
 // Recherche du film et de son/ses genre(s)
 async function getMovieWithGenre(name) {
