@@ -11,44 +11,42 @@
         <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
       </div>
     </q-form>
-    <div v-show="visible">
+
+<!-- Listing de movies uploaded -->
       <div v-for="(movie, index) in moviesList" :key="movie.id">
-        <q-card class="my-card" style="width: 50vh">
-          <q-btn label="Modifier" color="primary" @click="showDialog(movie, index)" />
+        <div v-show="listingMovie">
+          <q-card class="my-card" style="width: 50vh">
+            <q-btn label="Modifier" color="primary" @click="showDialog(movie, index)" />
+            <Movie :movie="movie" />
+          </q-card>
+        </div>
 
-          <Movie :movie="movie" />
+        <!-- dialogMovie pour modifier un film -->
+        <q-dialog v-model="dialogMovie">
+                <q-card style="min-width: 350px">
+                  <q-card-section>
+                    <div class="text-h6">Saisir le nom du film</div>
+                  </q-card-section>
 
-          <q-dialog v-model="dialog">
-            <q-card style="min-width: 350px">
-              <q-card-section>
-                <div class="text-h6">Saisir le nom du film</div>
-              </q-card-section>
+                  <q-card-section class="q-pt-none">
+                    <q-input
+                      dense
+                      v-model="movieTitleChange"
+                      @change="changeMovie(movieTitleChange)"
+                      autofocus
+                    />
+                      <Movie :movie="movieUpdated" />
+                  </q-card-section>
 
-              <q-card-section class="q-pt-none">
-                <q-input
-                  dense
-                  v-model="movieTitleChange"
-                  @change="changeMovie"
-                  autofocus
-                />
-                <div v-if="movieUpdated.id">
-                  <Movie :movie="movieUpdated" />
-                </div>
-                <div v-else>
-                  <Movie :movie="movieOrigin" />
-                </div>
-              </q-card-section>
+                  <q-card-actions align="right" class="text-primary">
+                    <q-btn flat label="Annuler" v-close-popup @click="reset"/>
+                    <q-btn flat label="Valider" v-close-popup @click="updateMovie" />
+                  </q-card-actions>
+                </q-card>
+            </q-dialog>
 
-              <q-card-actions align="right" class="text-primary">
-                <q-btn flat label="Annuler" v-close-popup @click="reset"/>
-                <q-btn flat label="Valider" v-close-popup @click="updateMovie" />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-
-        </q-card>
       </div>
-    </div>
+
   </div>
 </template>
 
@@ -57,67 +55,73 @@ import axios from "axios";
 import Movie from "./component/Movie.vue";
 import { ref } from "vue";
 
-let api = ref({
+const api = ref({
   tokenApiTMDB:
     "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTFlMjdhNzVhZTY1ZTNjNDUxNjdlMmVkOTYwMmU3MSIsInN1YiI6IjY1ZThlZmEzM2Q3NDU0MDE3ZGI4MzczNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GNY6Ryp_gInMIzeoedzI7ooJHMdm1wX9YSTQyODot9s",
-  tokenApiNLP: "2e37b5e1a4ac8f9d4af69758c05b295183d51337",
   url_movies: "https://api.themoviedb.org/3/search/movie",
   url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
-  url_movie_correction:
-    "https://api.nlpcloud.io/v1/gpu/finetuned-llama-3-70b/gs-correction",
+
 });
 
-let moviesList = ref([]);
-let visible = ref(false);
-let movieTitleChange = ref()
-let movieIndex = ref()
-let movieOrigin = ref({});
-let movieUpdated = ref({});
-let dialog = ref(false)
+const moviesList = ref([])
+const listingMovie = ref(false)
+const movieTitleChange = ref()
+const movieIndex = ref()
+const movieUpdated = ref({})
+let dialogMovie = ref(false)
 
 
+// Fonction pour upload moviesList
 async function sendApi(files) {
-  if (visible.value == false) {
-    visible.value = true;
+
+  if (listingMovie.value == false) {
+    listingMovie.value = true;
   }
-  const extension = [".mp4", ".mkv", ".avi", ".mpeg", ".mpg"];
+const re = /(\.[^.]+)?$/ // Cible l'extension du film
 
-  files.forEach((file) => {
-    extension.forEach(async (ext) => {
-      if (file.name.includes(ext)) {
-        var name = file.name.split(ext)[0];
-        var data = await getMovieWithGenre(name);
-        if (data.code == 400) {
-          var correction = await correctionMovie(name);
-          data = await getMovieWithGenre(correction);
-          moviesList.value.push(data);
-        } else {
-          moviesList.value.push(data);
-        }
-      }
-    });
-  });
+
+const moviesListPromises = files.map(async (movie) => {
+  const  ext = re.exec(movie.name)[1]; // Extract the extension
+  const  data = await getMovieWithGenre(movie.name.split(ext)[0])
+  moviesList.value.push(data)
+})
+
+await Promise.all(moviesListPromises)
+
 }
 
-// Fonctions pour q-dialog
+
+
+
+// Fonctions pour q-dialogMovie
 function showDialog(movie, index) {
-    movieIndex.value = index
-    movieTitleChange = movie.name
-    movieOrigin.value = ref({...movie})
-    dialog.value = true;
+    if (movie.code === 400) {
+        movieIndex.value = index
+        movieTitleChange.value = movie.name
+        movieUpdated.value = {}
+        dialogMovie.value = true;
+    } else {
+        movieIndex.value = index
+        movieTitleChange.value = movie.name
+        movieUpdated.value = {...movie}
+        dialogMovie.value = true;
+    }
+
 }
-async function changeMovie() {
-  movieUpdated.value = await getMovieWithGenre(movieTitleChange);
+
+// Fonction pour changer la card du film
+async function changeMovie(name) {
+    movieUpdated.value = await getMovieWithGenre(name);
 }
+
+// Fonction pour mettre à jour la card du film modifie
 function updateMovie() {
-    if(moviesList.value[movieIndex.value])
-        {
-                moviesList.value[movieIndex.value] = movieUpdated.value
-                dialog.value = false;
-        }
+            moviesList.value[movieIndex.value] = movieUpdated.value
+            dialogMovie.value = false;
 }
+
+// Fonction pour reinitialiser les objets movie
 function reset() {
-    movieOrigin.value = ref({})
     movieUpdated.value = ref({})
 }
 
@@ -127,7 +131,6 @@ async function getMovieWithGenre(name) {
   const movieData = await getMovie(name);
 
   if (movieData.code == "400") {
-    console.log("pb lors de la recherche d'infos !");
     return {
       code: 400,
       message: "Problème lors de la récupération de film",
@@ -140,25 +143,6 @@ async function getMovieWithGenre(name) {
   }
 }
 
-async function correctionMovie(name) {
-  const param = {
-    headers: {
-      Authorization: `Token ${api.value.tokenApiNLP}`,
-      "Content-Type": "application/json",
-    },
-  };
-  const data = {
-    text: name,
-  };
-  const movie = await axios
-    .post(`${api.url_movie_correction}`, data, param)
-    .then((movie) => movie.data.correction)
-    .catch((error) =>
-      console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
-    );
-
-  return movie;
-}
 
 //Recherche du film
 async function getMovie(name) {
@@ -183,15 +167,15 @@ async function getMovie(name) {
     .catch((error) =>
       console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
     );
-    let urlImgComplete = ""
+    let urlImgCompconpleted = ""
     if (movie.length > 0) {
     var urlImg = movie[0].poster_path;
-    urlImgComplete = `https://image.tmdb.org/t/p/original${urlImg}`;
+    urlImgCompconpleted = `https://image.tmdb.org/t/p/original${urlImg}`;
     return {
       id: movie[0].id,
       name: movie[0].title,
       synopsis: movie[0].overview,
-      url_img: urlImgComplete,
+      url_img: urlImgCompconpleted,
       genre_id: movie[0].genre_ids,
       genre_name: [],
     };
@@ -220,6 +204,7 @@ async function getGenre(arrayId) {
     .catch((error) =>
       console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
     );
+
   // Nous comparons la liste de tous les genres avec ceux identifiés et nous gardons que ceux qui sont indenitifiés par le film
   var genre = [];
   arrayId.forEach((id) => {
@@ -229,6 +214,7 @@ async function getGenre(arrayId) {
       }
     });
   });
+  
 
   return genre.map((item) => ({ name: item }));
 }
