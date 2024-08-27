@@ -2,32 +2,25 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\UploadMovieRequest;
 use App\Models\Movie;
-use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 
 class MoviesController extends Controller
-{    
+{
     public function getMovie ()
     {
         $result = Movie::all();
     }
 
-    public function getInfo (Request $request)
+    public function uploadMovie (UploadMovieRequest $request)
     {
-        return $request;
+        /** @var UploadedFile $image */
+        $image = $request->validated('video');
+        $imagePath = $image->store('video_download', 'public');
+        return ["code" => "200", "message" => "le(s) fichier(s) ont bien été uploadé sur le serveur \n"+ $imagePath + ''];
     }
-    
-    public function createMovie (Request $request)
-   {
-    $movie = Movie::create([
-        "name" => "$request->name",
-        "synopsis" => "$request->synopsis",
-        "urlimg" => "$request->url_img"
-    ]);
 
-    return ["statut"=> "OK", "message" => "Le film '$movie->name' est bien enregistré"];
-   }
 
 }

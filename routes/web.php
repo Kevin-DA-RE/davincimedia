@@ -1,8 +1,8 @@
+
 <?php
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MoviesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +17,4 @@ use App\Http\Controllers\MoviesController;
 
 Route::get('/', function () {
     return view('app');
-});
-
-Route::controller(MoviesController::class)->group(function () {
-    Route::post('/movie/get-information', 'getInfo');
-    Route::get('/movie/get-movie', 'getMovie');
-    Route::post('/movie/create-movie', 'createMovie');
 });

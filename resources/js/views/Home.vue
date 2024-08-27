@@ -1,18 +1,15 @@
 <template>
   <div>
-    <q-form @submit="sendMovies" class="q-gutter-md">
       <q-uploader
-        multiple
-        label="Téléchargez votre fichier"
+        field-name="video"
+        url="http://127.0.0.1/movie/get-information"
+        :headers="[{
+            'Content-Type': 'multipart/form-data',
+        }]"
         @added="sendApi"
-      ></q-uploader>
-      <div>
-        <q-btn label="Submit" type="submit" color="primary" />
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-      </div>
-    </q-form>
-
+      />
 <!-- Listing de movies uploaded -->
+
       <div v-for="(movie, index) in moviesList" :key="movie.id">
         <div v-show="listingMovie">
           <q-card class="my-card" style="width: 50vh">
@@ -22,6 +19,7 @@
         </div>
 
         <!-- dialogMovie pour modifier un film -->
+
         <q-dialog v-model="dialogMovie">
                 <q-card style="min-width: 350px">
                   <q-card-section>
@@ -44,6 +42,7 @@
                   </q-card-actions>
                 </q-card>
             </q-dialog>
+
 
       </div>
 
@@ -79,11 +78,13 @@ async function sendApi(files) {
   }
 const re = /(\.[^.]+)?$/ // Cible l'extension du film
 
-
 const moviesListPromises = files.map(async (movie) => {
   const  ext = re.exec(movie.name)[1]; // Extract the extension
   const  data = await getMovieWithGenre(movie.name.split(ext)[0])
   moviesList.value.push(data)
+
+
+
 })
 
 await Promise.all(moviesListPromises)
@@ -214,44 +215,11 @@ async function getGenre(arrayId) {
       }
     });
   });
-  
+
 
   return genre.map((item) => ({ name: item }));
 }
-function sendMovies() {
-  /**
-   * Envoi data pour créer un film
-   */
-  axios
-    .post("http://127.0.0.1:8000/movie/get-information", moviesList, {
-      headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-    .then((movie) => console.log(movie.data))
-    .catch((e) => `Erreur lors de la récupération de données \n ${e}`);
-}
 
-function mounted() {
-  /*
-                axios.get("http://127.0.0.1:8000/movie/get-movie")
-                .then(r => {
-                    console.log(r.data);
-                    if (lengtResponse > 0)
-                    {
-                    visible = true;
-                    movies = r.data;
-                    } else {
-                    visible = false;
-                    movies = [];
-                    }
-                })
-                .catch( e => {
-                    console.log(`erreur lors de la recuperation des données : \n ${e}`);
-                })
-                */
-}
 </script>
 
 <style>

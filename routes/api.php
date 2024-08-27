@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MoviesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/', function () {
     return view('app');
+});
+
+
+Route::controller(MoviesController::class)->group(function () {
+    Route::post('/movie/upload-movie', 'uploadMovie');
 });
