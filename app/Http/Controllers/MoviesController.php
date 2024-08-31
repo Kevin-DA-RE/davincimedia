@@ -25,6 +25,8 @@ class MoviesController extends Controller
         /** @var UploadedFile $image */
         /*
         $image = $request->validated('video');
+
+        // Nous enregistrons l'image dans dans le dossier video_download du dossier public et le chemin de ce dossier est enregistré dans une variable
         $imagePath = $image->store('video_download', 'public');
         return ["code" => "200", "message" => "le(s) fichier(s) ont bien été uploadé sur le serveur \n"+ $imagePath + ''];
         */

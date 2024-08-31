@@ -79,12 +79,11 @@ async function sendApi(files) {
 const re = /(\.[^.]+)?$/ // Cible l'extension du film
 
 const moviesListPromises = files.map(async (movie) => {
+
   const  ext = re.exec(movie.name)[1]; // Extract the extension
   const  data = await getMovieWithGenre(movie.name.split(ext)[0])
   moviesList.value.push(data)
-
-
-
+  
 })
 
 await Promise.all(moviesListPromises)
