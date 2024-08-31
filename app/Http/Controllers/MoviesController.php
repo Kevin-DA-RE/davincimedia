@@ -10,18 +10,11 @@ use App\Http\Requests\UploadMovieRequest;
 
 class MoviesController extends Controller
 {
-    public function getMovie ()
-    {
-        return Movie::all();
-    }
-    public function getGenre ()
-    {
-        return Genre::all();
-    }
-
     public function uploadMovie (UploadMovieRequest $request)
     {
-
+        $genre = Genre::all();
+        
+        dd(count($genre));
         /** @var UploadedFile $image */
         /*
         $image = $request->validated('video');
