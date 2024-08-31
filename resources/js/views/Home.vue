@@ -10,7 +10,7 @@
       />
 <!-- Listing de movies uploaded -->
 
-      <div v-for="(movie, index) in moviesList" :key="movie.id">
+      <div v-for="(movie, index) in scope.files" :key="movie.id">
         <div v-show="listingMovie">
           <q-card class="my-card" style="width: 50vh">
             <q-btn label="Modifier" color="primary" @click="showDialog(movie, index)" />

@@ -1,6 +1,8 @@
 <template>
   <!--Card pour afficher les éléments-->
-  <q-card class="my-card" style="width: 50vh">
+
+
+  <q-card>
     <div v-for="genre in props.movie.genre_name" :key="genre.id">
       <q-badge outline color="primary" :label="genre.name" />
     </div>
