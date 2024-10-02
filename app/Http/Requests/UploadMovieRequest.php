@@ -22,7 +22,16 @@ class UploadMovieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'moviesList' => ['required', 'JSON']
+            'moviesList' => ['required', 'array'],
+            'moviesList.*.file' => ['required', 'file'],
+            'moviesList.*.name' => ['required', 'string'],
+            'moviesList.*.synopsis' => ['required', 'string'],
+            'moviesList.*.url_img' => ['required', 'string'],
+            'moviesList.*.genre_id' => ['required', 'array'],
+                'moviesList.*.genre_id.*.id' => ['required', 'integer'],
+            'moviesList.*.genre_name' => ['required', 'array'],
+                'moviesList.*.genre_name.*.name' => ['required', 'string'],
+
         ];
     }
 }

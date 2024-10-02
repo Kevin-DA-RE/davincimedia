@@ -12,9 +12,7 @@ class MoviesController extends Controller
 {
     public function uploadMovie (UploadMovieRequest $request)
     {
-        $genre = Genre::all();
-        
-        dd(count($genre));
+         dd($request->validated());
         /** @var UploadedFile $image */
         /*
         $image = $request->validated('video');

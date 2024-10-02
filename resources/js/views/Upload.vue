@@ -3,7 +3,7 @@
         <q-form
             action="/api/movie/upload-movie"
             method="post"
-            @submit="sendMovie"
+            @submit.prevent="sendMovie"
             @reset="resetUpload"
             class="q-pa-md q-ma-md shadow-3"
             enctype="multipart/form-data"
@@ -19,6 +19,7 @@
             />
           <q-btn label="Soumettre" type="submit" color="primary"/>
           <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
+
             <div v-for="(movie, index) in moviesList" :key="movie.id" class="q-mb-md">
                 <div v-show="listingMovie">
                     <q-card class="my-card" style="width: 50vh">
@@ -67,13 +68,13 @@ import axios from "axios";
 import Movie from "./component/Movie.vue";
 import { ref } from "vue";
 
-const api = ref({
+const api = {
   tokenApiTMDB:
     "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTFlMjdhNzVhZTY1ZTNjNDUxNjdlMmVkOTYwMmU3MSIsInN1YiI6IjY1ZThlZmEzM2Q3NDU0MDE3ZGI4MzczNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GNY6Ryp_gInMIzeoedzI7ooJHMdm1wX9YSTQyODot9s",
   url_movies: "https://api.themoviedb.org/3/search/movie",
   url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
   url_backend: "http://127.0.0.1:8000/api/movie/upload-movie"
-});
+};
 
 const moviesList = ref([]);
 const listingMovie = ref(false);
@@ -94,12 +95,11 @@ async function getInformationWithTMDB(files) {
   const moviesListPromises = files.map(async (movie) => {
     const ext = re.exec(movie.name)[1]; // Extract the extension
     const data = await getMovieWithGenre(movie.name.split(ext)[0]);
-    data["movie"]= movie
+    data["file"]= movie
     moviesList.value.push(data);
   });
 
   await Promise.all(moviesListPromises);
-  console.log(moviesList.value);
 
 }
 
@@ -157,7 +157,7 @@ async function getMovie(name) {
    * Recuperation data movie
    */
   const movie = await axios
-    .get(`${api.value.url_movies}`, {
+    .get(`${api.url_movies}`, {
       params: {
         query: name,
         include_adult: false,
@@ -165,7 +165,7 @@ async function getMovie(name) {
         page: 1,
       },
       headers: {
-        Authorization: `Bearer ${api.value.tokenApiTMDB}`,
+        Authorization: `Bearer ${api.tokenApiTMDB}`,
         accept: "application/json",
         "Content-Type": "application/json",
       },
@@ -178,12 +178,15 @@ async function getMovie(name) {
   if (movie.length > 0) {
     var urlImg = movie[0].poster_path;
     urlImgCompconpleted = `https://image.tmdb.org/t/p/original${urlImg}`;
+    const genreId = movie[0].genre_ids.map(id => {
+        return {'id': id}
+    })
     return {
       id: movie[0].id,
       name: movie[0].title,
       synopsis: movie[0].overview,
       url_img: urlImgCompconpleted,
-      genre_id: movie[0].genre_ids,
+      genre_id: genreId,
       genre_name: [],
     };
   } else {
@@ -191,18 +194,19 @@ async function getMovie(name) {
   }
 }
 
+//Recherche du/des genres
 async function getGenre(arrayId) {
   /**
    * Recuperation data category
    */
 
-  const category = await axios
-    .get(`${api.value.url_genres}`, {
+  const categories = await axios
+    .get(`${api.url_genres}`, {
       params: {
         query: "",
       },
       headers: {
-        Authorization: `Bearer ${api.value.tokenApiTMDB}`,
+        Authorization: `Bearer ${api.tokenApiTMDB}`,
         accept: "application/json",
         "Content-Type": "application/json",
       },
@@ -214,10 +218,11 @@ async function getGenre(arrayId) {
 
   // Nous comparons la liste de tous les genres avec ceux identifiés et nous gardons que ceux qui sont indenitifiés par le film
   var genre = [];
-  arrayId.forEach((id) => {
-    category.forEach((ids) => {
-      if (id === ids.id) {
-        genre.push(ids.name);
+  arrayId.forEach((array) => {
+
+    categories.forEach((category) => {
+      if (array.id === category.id) {
+        genre.push(category.name);
       }
     });
   });
@@ -225,24 +230,44 @@ async function getGenre(arrayId) {
   return genre.map((item) => ({ name: item }));
 }
 
+//suppression du film dans le tableau genere
 function removeFile(file, index) {
     uploader.value.removeFile(file)
     moviesList.value.splice(index, 1)
 }
 
-function sendMovie(){
-    console.log(`soumission du formulaire`);
-    const formData = new FormData();
-    formData.append('moviesList', JSON.stringify(moviesList.value));
+//Envoi data vers backend
+async function sendMovie(){
+    // Init FormDatato pour envoyer les datas
+    const formData = new FormData()
 
+    // Construction formulaire avec infos pour envoi data
+    moviesList.value.forEach((movie, index) => {
 
-    axios
-    .post(`${api.value.url_backend}`, formData)
+    formData.append(`moviesList[${index}][name]`, movie.name)
+    formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
+    formData.append(`moviesList[${index}][url_img]`, movie.url_img)
+    formData.append(`moviesList[${index}][file]`, movie.file)
+
+    movie.genre_id.forEach((genre, genreIndex) => {
+        formData.append(`moviesList[${index}][genre_id][${genreIndex}][id]`, genre.id)
+
+    })
+    movie.genre_name.forEach((genre, nameIndex) => {
+        formData.append(`moviesList[${index}][genre_name][${nameIndex}][name]`, genre.name)
+
+    })
+
+});
+
+    await axios
+    .post(`${api.url_backend}`, formData)
     .then((response) => console.log(response.data)
      )
     .catch((error) =>
       console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
     );
+
 }
 
 function resetUpload() {
