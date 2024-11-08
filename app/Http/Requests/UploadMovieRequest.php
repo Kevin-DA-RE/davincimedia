@@ -22,7 +22,7 @@ class UploadMovieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'moviesList.*.file' => ['required', 'file'],
+            'moviesList.*.file' => ['required|mimes:mp4,avi,mov', 'file'],
             'moviesList.*.name' => ['required', 'string'],
             'moviesList.*.synopsis' => ['required', 'string'],
             'moviesList.*.url_img' => ['required', 'string'],

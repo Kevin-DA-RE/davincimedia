@@ -22,4 +22,9 @@ class MoviesController extends Controller
         return ["code" => "200", "message" => "le(s) fichier(s) ont bien été uploadé sur le serveur \n"+ $imagePath + ''];
         */
     }
+
+    public function test ()
+    {
+        return ["code" => "200", "message" => "controller test"];
+    }
 }
