@@ -14,7 +14,6 @@ class Movie extends Model
         "name",
         "synopsis",
         "url_img"
-        "url_img"
     ];
 
     public function genre(){
