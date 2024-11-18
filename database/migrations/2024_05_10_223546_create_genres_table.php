@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('genres', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('id_genre');
             $table->string("name");
             $table->timestamps();
         });
@@ -32,7 +33,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('genres');              
+        Schema::dropIfExists('genres');
         Schema::dropIfExists('genres_movies');
 
     }

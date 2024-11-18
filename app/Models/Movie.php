@@ -12,11 +12,10 @@ class Movie extends Model
         "id_movie",
         "name",
         "synopsis",
-        "url_img",
-        "genre_id"
+        "url_img"
     ];
 
-    public function category (){
+    public function genre (){
      return $this->belongsTo(Genre::class);
     }
 

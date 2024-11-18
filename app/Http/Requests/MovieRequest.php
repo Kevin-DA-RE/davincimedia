@@ -22,11 +22,12 @@ class MovieRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'moviesList.*.id_movie' => ['required', 'integer'],
             'moviesList.*.name' => ['required', 'string'],
             'moviesList.*.synopsis' => ['required', 'string'],
             'moviesList.*.url_img' => ['required', 'string'],
             'moviesList.*.genre' => ['required', 'array'],
-                'moviesList.*.genre.*.id' => ['required', 'integer'],
+                'moviesList.*.genre.*.id_genre' => ['required', 'integer'],
                 'moviesList.*.genre.*.name' => ['required', 'string'],
         ];
     }

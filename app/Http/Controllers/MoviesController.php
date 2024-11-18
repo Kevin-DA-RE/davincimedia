@@ -10,28 +10,32 @@ class MoviesController extends Controller
 {
     public function create (MovieRequest $request)
     {
-        foreach ($request->moviesList as $movie) {
-            foreach ($movie['genre'] as $genre) {
-                $genre_id = $genre["id"];
-                Genre::firstOrCreate(
-                    ["id_genre" => $genre["id"]],
-                    ["name" => $genre["name"]]
-                );
-            }
+    foreach ($request->moviesList as $request_movie) {
+            $genre_ids = [];
+            foreach ($request_movie['genre'] as $request_genre) {
+                    $genre = Genre::firstOrCreate(
+                        ["id_genre" => $request_genre["id_genre"]],
+                        [
+                            "id_genre" => $request_genre["id_genre"],
+                            "name" => $request_genre["name"]
+                        ]
+                    );
 
-            Movie::firstOrCreate(
-                ["id_movie" => $movie["id"]],
-                ["name" => $movie["name"]],
-                ["synopsis" => $movie["synopsis"]],
-                ["url_img" => $movie["url_img"]],
-                ["genre_id" => $genre_id]
+                    $genre_ids[] = $genre->id_genre;
+                }
+
+            $movie = Movie::firstOrCreate(
+                ["id_movie" => $request_movie["id_movie"]],
+                [
+                    "id_movie" => $request_movie["id_movie"],
+                    "name" => $request_movie["name"],
+                    "synopsis" => $request_movie["synopsis"],
+                    "url_img" => $request_movie["url_img"]
+                ]
+
             );
+            $movie->genre()->syncWithoutDetaching($genre_ids);
         }
-
-
-
-
-
     }
 
 }
