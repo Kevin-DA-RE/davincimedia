@@ -25,11 +25,5 @@ Route::get('/', function () {
 
 
 Route::controller(MoviesController::class)->group(function () {
-    Route::post('/movie/upload-movie', 'uploadMovie');
+    Route::post('/movie/create-movie', 'create');
 });
-
-Route::controller(MoviesController::class)->group(function () {
-    Route::get('/movie/test', 'test');
-});
-
-

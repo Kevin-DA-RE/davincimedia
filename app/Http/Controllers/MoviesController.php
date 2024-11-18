@@ -4,27 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Genre;
 use App\Models\Movie;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Http;
-use App\Http\Requests\UploadMovieRequest;
+use App\Http\Requests\MovieRequest;
 
 class MoviesController extends Controller
 {
-    public function uploadMovie (UploadMovieRequest $request)
+    public function create (MovieRequest $request)
     {
-         dd($request->validated());
-        /** @var UploadedFile $image */
-        /*
-        $image = $request->validated('video');
+        foreach ($request->moviesList as $movie) {
+            foreach ($movie['genre'] as $genre) {
+                $genre_id = $genre["id"];
+                Genre::firstOrCreate(
+                    ["id_genre" => $genre["id"]],
+                    ["name" => $genre["name"]]
+                );
+            }
 
-        // Nous enregistrons l'image dans dans le dossier video_download du dossier public et le chemin de ce dossier est enregistré dans une variable
-        $imagePath = $image->store('video_download', 'public');
-        return ["code" => "200", "message" => "le(s) fichier(s) ont bien été uploadé sur le serveur \n"+ $imagePath + ''];
-        */
+            Movie::firstOrCreate(
+                ["id_movie" => $movie["id"]],
+                ["name" => $movie["name"]],
+                ["synopsis" => $movie["synopsis"]],
+                ["url_img" => $movie["url_img"]],
+                ["genre_id" => $genre_id]
+            );
+        }
+
+
+
+
+
     }
 
-    public function test ()
-    {
-        return ["code" => "200", "message" => "controller test"];
-    }
 }
