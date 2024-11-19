@@ -13,6 +13,7 @@ class MoviesController extends Controller
         foreach ($request->moviesList as $request_movie) {
             $genre_ids =[];
             foreach ($request_movie['genre'] as $request_genre) {
+
                 $genre = Genre::firstOrCreate(
                     ["id_genre" => $request_genre["id_genre"]],
                     [
@@ -37,5 +38,11 @@ class MoviesController extends Controller
 
         }
     }
+
+    public function test(MovieRequest $request)
+    {
+
+    }
+
 
 }
