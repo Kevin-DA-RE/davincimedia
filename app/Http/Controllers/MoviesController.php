@@ -74,12 +74,4 @@ class MoviesController extends Controller
             return ["code"=> 500, "message"=> "Le films n'a été mis à jour"];
         }
     }
-
-    public function test(MovieRequest $request)
-    {
-
-
-    }
-
-
 }

@@ -1,0 +1,24 @@
+meta {
+  name: createPost
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://127.0.0.1:8000/api/post/create-post
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "movie_id" : 1,
+    "note": "6",
+    "comment": "c'est un très bon film"
+  }
+}
