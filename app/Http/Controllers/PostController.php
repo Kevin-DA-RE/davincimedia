@@ -8,7 +8,9 @@ use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
-
+    public function showPost(){
+        return Post::all();
+    }
 
     public function createPost(PostRequest $request){
         if($request->validated()){
