@@ -23,7 +23,7 @@ class PostReqest extends FormRequest
     {
         return [
             'note' => ['required', 'string'],
-            'comment' => ['required'],
+            'comment' => ['required', 'string'],
         ];
     }
 }

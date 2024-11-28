@@ -35,10 +35,9 @@ class MoviesController extends Controller
                         "url_img" => $request_movie["url_img"]
                     ]
                 );
-
+                $movie->genre()->attach($genre_ids);
             }
-            $movie->genre()->attach($genre_ids);
-            $movie->save();
+
             return ["code"=> 200, "message"=> "Toutes les données ont été validées"];
         } else {
             return ["code"=> 500, "message"=> "Une ou plusieurs données ne sont pas validés"];
@@ -67,7 +66,6 @@ class MoviesController extends Controller
 
             }
             $movie->genre()->sync($genre_ids);
-            $movie->save();
             return ["code"=> 200, "message"=> "Toutes les données ont été modifiées"];
 
         }else {
