@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-use App\Http\Requests\PostReqest;
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
-    public function createPost(PostReqest $request){
+
+
+    public function createPost(PostRequest $request){
         if($request->validated()){
             $post = Post::create([
                 "note" => $request->note,
@@ -21,7 +23,7 @@ class PostController extends Controller
         }
     }
 
-    public function updatePost(PostReqest $request){
+    public function updatePost(PostRequest $request){
         if($request->validated())
         {
             $post = Post::find($request->id);
@@ -35,6 +37,13 @@ class PostController extends Controller
         }else {
             return ["code"=> 500, "message"=> "Le films n'a été mis à jour"];
         }
+    }
+
+    public function deletePost(PostRequest $request){
+            $post = Post::find($request->id);
+            $post->delete();
+
+            return ["code"=> 200, "message"=> "Le post a été supprimé"];
     }
 }
 

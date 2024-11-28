@@ -1,11 +1,11 @@
 meta {
-  name: createPost
+  name: deletePost
   type: http
-  seq: 4
+  seq: 6
 }
 
 post {
-  url: {{DEV}}/api/post/create-post
+  url: {{DEV}}/api/post/delete-post
   body: json
   auth: none
 }
@@ -17,8 +17,6 @@ headers {
 
 body:json {
   {
-    "movie_id" : 1,
-    "note": "3",
-    "comment": "c'est un film sans plus"
+    "id": 7
   }
 }

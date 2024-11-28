@@ -33,5 +33,6 @@ Route::controller(MoviesController::class)->group(function () {
 Route::controller(PostController::class)->group(function () {
     Route::post('/post/create-post', 'createPost');
     Route::post('/post/update-post', 'updatePost');
+    Route::post('/post/delete-post', 'deletePost');
 });
 
