@@ -25,15 +25,16 @@ Route::get('/', function () {
 });
 
 
-Route::controller(MoviesController::class)->group(function () {
-    Route::post('/movie/create-movie', 'createMovie');
-    Route::post('/movie/update-movie', 'updateMovie');
+Route::prefix('movie')->controller(MoviesController::class)->group(function () {
+    Route::post('/create-movie', 'createMovie');
+    Route::post('/update-movie', 'updateMovie');
+    Route::get('/show-movie', 'showMovie');
 });
 
-Route::controller(PostController::class)->group(function () {
-    Route::post('/post/create-post', 'createPost');
-    Route::get('/post/show-post', 'showPost');
-    Route::post('/post/update-post', 'updatePost');
-    Route::post('/post/delete-post', 'deletePost');
+Route::prefix('/post')->controller(PostController::class)->group(function () {
+    Route::post('/create-post', 'createPost');
+    Route::get('/show-post', 'showPost');
+    Route::post('/update-post', 'updatePost');
+    Route::post('/delete-post', 'deletePost');
 });
 

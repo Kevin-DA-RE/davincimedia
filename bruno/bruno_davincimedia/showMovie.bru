@@ -1,0 +1,16 @@
+meta {
+  name: showMovie
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{DEV}}/api/movie/show-movie
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
