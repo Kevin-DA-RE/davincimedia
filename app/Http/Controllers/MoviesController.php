@@ -9,6 +9,9 @@ use App\Http\Requests\MovieRequest;
 
 class MoviesController extends Controller
 {
+    public function showMovie(){
+        return response()->json(Movie::all());
+    }
     public function createMovie (MovieListRequest $request)
     {
         $item = $request->validated();
