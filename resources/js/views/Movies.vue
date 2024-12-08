@@ -1,12 +1,12 @@
 <script setup>
 import axios from "axios";
-import { onBeforeMount, ref } from "vue";
+import { onMounted, ref } from "vue";
 
-const btnMovie = ref(false);
+const movies = ref([])
+const genres = ref([])
 
-
-onBeforeMount( async() => {
-  const movies = await axios
+onMounted( async() => {
+  movies.value = await axios
   .get(`http://127.0.0.1:8000/api/movie/show-movie`, {
         headers: {
         accept: "application/json",
@@ -17,7 +17,20 @@ onBeforeMount( async() => {
       console.log(`Erreur lors de la récupération de datas sur les film \n ${error}`)
     );
 
-    btnMovie.value = (movies.length === 0) ? false: true;
+  genres.value = await axios
+  .get(`http://127.0.0.1:8000/api/movie/show-genre`, {
+        headers: {
+        accept: "application/json",
+      },
+    })
+    .then((genre) => genre.data)
+    .catch((error) =>
+      console.log(`Erreur lors de la récupération de datas sur les film \n ${error}`)
+    );
+
+console.log(movies.value);
+console.log(genres.value);
+
 
 })
 
@@ -29,10 +42,18 @@ const props = defineProps({
 
 </script>
 <template>
+  <div v-if="movies.length > 0">
+    <q-drawer class="bg-grey-7 text-white" show-if-above v-model="props.leftDrawerOpen" side="left" bordered>
+    <div v-for="genre in genres" :key="genre.id">
+      <h2>{{ genre.name }}</h2>
+    </div>
+    </q-drawer>
+  </div>
+  <div v-else>
+    <q-btn color="primary" label="Ajouter film" />
+  </div>
+  
 
-  <q-drawer class="bg-grey-7 text-white" show-if-above v-model="props.leftDrawerOpen" side="left" bordered>
-    <h3>Welcome to Movies</h3>
-  </q-drawer>
 
 </template>
 <style>

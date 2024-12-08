@@ -1,9 +1,9 @@
 <template>
     <q-layout view="lHh Lpr lFf" class="bg-grey-9 text-white">
       <Header @toggleLeftDrawer="toggleLeftDrawer"/>
-      <div class="container">
+      <q-page-container>
         <router-view :leftDrawerOpen="leftDrawerOpen"></router-view>
-    </div>
+      </q-page-container>
     </q-layout>
   </template>
   

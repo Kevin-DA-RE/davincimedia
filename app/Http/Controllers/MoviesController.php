@@ -12,6 +12,9 @@ class MoviesController extends Controller
     public function showMovie(){
         return response()->json(Movie::all());
     }
+    public function showGenre(){
+        return response()->json(Genre::all());
+    }
     public function createMovie (MovieListRequest $request)
     {
         $item = $request->validated();
