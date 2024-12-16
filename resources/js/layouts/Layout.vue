@@ -5,7 +5,7 @@
       <q-toolbar class="text-white">
         <q-tabs align="left">
           <q-route-tab :to="{ name: 'home' }" label="Accueil" />
-          <q-route-tab :to="{ name: 'movies' }" label="Films" @click="toggleLeftDrawer"/>
+          <q-route-tab :to="{ name: 'movies' }" label="Films"/>
         </q-tabs>        
         <q-toolbar-title>
           Bienvenue dans votre bibliotèque DaVinciMedia !
@@ -14,7 +14,7 @@
     </q-header>
 
     <q-page-container>
-              <router-view :leftDrawerOpen="leftDrawerOpen"></router-view>
+          <router-view></router-view>
     </q-page-container>
 
   </q-layout>
@@ -22,13 +22,5 @@
   
   <script setup>
   import { ref } from "vue";
-  
-  const leftDrawerOpen = ref(false);
-
-  function toggleLeftDrawer () {
-    leftDrawerOpen.value = !leftDrawerOpen.value
-  }
-
-
   </script>
   

@@ -36,21 +36,20 @@ onMounted( async() => {
                         },
                   })
                   .then((genre) => genre.data)
+                  if (genres.length > 0) {
+                        console.log("on ajoute des genres");
+                        genresList.value.push(genres)
+                  }
+
                   console.log(genres.length);
       } catch (error) {
             console.log(error);
       }
 
     btnMovie.value = (moviesList.value.length < 0) ? false: true;
-      console.log(btnMovie.value);
+    console.log(btnMovie.value);
       
 })
-
-const props = defineProps({
-  leftDrawerOpen: {
-    type: Boolean
-  },
-});
 
 </script>
 
