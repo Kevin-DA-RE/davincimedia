@@ -1,6 +1,7 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref } from "vue";
+import Movie from "./component/Movie.vue";
 
 const moviesList = ref([])
 const genresList =ref([])
@@ -54,16 +55,17 @@ const props = defineProps({
 </script>
 
 <template>
-  <div v-if="moviesList.length > 0">
-    <q-drawer class="bg-grey-7 text-white" show-if-above v-model="props.leftDrawerOpen" side="left" bordered>
-      <div v-for="genre in genresList.value" :key="genre.id">
-            <h2>{{ genre.name }}</h2>
-      </div>
-    </q-drawer>
-  </div>
-  <div v-else>
-    <q-btn color="primary" label="Ajouter film" v-show="btnMovie" />
-  </div>
+  <q-page>
+    <div v-if="moviesList.length > 0">
+      <q-card class="my-card" style="width: 50vh">
+        <Movie :movie="movie" />
+      </q-card>
+    </div>
+    <div v-else>
+      <q-btn color="primary" label="Ajouter film" v-show="btnMovie" />
+    </div>
+  </q-page>
+  
 </template>
 
 <style>
