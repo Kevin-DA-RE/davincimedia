@@ -2,7 +2,7 @@
   <!--Card pour afficher les éléments-->
 
 
-  <q-card>
+  <q-card class="text-dark">
     <div v-for="genre in props.movie.genre_name" :key="genre.id">
       <q-badge outline color="primary" :label="genre.name" />
     </div>
@@ -11,9 +11,6 @@
         {{ props.movie.name }}
       </div>
     </q-img>
-    <q-card-section>
-      {{ props.movie.synopsis }}
-    </q-card-section>
   </q-card>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="hHh Lpr lff" class="bg-grey-9 shadow-2 rounded-borders">
+  <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
 
-    <q-header class="bg-grey-6">
+    <q-header>
       <q-toolbar class="text-white">
         <q-tabs align="left">
           <q-route-tab :to="{ name: 'home' }" label="Accueil" />

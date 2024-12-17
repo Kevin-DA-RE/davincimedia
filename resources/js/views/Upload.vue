@@ -76,32 +76,11 @@ const api = {
   url_backend: "http://127.0.0.1:8000/api/movie/upload-movie"
 };
 
-const moviesList = ref([]);
-const listingMovie = ref(false);
-const movieTitleChange = ref();
-const movieIndex = ref();
-const movieUpdated = ref({});
-let dialogMovie = ref(false);
+
 const uploader = ref(null);
 const video = ref()
 
-// Fonction pour upload moviesList
-async function getInformationWithTMDB(files) {
-  if (listingMovie.value == false) {
-    listingMovie.value = true;
-  }
-  const re = /(\.[^.]+)?$/; // Cible l'extension du film
 
-  const moviesListPromises = files.map(async (movie) => {
-    const ext = re.exec(movie.name)[1]; // Extract the extension
-    const data = await getMovieWithGenre(movie.name.split(ext)[0]);
-    data["file"]= movie
-    moviesList.value.push(data);
-  });
-
-  await Promise.all(moviesListPromises);
-
-}
 
 // Fonctions pour q-dialogMovie
 function showDialog(movie, index) {
@@ -134,101 +113,11 @@ function reset() {
   movieUpdated.value = ref({});
 }
 
-// Recherche du film et de son/ses genre(s)
-async function getMovieWithGenre(name) {
-  const movieData = await getMovie(name);
 
-  if (movieData.code == "400") {
-    return {
-      code: 400,
-      message: "Problème lors de la récupération de film",
-      name: name,
-    };
-  } else {
-    const genreData = await getGenre(movieData.genre_id);
-    movieData.genre_name = genreData;
-    return movieData;
-  }
-}
 
-//Recherche du film
-async function getMovie(name) {
-  /**
-   * Recuperation data movie
-   */
-  const movie = await axios
-    .get(`${api.url_movies}`, {
-      params: {
-        query: name,
-        include_adult: false,
-        language: "fr-FR",
-        page: 1,
-      },
-      headers: {
-        Authorization: `Bearer ${api.tokenApiTMDB}`,
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-    .then((movie) => movie.data.results)
-    .catch((error) =>
-      console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
-    );
-  let urlImgCompconpleted = "";
-  if (movie.length > 0) {
-    var urlImg = movie[0].poster_path;
-    urlImgCompconpleted = `https://image.tmdb.org/t/p/original${urlImg}`;
-    const genreId = movie[0].genre_ids.map(id => {
-        return {'id': id}
-    })
-    return {
-      id: movie[0].id,
-      name: movie[0].title,
-      synopsis: movie[0].overview,
-      url_img: urlImgCompconpleted,
-      genre_id: genreId,
-      genre_name: [],
-    };
-  } else {
-    return { code: 400, message: "Aucun film correspond à la recherche" };
-  }
-}
 
-//Recherche du/des genres
-async function getGenre(arrayId) {
-  /**
-   * Recuperation data category
-   */
 
-  const categories = await axios
-    .get(`${api.url_genres}`, {
-      params: {
-        query: "",
-      },
-      headers: {
-        Authorization: `Bearer ${api.tokenApiTMDB}`,
-        accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-    .then((category) => category.data.genres)
-    .catch((error) =>
-      console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
-    );
 
-  // Nous comparons la liste de tous les genres avec ceux identifiés et nous gardons que ceux qui sont indenitifiés par le film
-  var genre = [];
-  arrayId.forEach((array) => {
-
-    categories.forEach((category) => {
-      if (array.id === category.id) {
-        genre.push(category.name);
-      }
-    });
-  });
-
-  return genre.map((item) => ({ name: item }));
-}
 
 //suppression du film dans le tableau genere
 function removeFile(file, index) {
