@@ -3,8 +3,11 @@ import axios from "axios";
 import { onMounted, ref } from "vue";
 import Movie from "./component/Movie.vue";
 
+const showForm = ref(false)
 const moviesList = ref([])
-const genresList =ref([])
+const moviesListLoaded = ref([])
+const genresList=ref([])
+const genresListLoaded =ref([])
 const btnMovie = ref(false)
 let dialogMovie = ref(false)
 const movieTitleChange = ref();
@@ -28,14 +31,14 @@ onMounted( async() => {
                         },
                   })
                   .then((movie) => movie.data)
-                 
+
                   if (movies.length > 0) {
-                        moviesList.value.push(movies)
+                        moviesListLoaded.value.push(movies)
                   }
-                  
+
       } catch (error) {
             console.log(error);
-            
+
       }
 
       try {
@@ -47,14 +50,14 @@ onMounted( async() => {
                   })
                   .then((genre) => genre.data)
                   if (genres.length > 0) {
-                        genresList.value.push(genres)
+                        genresListLoaded.value.push(genres)
                   }
       } catch (error) {
             console.log(error);
       }
 
-    btnMovie.value = (moviesList.value.length < 0) ? false: true;
-      
+    btnMovie.value = (moviesListLoaded.value.length < 0) ? false: true;
+
 })
 
 
@@ -73,7 +76,7 @@ async function getMovieWithGenre(name) {
     const genreData = await getGenre(movieCreated.value.genre_id);
     movieCreated.value.genre_name = genreData;
     return movieCreated.value;
-    
+
   }
 }
 
@@ -157,11 +160,18 @@ async function getGenre(arrayId) {
   return genre.map((item) => ({ name: item }));
 }
 
+function AddMovie(movie) {
+moviesList.value.push(movie)
+console.log(moviesList.value);
+
+showForm.value = true
+}
+
 </script>
 
 <template>
   <q-page>
-    <div v-if="moviesList.length > 0">
+    <div v-if="moviesListLoaded.length > 0">
       <q-card class="my-card" style="width: 50vh">
         <Movie :movie="movie" />
       </q-card>
@@ -169,30 +179,48 @@ async function getGenre(arrayId) {
     <div v-else>
       <q-btn color="secondary" @click="dialogMovie = true" label="Ajouter film" v-show="btnMovie" />
       <q-dialog persistent v-model="dialogMovie" class="text-white" >
-        <q-form style="width: 450px;"
+
+            <div>
+                <h6 class="text-h6">Saisir le nom du film</h6>
+                <q-input
+                        v-model="movieName"
+                        @change="getMovieWithGenre(movieName)"
+                        autofocus
+                        />
+
+                <q-card-section>
+                    <Movie :movie="movieCreated" />
+                </q-card-section>
+
+                <q-btn label="Ajouter Film" @click="AddMovie(movieCreated)" color="primary"/>
+                <q-btn label="Annuler" color="danger" />
+            </div>
+        <q-form
+        class="q-mb-md "
           @submit=""
           @reset=""
+          v-show="showForm"
         >
-          <div class="text-h6">Saisir le nom du film</div>
-          <q-input
-                v-model="movieName"
-                @change="getMovieWithGenre(movieName)"
-                autofocus
-                />
-            <div>
-              <q-card-section>                  
-                  <Movie :movie="movieCreated" />
-              </q-card-section>
-
-              <q-btn v-close-popup label="Submit" type="submit" color="primary"/>
-              <q-btn v-close-popup label="Reset" type="reset" color="primary" />
+        <div v-if="moviesList.length >0">
+            <h3>Liste des films a enregistrer</h3>
+            <div class="flex flex-center column">
+                 <div
+                    class="row justify-around"
+                    v-for="(movie, index) in moviesList" :key="movie.id">
+                            <Movie :movie="movie" />
+                </div>
             </div>
+
+        </div>
+        <div v-else>
+            <h2>Aucun film n'est ajouté</h2>
+        </div>
+
         </q-form>
-          
       </q-dialog>
     </div>
   </q-page>
-  
+
 </template>
 
 <style>

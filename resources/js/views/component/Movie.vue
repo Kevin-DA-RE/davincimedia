@@ -2,7 +2,7 @@
   <!--Card pour afficher les éléments-->
 
 
-  <q-card class="text-dark">
+  <q-card class="text-dark my-card">
     <div v-for="genre in props.movie.genre_name" :key="genre.id">
       <q-badge outline color="primary" :label="genre.name" />
     </div>
@@ -23,3 +23,10 @@ const props = defineProps({
   },
 });
 </script>
+<style>
+.my-card {
+    width: 100%;
+  max-width: 250px
+}
+ 
+</style>
