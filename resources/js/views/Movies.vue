@@ -3,7 +3,6 @@ import axios from "axios";
 import { onMounted, ref } from "vue";
 import Movie from "./component/Movie.vue";
 
-const showForm = ref(false)
 const moviesList = ref([])
 const moviesListLoaded = ref([])
 const genresList=ref([])
@@ -162,65 +161,98 @@ async function getGenre(arrayId) {
 
 function AddMovie(movie) {
 moviesList.value.push(movie)
-console.log(moviesList.value);
-
-showForm.value = true
 }
 
+async function onSubmit() {
+
+// Init FormDatato pour envoyer les datas
+const formData = new FormData()
+moviesList.value.forEach((movie, index) => {
+    formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id))
+    formData.append(`moviesList[${index}][name]`, movie.name)
+    formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
+    formData.append(`moviesList[${index}][url_img]`, movie.url_img)
+
+    movie.genre_id.forEach((genre, genreIndex) => {
+        formData.append(`moviesList[${index}][genre][${genreIndex}][id_genre]`, parseInt(genre.id))
+
+    })
+    movie.genre_name.forEach((genre, nameIndex) => {
+        formData.append(`moviesList[${index}][genre][${nameIndex}][name]`, genre.name)
+
+    })
+
+});
+
+await axios
+    .post(`${api.url_backend}`, formData)
+    .then((response) => console.log(response.data)
+     )
+    .catch((error) =>
+      console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+    );
+
+}
 </script>
 
 <template>
   <q-page>
     <div v-if="moviesListLoaded.length > 0">
-      <q-card class="my-card" style="width: 50vh">
-        <Movie :movie="movie" />
-      </q-card>
+        <div
+        class="flex justify-start"
+        v-for="(movie, index) in moviesListLoaded" :key="movie.id"
+        >
+            <Movie :movie="movie" />
+        </div>
+
     </div>
     <div v-else>
       <q-btn color="secondary" @click="dialogMovie = true" label="Ajouter film" v-show="btnMovie" />
-      <q-dialog persistent v-model="dialogMovie" class="text-white" >
+        <q-dialog v-model="dialogMovie" persistent full-width>
+            <div class="row">
+                <div class="col-4">
+                    <h6 class="text-h6">Saisir le nom du film</h6>
+                    <q-input
+                            v-model="movieName"
+                            @change="getMovieWithGenre(movieName)"
+                            autofocus
+                            />
+                        <div v-if="movieCreated.id">
+                            <q-card-section>
+                            <Movie :movie="movieCreated" />
+                        </q-card-section>
+                        </div>
+                    <q-btn label="Ajouter Film" @click="AddMovie(movieCreated)" color="primary"/>
+                    <q-btn label="Annuler" color="danger"/>
+                </div>
+                <div class="col-8">
+                    <q-form
+                    @submit.prevent="onSubmit"
+                    @reset="onReset"
+                    class="q-gutter-md"
+                    >
+                        <h6>Liste des films a enregistrer</h6>
+                        <div v-if="moviesList.length > 0">
+                          <div class="row justify-around">
+                            <div
+                            v-for="(movie, index) in moviesList" :key="movie.id"
+                            >
+                                <Movie :movie="movie" />
+                            </div>
+                          </div>
+                          <q-btn label="Enregistrer les films" type="submit" color="primary"/>
+                          <q-btn label="Annuler" type="reset" color="danger"/>
+                        </div>
+                        <div v-else>
+                            <p>Aucun film n'est ajouté</p>
+                        </div>
 
-            <div>
-                <h6 class="text-h6">Saisir le nom du film</h6>
-                <q-input
-                        v-model="movieName"
-                        @change="getMovieWithGenre(movieName)"
-                        autofocus
-                        />
-
-                <q-card-section>
-                    <Movie :movie="movieCreated" />
-                </q-card-section>
-
-                <q-btn label="Ajouter Film" @click="AddMovie(movieCreated)" color="primary"/>
-                <q-btn label="Annuler" color="danger" />
-            </div>
-        <q-form
-        class="q-mb-md "
-          @submit=""
-          @reset=""
-          v-show="showForm"
-        >
-        <div v-if="moviesList.length >0">
-            <h3>Liste des films a enregistrer</h3>
-            <div class="flex flex-center column">
-                 <div
-                    class="row justify-around"
-                    v-for="(movie, index) in moviesList" :key="movie.id">
-                            <Movie :movie="movie" />
+                    </q-form>
                 </div>
             </div>
-
-        </div>
-        <div v-else>
-            <h2>Aucun film n'est ajouté</h2>
-        </div>
-
-        </q-form>
-      </q-dialog>
+        </q-dialog>
     </div>
   </q-page>
-
 </template>
 
 <style>

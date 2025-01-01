@@ -1,16 +1,7 @@
 <template>
   <!--Card pour afficher les éléments-->
-
-
-  <q-card class="text-dark my-card">
-    <div v-for="genre in props.movie.genre_name" :key="genre.id">
-      <q-badge outline color="primary" :label="genre.name" />
-    </div>
-    <q-img :src="props.movie.url_img" id="qImg">
-      <div class="absolute-top text-h6">
-        {{ props.movie.name }}
-      </div>
-    </q-img>
+  <q-card class="text-dark " style="width: 150px; height: max-content;">
+    <q-img :src="props.movie.url_img" id="qImg"/>
   </q-card>
 </template>
 
@@ -24,9 +15,4 @@ const props = defineProps({
 });
 </script>
 <style>
-.my-card {
-    width: 100%;
-  max-width: 250px
-}
- 
 </style>
