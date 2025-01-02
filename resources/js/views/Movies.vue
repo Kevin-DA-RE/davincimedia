@@ -167,6 +167,8 @@ async function onSubmit() {
 
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
+
+
 moviesList.value.forEach((movie, index) => {
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id))
     formData.append(`moviesList[${index}][name]`, movie.name)
@@ -185,7 +187,11 @@ moviesList.value.forEach((movie, index) => {
 });
 
 await axios
-    .post(`${api.url_backend}`, formData)
+    .post(`${api.url_backend}`, formData, {
+        headers: {
+        accept: "multipart/form-data",
+        "Content-Type": "multipart/form-data",
+      }})
     .then((response) => console.log(response.data)
      )
     .catch((error) =>

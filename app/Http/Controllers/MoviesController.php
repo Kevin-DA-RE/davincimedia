@@ -19,9 +19,10 @@ class MoviesController extends Controller
     {
         $item = $request->validated();
 
-            foreach ($item->moviesList as $request_movie) {
+            foreach ($item as $request_movie) {
                 $genre_ids =[];
-                foreach ($request_movie['genre'] as $request_genre) {
+                dd($request_movie["genre"]);
+                foreach ($request_movie["genre"] as $request_genre) {
 
                     $genre = Genre::firstOrCreate(
                         ["id_genre" => $request_genre["id_genre"]],
