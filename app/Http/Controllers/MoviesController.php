@@ -18,10 +18,9 @@ class MoviesController extends Controller
     public function createMovie (MovieListRequest $request)
     {
         $item = $request->validated();
-
+        dd($item);
             foreach ($item as $request_movie) {
                 $genre_ids =[];
-                dd($request_movie["genre"]);
                 foreach ($request_movie["genre"] as $request_genre) {
 
                     $genre = Genre::firstOrCreate(
@@ -45,6 +44,7 @@ class MoviesController extends Controller
                 );
                 $movie->genre()->attach($genre_ids);
             }
+            return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
       }
 
     public function updateMovie (MovieRequest $request, Movie $id)

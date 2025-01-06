@@ -72,8 +72,6 @@ async function getMovieWithGenre(name) {
       name: name,
     };
   } else {
-    const genreData = await getGenre(movieCreated.value.genre_id);
-    movieCreated.value.genre_name = genreData;
     return movieCreated.value;
 
   }
@@ -109,13 +107,17 @@ async function getMovie(name) {
     const genreId = movie[0].genre_ids.map(id => {
         return {'id': id}
     })
+    const genreName = await getGenre(genreId)
     return {
       id: movie[0].id,
       name: movie[0].title,
       synopsis: movie[0].overview,
       url_img: urlImgCompconpleted,
-      genre_id: genreId,
-      genre_name: [],
+      genre: [{
+        id_genre: genreId,
+        name: genreName
+      }]
+
     };
   } else {
     return { code: 400, message: "Aucun film correspond à la recherche" };
@@ -168,35 +170,35 @@ async function onSubmit() {
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
 
-
 moviesList.value.forEach((movie, index) => {
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id))
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
     formData.append(`moviesList[${index}][url_img]`, movie.url_img)
-
-    movie.genre_id.forEach((genre, genreIndex) => {
+    formData.append(`moviesList[${index}][genre]`, movie.genre)
+    movie.genre.forEach((genre, genreIndex) => {
         formData.append(`moviesList[${index}][genre][${genreIndex}][id_genre]`, parseInt(genre.id))
-
-    })
-    movie.genre_name.forEach((genre, nameIndex) => {
-        formData.append(`moviesList[${index}][genre][${nameIndex}][name]`, genre.name)
-
+        formData.append(`moviesList[${index}][genre][${genreIndex}][name]`, parseInt(genre.name))
     })
 
 });
 
+console.log([...formData.entries()]);
+
 await axios
     .post(`${api.url_backend}`, formData, {
         headers: {
-        accept: "multipart/form-data",
-        "Content-Type": "multipart/form-data",
+        accept: "multipart/form-data"
       }})
     .then((response) => console.log(response.data)
      )
     .catch((error) =>
       console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
     );
+
+}
+
+function onReset(){
 
 }
 </script>
