@@ -104,19 +104,14 @@ async function getMovie(name) {
   if (movie.length > 0) {
     var urlImg = movie[0].poster_path;
     urlImgCompconpleted = `https://image.tmdb.org/t/p/original${urlImg}`;
-    const genreId = movie[0].genre_ids.map(id => {
-        return {'id': id}
-    })
-    const genreName = await getGenre(genreId)
+    const genre = await getGenre(movie[0].genre_ids)
+
     return {
       id: movie[0].id,
       name: movie[0].title,
       synopsis: movie[0].overview,
       url_img: urlImgCompconpleted,
-      genre: [{
-        id_genre: genreId,
-        name: genreName
-      }]
+      genre
 
     };
   } else {
@@ -152,13 +147,16 @@ async function getGenre(arrayId) {
   arrayId.forEach((array) => {
 
     categories.forEach((category) => {
-      if (array.id === category.id) {
-        genre.push(category.name);
+      if (array === category.id) {
+        genre.push({
+            "id_genre": category.id,
+            "name": category.name
+        })
       }
     });
   });
 
-  return genre.map((item) => ({ name: item }));
+  return genre;
 }
 
 function AddMovie(movie) {
@@ -169,22 +167,26 @@ async function onSubmit() {
 
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
+console.log(moviesList.value);
+
 
 moviesList.value.forEach((movie, index) => {
+
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id))
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
     formData.append(`moviesList[${index}][url_img]`, movie.url_img)
-    formData.append(`moviesList[${index}][genre]`, movie.genre)
     movie.genre.forEach((genre, genreIndex) => {
-        formData.append(`moviesList[${index}][genre][${genreIndex}][id_genre]`, parseInt(genre.id))
-        formData.append(`moviesList[${index}][genre][${genreIndex}][name]`, parseInt(genre.name))
-    })
+        formData.append(`moviesList[${index}][genre][${genreIndex}][id_genre]`, parseInt(genre.id_genre))
+        formData.append(`moviesList[${index}][genre][${genreIndex}][name]`, genre.name)
 
+    })
 });
 
-console.log([...formData.entries()]);
+for (const element of formData.entries()) {
+console.log(element[0] + ', '+ element[1]);
 
+}
 await axios
     .post(`${api.url_backend}`, formData, {
         headers: {

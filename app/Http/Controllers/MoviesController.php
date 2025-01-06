@@ -17,12 +17,12 @@ class MoviesController extends Controller
     }
     public function createMovie (MovieListRequest $request)
     {
+        //return response()->json(["code"=> 200, "message"=> "on entre dans le controlleur"]);
         $item = $request->validated();
         dd($item);
-            foreach ($item as $request_movie) {
+            foreach ($item as $index => $request_movie) {
                 $genre_ids =[];
-                foreach ($request_movie["genre"] as $request_genre) {
-
+                foreach ($request_movie["genre"] as $index => $request_genre) {
                     $genre = Genre::firstOrCreate(
                         ["id_genre" => $request_genre["id_genre"]],
                         [
@@ -43,6 +43,7 @@ class MoviesController extends Controller
                     ]
                 );
                 $movie->genre()->attach($genre_ids);
+
             }
             return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
       }
