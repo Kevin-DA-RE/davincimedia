@@ -7,7 +7,6 @@ const moviesList = ref([])
 const moviesListLoaded = ref([])
 const genresList=ref([])
 const genresListLoaded =ref([])
-const btnMovie = ref(false)
 let dialogMovie = ref(false)
 const movieTitleChange = ref();
 const movieIndex = ref();
@@ -29,11 +28,7 @@ onMounted( async() => {
                         accept: "application/json",
                         },
                   })
-                  .then((movie) => movie.data)
-
-                  if (movies.length > 0) {
-                        moviesListLoaded.value.push(movies)
-                  }
+                  moviesListLoaded.value = movies.data
 
       } catch (error) {
             console.log(error);
@@ -47,15 +42,11 @@ onMounted( async() => {
                         accept: "application/json",
                         },
                   })
-                  .then((genre) => genre.data)
-                  if (genres.length > 0) {
-                        genresListLoaded.value.push(genres)
-                  }
+                  genresListLoaded.value = genres.data
       } catch (error) {
             console.log(error);
       }
 
-    btnMovie.value = (moviesListLoaded.value.length < 0) ? false: true;
 
 })
 
@@ -207,17 +198,17 @@ function onReset(){
 
 <template>
   <q-page>
-    <div v-if="moviesListLoaded.length > 0">
+    <div class="row justify-start">
         <div
-        class="flex justify-start"
         v-for="(movie, index) in moviesListLoaded" :key="movie.id"
         >
             <Movie :movie="movie" />
-        </div>
 
+        </div>
     </div>
-    <div v-else>
-      <q-btn color="secondary" @click="dialogMovie = true" label="Ajouter film" v-show="btnMovie" />
+
+
+      <q-btn color="secondary" @click="dialogMovie = true" label="Ajouter film"/>
         <q-dialog v-model="dialogMovie" persistent full-width>
             <div class="row">
                 <div class="col-4">
@@ -228,6 +219,7 @@ function onReset(){
                             autofocus
                             />
                         <div v-if="movieCreated.id">
+                            {{ movieCreated }}
                             <q-card-section>
                             <Movie :movie="movieCreated" />
                         </q-card-section>
@@ -261,7 +253,6 @@ function onReset(){
                 </div>
             </div>
         </q-dialog>
-    </div>
   </q-page>
 </template>
 

@@ -19,10 +19,9 @@ class MoviesController extends Controller
     {
         //return response()->json(["code"=> 200, "message"=> "on entre dans le controlleur"]);
         $item = $request->validated();
-        dd($item);
-            foreach ($item as $index => $request_movie) {
+            foreach ($item["moviesList"] as $request_movie) {
                 $genre_ids =[];
-                foreach ($request_movie["genre"] as $index => $request_genre) {
+                foreach ($request_movie["genre"] as $request_genre) {
                     $genre = Genre::firstOrCreate(
                         ["id_genre" => $request_genre["id_genre"]],
                         [
