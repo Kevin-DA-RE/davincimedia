@@ -6,14 +6,16 @@ use App\Models\Genre;
 use App\Models\Movie;
 use App\Http\Requests\MovieListRequest;
 use App\Http\Requests\MovieRequest;
+use App\Http\Resources\GenresResources;
+use App\Http\Resources\MoviesResources;
 
 class MoviesController extends Controller
 {
     public function showMovie(){
-        return response()->json(Movie::all());
+        return  MoviesResources::collection(Movie::all());
     }
     public function showGenre(){
-        return response()->json(Genre::all());
+        return GenresResources::collection(Genre::all());
     }
     public function createMovie (MovieListRequest $request)
     {

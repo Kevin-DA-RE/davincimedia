@@ -7,7 +7,7 @@ const moviesList = ref([])
 const moviesListLoaded = ref([])
 const genresList=ref([])
 const genresListLoaded =ref([])
-let dialogMovie = ref(false)
+const dialogMovie = ref(false)
 const movieTitleChange = ref();
 const movieIndex = ref();
 const movieName = ref("");
@@ -17,34 +17,53 @@ const api = {
     "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTFlMjdhNzVhZTY1ZTNjNDUxNjdlMmVkOTYwMmU3MSIsInN1YiI6IjY1ZThlZmEzM2Q3NDU0MDE3ZGI4MzczNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GNY6Ryp_gInMIzeoedzI7ooJHMdm1wX9YSTQyODot9s",
   url_movies: "https://api.themoviedb.org/3/search/movie",
   url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
-  url_backend: "http://127.0.0.1:8000/api/movie/create-movie"
+  url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
+  url_backend_show_movie_movie: "http://127.0.0.1:8000/api/movie/show-movie",
+  url_backend_show_movie_genre: "http://127.0.0.1:8000/api/movie/show-genre",
 };
 
-onMounted( async() => {
-      try {
-              const movies = await axios
-                  .get(`http://127.0.0.1:8000/api/movie/show-movie`, {
+async function showMovies(){
+  try {
+  const movies = await axios
+                  .get(api.url_backend_show_movie_movie, {
+                        headers: {
+                        accept: "application/json",
+                        },
+              })
+
+  moviesListLoaded.value = movies.data.data
+            }
+            catch (error) {
+        console.log(error);
+  }
+}
+
+async function showGenres(){
+  try {
+    const genres = await axios
+                  .get(api.url_backend_show_movie_genre, {
                         headers: {
                         accept: "application/json",
                         },
                   })
-                  moviesListLoaded.value = movies.data
+  genresListLoaded.value = genres.data.data
+            }
+            catch (error) {
+        console.log(error);
+  }
+}
 
+onMounted( async() => {
+      try { 
+        await showMovies()
       } catch (error) {
-            console.log(error);
-
+        console.log("error showMovie"+error);
       }
 
       try {
-             const genres = await axios
-                  .get(`http://127.0.0.1:8000/api/movie/show-genre`, {
-                        headers: {
-                        accept: "application/json",
-                        },
-                  })
-                  genresListLoaded.value = genres.data
+        await showGenres()
       } catch (error) {
-            console.log(error);
+        console.log("error ShowGenre"+error);
       }
 
 
@@ -56,10 +75,11 @@ onMounted( async() => {
 async function getMovieWithGenre(name) {
   movieCreated.value = await getMovie(name);
 
-  if (movieCreated.value.code == "400") {
+  if (movieCreated.value.code == 400) {
     return {
       code: 400,
       message: "Problème lors de la récupération de film",
+      
       name: name,
     };
   } else {
@@ -73,8 +93,9 @@ async function getMovie(name) {
   /**
    * Recuperation data movie
    */
+  
   const movie = await axios
-    .get(`${api.url_movies}`, {
+    .get(api.url_movies, {
       params: {
         query: name,
         include_adult: false,
@@ -92,7 +113,10 @@ async function getMovie(name) {
       console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
     );
   let urlImgCompconpleted = "";
+  
   if (movie.length > 0) {
+    console.log(" un film");
+    
     var urlImg = movie[0].poster_path;
     urlImgCompconpleted = `https://image.tmdb.org/t/p/original${urlImg}`;
     const genre = await getGenre(movie[0].genre_ids)
@@ -106,6 +130,7 @@ async function getMovie(name) {
 
     };
   } else {
+    console.log(" aucun film");
     return { code: 400, message: "Aucun film correspond à la recherche" };
   }
 }
@@ -158,9 +183,6 @@ async function onSubmit() {
 
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
-console.log(moviesList.value);
-
-
 moviesList.value.forEach((movie, index) => {
 
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id))
@@ -174,43 +196,41 @@ moviesList.value.forEach((movie, index) => {
     })
 });
 
-for (const element of formData.entries()) {
-console.log(element[0] + ', '+ element[1]);
-
+const sendToMovies = await axios
+                      .post(api.url_backend_create_movie, formData, {
+                          headers: {
+                          accept: "multipart/form-data"
+                        }})
+                      .then((response) => {return response.data.code}
+                      )
+                      .catch((error) =>
+                        console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+                      );
+if(sendToMovies === 200)  
+dialogMovie.value = false
+await showMovies()
 }
-await axios
-    .post(`${api.url_backend}`, formData, {
-        headers: {
-        accept: "multipart/form-data"
-      }})
-    .then((response) => console.log(response.data)
-     )
-    .catch((error) =>
-      console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
-    );
 
-}
 
 function onReset(){
-
+  movieName.value = ""
+  dialogMovie.value = false
 }
 </script>
 
 <template>
-  <q-page>
-    <div class="row justify-start">
+  <q-page class="bg-dark">
+    <q-btn color="secondary" @click="dialogMovie = true" label="Ajouter film"/>    
+    <div class="row justify-start">      
         <div
-        v-for="(movie, index) in moviesListLoaded" :key="movie.id"
+        v-for="(movie) in moviesListLoaded" :key="movie.id"
         >
             <Movie :movie="movie" />
 
         </div>
     </div>
-
-
-      <q-btn color="secondary" @click="dialogMovie = true" label="Ajouter film"/>
-        <q-dialog v-model="dialogMovie" persistent full-width>
-            <div class="row">
+        <q-dialog  v-model="dialogMovie" persistent full-width full-height>
+            <div class="row  bg-white q-pa-md">
                 <div class="col-4">
                     <h6 class="text-h6">Saisir le nom du film</h6>
                     <q-input
@@ -219,13 +239,12 @@ function onReset(){
                             autofocus
                             />
                         <div v-if="movieCreated.id">
-                            {{ movieCreated }}
                             <q-card-section>
                             <Movie :movie="movieCreated" />
                         </q-card-section>
                         </div>
-                    <q-btn label="Ajouter Film" @click="AddMovie(movieCreated)" color="primary"/>
-                    <q-btn label="Annuler" color="danger"/>
+                    <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
+                    <q-btn label="Annuler" class="text-dark" @click="onReset()"/>
                 </div>
                 <div class="col-8">
                     <q-form
@@ -235,7 +254,7 @@ function onReset(){
                     >
                         <h6>Liste des films a enregistrer</h6>
                         <div v-if="moviesList.length > 0">
-                          <div class="row justify-around">
+                          <div class="row justify-start">
                             <div
                             v-for="(movie, index) in moviesList" :key="movie.id"
                             >
@@ -243,7 +262,7 @@ function onReset(){
                             </div>
                           </div>
                           <q-btn label="Enregistrer les films" type="submit" color="primary"/>
-                          <q-btn label="Annuler" type="reset" color="danger"/>
+                          <q-btn label="Annuler" type="reset" />
                         </div>
                         <div v-else>
                             <p>Aucun film n'est ajouté</p>
