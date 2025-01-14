@@ -5,13 +5,15 @@ import Movie from "./component/Movie.vue";
 
 const moviesList = ref([])
 const moviesListLoaded = ref([])
-const genresList=ref([])
 const genresListLoaded =ref([])
-const dialogMovie = ref(false)
-const movieTitleChange = ref();
-const movieIndex = ref();
+const formAddMovies = ref(false)
+const formUpdateMovie = ref(false)
 const movieName = ref("");
 const movieCreated = ref({})
+const movieUpdated = ref({})
+const movieIndex = ref()
+
+
 const api = {
   tokenApiTMDB:
     "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNTFlMjdhNzVhZTY1ZTNjNDUxNjdlMmVkOTYwMmU3MSIsInN1YiI6IjY1ZThlZmEzM2Q3NDU0MDE3ZGI4MzczNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GNY6Ryp_gInMIzeoedzI7ooJHMdm1wX9YSTQyODot9s",
@@ -54,7 +56,7 @@ async function showGenres(){
 }
 
 onMounted( async() => {
-      try { 
+      try {
         await showMovies()
       } catch (error) {
         console.log("error showMovie"+error);
@@ -79,7 +81,7 @@ async function getMovieWithGenre(name) {
     return {
       code: 400,
       message: "Problème lors de la récupération de film",
-      
+
       name: name,
     };
   } else {
@@ -93,7 +95,7 @@ async function getMovie(name) {
   /**
    * Recuperation data movie
    */
-  
+
   const movie = await axios
     .get(api.url_movies, {
       params: {
@@ -113,10 +115,10 @@ async function getMovie(name) {
       console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
     );
   let urlImgCompconpleted = "";
-  
+
   if (movie.length > 0) {
     console.log(" un film");
-    
+
     var urlImg = movie[0].poster_path;
     urlImgCompconpleted = `https://image.tmdb.org/t/p/original${urlImg}`;
     const genre = await getGenre(movie[0].genre_ids)
@@ -206,30 +208,77 @@ const sendToMovies = await axios
                       .catch((error) =>
                         console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
                       );
-if(sendToMovies === 200)  
-dialogMovie.value = false
+if(sendToMovies === 200)
+movieName.value = ""
+formAddMovies.value = false
 await showMovies()
 }
 
+function showFormUpdateMovie(movie, index){
+    movieUpdated.value = {...movie}
+    movieIndex.value = index
+    movieName.value = movie.name
+    formUpdateMovie.value = true
+}
+
+function updateMovie(){
+    console.log(moviesListLoaded.value[movieIndex.value]);
+
+    moviesListLoaded.value[movieIndex.value] =  movieUpdated.value
+    console.log(moviesListLoaded.value[movieIndex.value]);
+    formUpdateMovie.value = false
+}
+
+
+function resetAddmovie(){
+  movieName.value = ""
+  moviesList.value.length = 0
+  movieCreated.value = {}
+  formAddMovies.value = false
+}
 
 function onReset(){
-  movieName.value = ""
-  dialogMovie.value = false
+  moviesList.length = 0
+  movieCreated.value = {}
+  formAddMovies.value = false
 }
 </script>
 
 <template>
-  <q-page class="bg-dark">
-    <q-btn color="secondary" @click="dialogMovie = true" label="Ajouter film"/>    
-    <div class="row justify-start">      
+  <q-page class="">
+    <q-btn color="secondary" @click="formAddMovies = true" label="Ajouter film"/>
+    <div class="row justify-start">
         <div
-        v-for="(movie) in moviesListLoaded" :key="movie.id"
+        v-for="(movie, index) in moviesListLoaded" :key="movie.id"
         >
+        <q-btn color="deep-purple-8" @click="showFormUpdateMovie(movie, index)">Modifier</q-btn>
             <Movie :movie="movie" />
-
         </div>
     </div>
-        <q-dialog  v-model="dialogMovie" persistent full-width full-height>
+    <q-dialog v-model="formUpdateMovie">
+        <q-card style="min-width: 350px">
+            <q-card-section>
+                <h6 class="text-h6">Modifier le film</h6>
+            </q-card-section>
+
+        <q-card-section class="q-pt-none">
+            <q-input
+                v-model="movieName"
+                @change="getMovieWithGenre(movieName)"
+                autofocus
+                />
+                <q-card-section>
+                <Movie :movie="movieUpdated" />
+            </q-card-section>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Annuler" @click="resetUpdateMovie()" />
+            <q-btn flat label="Modifier Film" @click="updateMovie(movieCreated)" />
+        </q-card-actions>
+        </q-card>
+    </q-dialog>
+        <q-dialog  v-model="formAddMovies" persistent full-width full-height>
             <div class="row  bg-white q-pa-md">
                 <div class="col-4">
                     <h6 class="text-h6">Saisir le nom du film</h6>
@@ -244,7 +293,7 @@ function onReset(){
                         </q-card-section>
                         </div>
                     <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
-                    <q-btn label="Annuler" class="text-dark" @click="onReset()"/>
+                    <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
                 </div>
                 <div class="col-8">
                     <q-form
@@ -258,7 +307,8 @@ function onReset(){
                             <div
                             v-for="(movie, index) in moviesList" :key="movie.id"
                             >
-                                <Movie :movie="movie" />
+                            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="50px" viewBox="0 0 24 24" width="50px" fill="#000000"><g><rect fill="none" height="24" width="24"/><g><path d="M19,5v14H5V5H19 M19,3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V5C21,3.9,20.1,3,19,3L19,3z"/></g><path d="M14,17H7v-2h7V17z M17,13H7v-2h10V13z M17,9H7V7h10V9z"/></g></svg>
+                            <Movie :movie="movie" />
                             </div>
                           </div>
                           <q-btn label="Enregistrer les films" type="submit" color="primary"/>
