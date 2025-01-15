@@ -87,7 +87,7 @@ async function getMovieWithGenre(name) {
     };
   } else {
     if (formAddMovies === true) {
-      console.log("movie du formulaire de creation");      
+      console.log("movie du formulaire de creation");
       return movieCreated.value = movie
     } else {
       console.log("movie du formulaire de modification");
@@ -221,7 +221,7 @@ await showMovies()
 }
 
 async function updateMovieToBackEnd(movie) {
-
+const url = `${api.url_backend_update_movie}/${movie.id}`
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
 
@@ -235,10 +235,14 @@ const formData = new FormData()
 
     })
 
+    for (const element of formData.entries()) {
+console.log(element[0] + ', '+ element[1]);
+
+}
 const sendToMovies = await axios
-                      .post(api.url_backend_update_movie, formData, {
+                      .post(url, formData, {
                           headers: {
-                          accept: "multipart/form-data"
+                          Accept: "multipart/form-data"
                         }})
                       .then((response) => {return response.data.code}
                       )
@@ -247,7 +251,7 @@ const sendToMovies = await axios
                       );
   if(sendToMovies === 200){
     if (formAddMovies === true) {
-      console.log("envoi du formulaire de creation");      
+      console.log("envoi du formulaire de creation");
       return movieCreated.value = movie
     } else {
       console.log("envoi du formulaire de modification");

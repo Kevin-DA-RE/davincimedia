@@ -49,9 +49,10 @@ class MoviesController extends Controller
             return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
       }
 
-    public function updateMovie (MovieRequest $request, Movie $id)
+    public function updateMovie (MovieRequest $request, Movie $movie)
     {
         $item = $request->validated();
+        dd($item);
         $genre_ids =[];
         $movie = $id;
         $movie->name = $item->name;
@@ -69,6 +70,6 @@ class MoviesController extends Controller
 
         }
         $movie->genre()->sync($genre_ids);
-
+        return response()->json(["code"=> 200, "message" => "le film a bien été modifié"]);
     }
 }
