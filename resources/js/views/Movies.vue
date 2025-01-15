@@ -20,6 +20,7 @@ const api = {
   url_movies: "https://api.themoviedb.org/3/search/movie",
   url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
   url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
+  url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
   url_backend_show_movie_movie: "http://127.0.0.1:8000/api/movie/show-movie",
   url_backend_show_movie_genre: "http://127.0.0.1:8000/api/movie/show-genre",
 };
@@ -75,9 +76,9 @@ onMounted( async() => {
 
 // Recherche du film et de son/ses genre(s)
 async function getMovieWithGenre(name) {
-  movieCreated.value = await getMovie(name);
+  const movie = await getMovie(name);
 
-  if (movieCreated.value.code == 400) {
+  if (movie.code == 400) {
     return {
       code: 400,
       message: "Problème lors de la récupération de film",
@@ -85,8 +86,13 @@ async function getMovieWithGenre(name) {
       name: name,
     };
   } else {
-    return movieCreated.value;
-
+    if (formAddMovies === true) {
+      console.log("movie du formulaire de creation");      
+      return movieCreated.value = movie
+    } else {
+      console.log("movie du formulaire de modification");
+      return movieUpdated.value = movie
+    }
   }
 }
 
@@ -214,6 +220,45 @@ formAddMovies.value = false
 await showMovies()
 }
 
+async function updateMovieToBackEnd(movie) {
+
+// Init FormDatato pour envoyer les datas
+const formData = new FormData()
+
+    formData.append(`[id_movie]`, parseInt(movie.id))
+    formData.append(`[name]`, movie.name)
+    formData.append(`[synopsis]`, movie.synopsis)
+    formData.append(`[url_img]`, movie.url_img)
+    movie.genre.forEach((genre, genreIndex) => {
+        formData.append(`[genre][${genreIndex}][id_genre]`, parseInt(genre.id_genre))
+        formData.append(`[genre][${genreIndex}][name]`, genre.name)
+
+    })
+
+const sendToMovies = await axios
+                      .post(api.url_backend_update_movie, formData, {
+                          headers: {
+                          accept: "multipart/form-data"
+                        }})
+                      .then((response) => {return response.data.code}
+                      )
+                      .catch((error) =>
+                        console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+                      );
+  if(sendToMovies === 200){
+    if (formAddMovies === true) {
+      console.log("envoi du formulaire de creation");      
+      return movieCreated.value = movie
+    } else {
+      console.log("envoi du formulaire de modification");
+      return movieUpdated.value = movie
+    }
+  }
+  movieName.value = ""
+  formAddMovies.value = false
+  await showMovies()
+}
+
 function showFormUpdateMovie(movie, index){
     movieUpdated.value = {...movie}
     movieIndex.value = index
@@ -221,11 +266,9 @@ function showFormUpdateMovie(movie, index){
     formUpdateMovie.value = true
 }
 
-function updateMovie(){
-    console.log(moviesListLoaded.value[movieIndex.value]);
-
+async function updateMovie(){
     moviesListLoaded.value[movieIndex.value] =  movieUpdated.value
-    console.log(moviesListLoaded.value[movieIndex.value]);
+    await updateMovieToBackEnd(movieUpdated.value)
     formUpdateMovie.value = false
 }
 
@@ -274,7 +317,7 @@ function onReset(){
 
         <q-card-actions align="right" class="text-primary">
             <q-btn flat label="Annuler" @click="resetUpdateMovie()" />
-            <q-btn flat label="Modifier Film" @click="updateMovie(movieCreated)" />
+            <q-btn flat label="Modifier Film" @click="updateMovie(movieUpdated)" />
         </q-card-actions>
         </q-card>
     </q-dialog>
