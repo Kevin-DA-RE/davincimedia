@@ -10,6 +10,7 @@ const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
 const movieName = ref("");
 const movieCreated = ref({})
+const movieIdOrigin = ref()
 const movieUpdated = ref({})
 const movieIndex = ref()
 
@@ -221,17 +222,18 @@ await showMovies()
 }
 
 async function updateMovieToBackEnd(movie) {
-const url = `${api.url_backend_update_movie}/${movie.id}`
+console.log("movieIdOrigin" + movieIdOrigin.value);
+
+const url = `${api.url_backend_update_movie}/${movieIdOrigin.value}`
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
-
-    formData.append(`[id_movie]`, parseInt(movie.id))
-    formData.append(`[name]`, movie.name)
-    formData.append(`[synopsis]`, movie.synopsis)
-    formData.append(`[url_img]`, movie.url_img)
+    formData.append(`id_movie`, parseInt(movie.id))
+    formData.append(`name`, movie.name)
+    formData.append(`synopsis`, movie.synopsis)
+    formData.append(`url_img`, movie.url_img)
     movie.genre.forEach((genre, genreIndex) => {
-        formData.append(`[genre][${genreIndex}][id_genre]`, parseInt(genre.id_genre))
-        formData.append(`[genre][${genreIndex}][name]`, genre.name)
+        formData.append(`genre[${genreIndex}][id_genre]`, parseInt(genre.id_genre))
+        formData.append(`genre[${genreIndex}][name]`, genre.name)
 
     })
 
@@ -264,6 +266,7 @@ const sendToMovies = await axios
 }
 
 function showFormUpdateMovie(movie, index){
+    movieIdOrigin.value =movie.id
     movieUpdated.value = {...movie}
     movieIndex.value = index
     movieName.value = movie.name

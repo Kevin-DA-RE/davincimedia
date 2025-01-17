@@ -52,13 +52,17 @@ class MoviesController extends Controller
     public function updateMovie (MovieRequest $request, Movie $movie)
     {
         $item = $request->validated();
-        dd($item);
         $genre_ids =[];
-        $movie = $id;
-        $movie->name = $item->name;
-        $movie->synopsis = $item->synopsis;
-        $movie->url_img = $item->url_img;
-        foreach ($item->genre as $movie_genre) {
+        $movie = Movie::UpdateOrCreate(
+            ["id_movie" => $item["id_movie"]],
+            [
+                "name" => $item["name"],
+                "synopsis" => $item["synopsis"],
+                "url_img" => $item["url_img"]
+            ]
+            );
+            
+        foreach ($item["genre"] as $movie_genre) {
             $genre = Genre::updateOrCreate(
                 ['id_genre' => $movie_genre['id_genre']],
                 [

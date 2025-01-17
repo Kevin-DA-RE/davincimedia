@@ -1,25 +1,25 @@
 meta {
   name: updateMovie
   type: http
-  seq: 3
+  seq: 2
 }
 
 post {
-  url: {{DEV}}/api/movie/update-movie
-  body: json
+  url: {{DEV}}/api/movie/update-movie/1084736
+  body: multipartForm
   auth: none
 }
 
 headers {
-  Accept: application/json
-  Content-Type: application/json
+  Accept: multipart/form-data
 }
 
 body:json {
-  {
+  
+    {
       "id_movie": 335983,
-      "name": "Venom 2",
-      "synopsis": "Les symbiotes sont de retour sur terre",
+      "name": "Venom",
+      "synopsis": "Des symbiotes débarquent sur la Terre, parmi eux, Venom, qui va s’allier avec Eddie Brock. De son côté, un puissant scientifique tente de faire évoluer l’humanité avec les symbiotes, le duo d’anti‐héros va devoir tout faire pour l’arrêter !",
       "url_img": "https://image.tmdb.org/t/p/original/vVusHIRlyyFVS42XnqZso2wGKr.jpg",
       "genre": [
         {
@@ -27,9 +27,54 @@ body:json {
           "name": "Science-Fiction"
         },
         {
-          "id_genre": 500,
-          "name": "Horreur"
+          "id_genre": 28,
+          "name": "Action"
         }
-      ] 
-  }
+      ]
+    },
+    {
+      "id_movie": 335787,
+      "name": "Uncharted",
+      "synopsis": "Nathan Drake, voleur astucieux et intrépide, est recruté par le chasseur de trésors chevronné Victor « Sully » Sullivan pour retrouver la fortune de Ferdinand Magellan, disparue il y a 500 ans. Ce qui ressemble d’abord à un simple casse devient finalement une course effrénée autour du globe pour s’emparer du trésor avant l’impitoyable Moncada, qui est persuadé que sa famille est l’héritière légitime de cette fortune. Si Nathan et Sully réussissent à déchiffrer les indices et résoudre l’un des plus anciens mystères du monde, ils pourraient rafler la somme de 5 milliards de dollars et peut-être même retrouver le frère de Nathan, disparu depuis longtemps… mais encore faudrait-il qu’ils apprennent à travailler ensemble.",
+      "url_img": "https://image.tmdb.org/t/p/original/iNV2wiYpSBXJuFeEZUHC92zgcdl.jpg",
+      "genre": [
+        {
+          "id_genre": 28,
+          "name": "Action"
+        },
+        {
+          "id_genre": 12,
+          "name": "Aventure"
+        }
+      ]
+    },
+    {
+      "id_movie": 346698,
+      "name": "Barbie",
+      "synopsis": "Parallèlement au réel, il existe La Land, un monde parfait où les poupées Barbie vivent joyeusement, persuadées d'avoir rendu les filles humaines heureuses. Mais un jour, une Barbie commence à se poser des questions et à devenir humaine. Sur les conseils d'une Barbie étrange, elle part pour le monde réel afin de retrouver la fille à laquelle elle appartenait afin de pouvoir retrouver sa perfection. Dans sa quête, elle est accompagnée par un Ken fou amoureux d'elle qui va également trouver un sens à sa vie dans le monde réel…",
+      "url_img": "https://image.tmdb.org/t/p/original/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",
+      "genre": [
+        {
+          "id_genre": 35,
+           "name": "Comédie"
+        },
+        {
+          "id_genre": 12,
+          "name": "Aventure"
+        }
+      ]
+    }
+}
+
+body:multipart-form {
+  id_movie: 176
+  name: Saw
+  synopsis: Deux hommes se réveillent enchaînés au mur d’une salle de bains. Ils ignorent où ils sont et ne se connaissent pas. Ils savent juste que l’un doit absolument tuer l’autre, sinon dans moins de huit heures, ils seront exécutés tous les deux… Voici l’une des situations imaginées par un machiavélique maître criminel qui impose à ses victimes des choix auxquels personne ne souhaite jamais être confronté un jour. Un détective est chargé de l’enquête…
+  url_img: https://image.tmdb.org/t/p/original/xZ3U09lDXAvSgytpFwERw9YtG1T.jpg
+  genre[0][id_genre]: 27
+  genre[0][name]: Horreur
+  genre[1][id_genre]: 9648
+  genre[1][name]: Mystère
+  genre[2][id_genre]: 80
+  genre{2][name]: Crime
 }

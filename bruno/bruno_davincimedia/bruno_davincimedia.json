@@ -1,0 +1,428 @@
+{
+  "info": {
+    "name": "bruno_davincimedia",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "createMovies",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "multipart/form-data",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": null,
+        "description": "",
+        "url": {
+          "raw": "{{DEV}}/api/movie/create-movie",
+          "protocol": "",
+          "host": [
+            "{{DEV}}"
+          ],
+          "path": [
+            "api",
+            "movie",
+            "create-movie"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "moviesList[0][id_movie]",
+              "value": "1084736",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "moviesList[0][name]",
+              "value": "\"Le Comte de Monte-Cristo\"",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "moviesList[0][synopsis]",
+              "value": "Victime d’un complot, le jeune Edmond Dantès est arrêté le jour de son mariage pour un crime qu’il n’a pas commis. Après quatorze ans de détention au château d’If, il parvient à s’évader. Devenu immensément riche, il revient sous l’identité du comte de Monte-Cristo pour se venger des trois hommes qui l’ont trahi.",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "moviesList[0][url_img]",
+              "value": "\"https://image.tmdb.org/t/p/original/g7kiprYdXxaYCZABWQwTWAgRYjl.jpg\"",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "moviesList[0][genre][0][id_genre]",
+              "value": "18",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "moviesList[0][genre][0][name]",
+              "value": "Drame",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "moviesList[0][genre][1][id_genre]",
+              "value": "12",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "moviesList[0][genre][1][name]",
+              "value": "Aventure",
+              "disabled": false,
+              "type": "default"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "createPost",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": null,
+        "description": "",
+        "url": {
+          "raw": "{{DEV}}/api/post/create-post",
+          "protocol": "",
+          "host": [
+            "{{DEV}}"
+          ],
+          "path": [
+            "api",
+            "post",
+            "create-post"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"movie_id\" : 1,\n  \"note\": \"3\",\n  \"comment\": \"c'est un film sans plus\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "deletePost",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": null,
+        "description": "",
+        "url": {
+          "raw": "{{DEV}}/api/post/delete-post",
+          "protocol": "",
+          "host": [
+            "{{DEV}}"
+          ],
+          "path": [
+            "api",
+            "post",
+            "delete-post"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "showMovie",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": null,
+        "description": "",
+        "url": {
+          "raw": "{{DEV}}/api/movie/show-movie",
+          "protocol": "",
+          "host": [
+            "{{DEV}}"
+          ],
+          "path": [
+            "api",
+            "movie",
+            "show-movie"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "showPost",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": null,
+        "description": "",
+        "url": {
+          "raw": "{{DEV}}/api/post/show-post",
+          "protocol": "",
+          "host": [
+            "{{DEV}}"
+          ],
+          "path": [
+            "api",
+            "post",
+            "show-post"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "updateMovie",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "multipart/form-data",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": null,
+        "description": "",
+        "url": {
+          "raw": "{{DEV}}/api/movie/update-movie/2",
+          "protocol": "",
+          "host": [
+            "{{DEV}}"
+          ],
+          "path": [
+            "api",
+            "movie",
+            "update-movie",
+            "2"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "id_movie",
+              "value": "176",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "name",
+              "value": "Saw",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "synopsis",
+              "value": "Deux hommes se réveillent enchaînés au mur d’une salle de bains. Ils ignorent où ils sont et ne se connaissent pas. Ils savent juste que l’un doit absolument tuer l’autre, sinon dans moins de huit heures, ils seront exécutés tous les deux… Voici l’une des situations imaginées par un machiavélique maître criminel qui impose à ses victimes des choix auxquels personne ne souhaite jamais être confronté un jour. Un détective est chargé de l’enquête…",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "url_img",
+              "value": "https://image.tmdb.org/t/p/original/xZ3U09lDXAvSgytpFwERw9YtG1T.jpg",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "genre[0][id_genre]",
+              "value": "27",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "genre[0][name]",
+              "value": "Horreur",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "genre[1][id_genre]",
+              "value": "9648",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "genre[1][name]",
+              "value": "Mystère",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "genre[2][id_genre]",
+              "value": "80",
+              "disabled": false,
+              "type": "default"
+            },
+            {
+              "key": "genre{2][name]",
+              "value": "Crime",
+              "disabled": false,
+              "type": "default"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "updatePost",
+      "event": [],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": null,
+        "description": "",
+        "url": {
+          "raw": "{{DEV}}/api/post/update-post",
+          "protocol": "",
+          "host": [
+            "{{DEV}}"
+          ],
+          "path": [
+            "api",
+            "post",
+            "update-post"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 7,\n  \"movie_id\" : 7,\n  \"note\": \"10\",\n  \"comment\": \"Rien a dire excellent\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "bruno",
+      "event": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "DEV",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
