@@ -53,15 +53,12 @@ class MoviesController extends Controller
     {
         $item = $request->validated();
         $genre_ids =[];
-        $movie = Movie::UpdateOrCreate(
-            ["id_movie" => $item["id_movie"]],
-            [
-                "name" => $item["name"],
-                "synopsis" => $item["synopsis"],
-                "url_img" => $item["url_img"]
-            ]
-            );
-            
+        $movie->id_movie = $item["id_movie"];
+        $movie->name = $item["name"];
+        $movie->synopsis = $item["synopsis"];
+        $movie->url_img = $item["url_img"];
+        $movie->save();
+        
         foreach ($item["genre"] as $movie_genre) {
             $genre = Genre::updateOrCreate(
                 ['id_genre' => $movie_genre['id_genre']],

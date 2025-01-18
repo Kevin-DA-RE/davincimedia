@@ -222,8 +222,6 @@ await showMovies()
 }
 
 async function updateMovieToBackEnd(movie) {
-console.log("movieIdOrigin" + movieIdOrigin.value);
-
 const url = `${api.url_backend_update_movie}/${movieIdOrigin.value}`
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
@@ -237,11 +235,8 @@ const formData = new FormData()
 
     })
 
-    for (const element of formData.entries()) {
-console.log(element[0] + ', '+ element[1]);
 
-}
-const sendToMovies = await axios
+const sendToMovie = await axios
                       .post(url, formData, {
                           headers: {
                           Accept: "multipart/form-data"
@@ -251,7 +246,7 @@ const sendToMovies = await axios
                       .catch((error) =>
                         console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
                       );
-  if(sendToMovies === 200){
+  if(sendToMovie === 200){
     if (formAddMovies === true) {
       console.log("envoi du formulaire de creation");
       return movieCreated.value = movie
