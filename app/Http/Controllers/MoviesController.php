@@ -58,7 +58,26 @@ class MoviesController extends Controller
         $movie->synopsis = $item["synopsis"];
         $movie->url_img = $item["url_img"];
         $movie->save();
-        
+
+        foreach ($item["genre"] as $movie_genre) {
+            $genre = Genre::updateOrCreate(
+                ['id_genre' => $movie_genre['id_genre']],
+                [
+                    'id_genre' => $movie_genre['id_genre'],
+                    'name' => $movie_genre['name']
+                ]
+            );
+            array_push($genre_ids, $genre->id);
+
+        }
+        $movie->genre()->sync($genre_ids);
+        return response()->json(["code"=> 200, "message" => "le film a bien été modifié"]);
+    }
+
+    public function deleteMovie (MovieRequest $request, Movie $movie)
+    {
+        $item = $request->validated();
+
         foreach ($item["genre"] as $movie_genre) {
             $genre = Genre::updateOrCreate(
                 ['id_genre' => $movie_genre['id_genre']],

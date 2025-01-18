@@ -8,10 +8,12 @@ const moviesListLoaded = ref([])
 const genresListLoaded =ref([])
 const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
+const formDeleteMovie = ref(false)
 const movieName = ref("");
 const movieCreated = ref({})
-const movieIdOrigin = ref()
 const movieUpdated = ref({})
+const movieDeleted = ref({})
+const movieIdOrigin = ref()
 const movieIndex = ref()
 
 
@@ -22,6 +24,7 @@ const api = {
   url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
   url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
   url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
+  url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
   url_backend_show_movie_movie: "http://127.0.0.1:8000/api/movie/show-movie",
   url_backend_show_movie_genre: "http://127.0.0.1:8000/api/movie/show-genre",
 };
@@ -249,14 +252,45 @@ const sendToMovie = await axios
   if(sendToMovie === 200){
     if (formAddMovies === true) {
       console.log("envoi du formulaire de creation");
-      return movieCreated.value = movie
+      movieName.value = ""
+      formAddMovies.value = false
     } else {
       console.log("envoi du formulaire de modification");
-      return movieUpdated.value = movie
+      movieName.value = ""
+      formUpdateMovie.value = false
     }
   }
-  movieName.value = ""
-  formAddMovies.value = false
+
+  await showMovies()
+}
+
+
+async function deleteMovieToBackEnd(movie) {
+const url = `${api.url_backend_delete_movie}/${movieIdOrigin.value}`
+
+// Init FormDatato pour envoyer les datas
+const formData = new FormData()
+    formData.append(`id_movie`, parseInt(movie.id))
+    formData.append(`name`, movie.name)
+    formData.append(`synopsis`, movie.synopsis)
+    formData.append(`url_img`, movie.url_img)
+    movie.genre.forEach((genre, genreIndex) => {
+        formData.append(`genre[${genreIndex}][id_genre]`, parseInt(genre.id_genre))
+        formData.append(`genre[${genreIndex}][name]`, genre.name)
+
+    })
+
+
+await axios.post(url, formData, {
+                          headers: {
+                          Accept: "multipart/form-data"
+                        }})
+                      .then((response) => {return response.data.code}
+                      )
+                      .catch((error) =>
+                        console.log(`Erreur lors de la suppression des datas sur le film \n ${error}`)
+                      );
+  formDeleteMovie.value = false
   await showMovies()
 }
 
@@ -268,10 +302,23 @@ function showFormUpdateMovie(movie, index){
     formUpdateMovie.value = true
 }
 
+function showFormDeleteMovie(movie, index){
+    movieIdOrigin.value =movie.id
+    movieDeleted.value = movie
+    movieIndex.value = index
+    formDeleteMovie.value = true
+}
+
 async function updateMovie(){
     moviesListLoaded.value[movieIndex.value] =  movieUpdated.value
     await updateMovieToBackEnd(movieUpdated.value)
     formUpdateMovie.value = false
+}
+
+async function deleteMovie(){
+    moviesListLoaded.value[movieIndex.value] =  movieDeleted.value
+    await deleteMovieToBackEnd(movieDeleted.value)
+    formDeleteMovie.value = false
 }
 
 
@@ -280,6 +327,12 @@ function resetAddmovie(){
   moviesList.value.length = 0
   movieCreated.value = {}
   formAddMovies.value = false
+}
+
+function resetUpdateMovie () {
+  movieName.value = ""
+  movieUpdated.value = {}
+  formUpdateMovie.value = false
 }
 
 function onReset(){
@@ -291,15 +344,32 @@ function onReset(){
 
 <template>
   <q-page class="">
-    <q-btn color="secondary" @click="formAddMovies = true" label="Ajouter film"/>
+    <q-btn color="secondary" @click="showFormAddMovies = true" label="Ajouter film"/>
     <div class="row justify-start">
         <div
         v-for="(movie, index) in moviesListLoaded" :key="movie.id"
         >
         <q-btn color="deep-purple-8" @click="showFormUpdateMovie(movie, index)">Modifier</q-btn>
+        <q-btn color="deep-orange-7" @click="showFormDeleteMovie(movie, index)">Supprimer</q-btn>
             <Movie :movie="movie" />
         </div>
     </div>
+    <q-dialog v-model="formDeleteMovie">
+        <q-card style="min-width: 350px">
+            <q-card-section>
+                <h6 class="text-h6">Voulez-vous supprimer ce film</h6>
+            </q-card-section>
+
+        <q-card-section class="q-pt-none">
+                <Movie :movie="movieDeleted" />
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Annuler" @click="resetDeleteMovie()" />
+            <q-btn flat label="Modifier Film" @click="deleteMovie()" />
+        </q-card-actions>
+        </q-card>
+    </q-dialog>
     <q-dialog v-model="formUpdateMovie">
         <q-card style="min-width: 350px">
             <q-card-section>
@@ -319,11 +389,11 @@ function onReset(){
 
         <q-card-actions align="right" class="text-primary">
             <q-btn flat label="Annuler" @click="resetUpdateMovie()" />
-            <q-btn flat label="Modifier Film" @click="updateMovie(movieUpdated)" />
+            <q-btn flat label="Modifier Film" @click="updateMovie()" />
         </q-card-actions>
         </q-card>
     </q-dialog>
-        <q-dialog  v-model="formAddMovies" persistent full-width full-height>
+        <q-dialog  v-model="showFormAddMovies" persistent full-width full-height>
             <div class="row  bg-white q-pa-md">
                 <div class="col-4">
                     <h6 class="text-h6">Saisir le nom du film</h6>
