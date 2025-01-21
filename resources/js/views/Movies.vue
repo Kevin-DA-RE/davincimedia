@@ -335,6 +335,16 @@ function resetUpdateMovie () {
   formUpdateMovie.value = false
 }
 
+function resetDeleteMovie(){
+  movieDeleted.value = {}
+  formDeleteMovie.value = false
+}
+
+function deleteMovie(){
+  movieDeleted.value = {}
+  formDeleteMovie.value = false
+}
+
 function onReset(){
   moviesList.length = 0
   movieCreated.value = {}
@@ -366,7 +376,7 @@ function onReset(){
 
         <q-card-actions align="right" class="text-primary">
             <q-btn flat label="Annuler" @click="resetDeleteMovie()" />
-            <q-btn flat label="Modifier Film" @click="deleteMovie()" />
+            <q-btn flat label="Supprimer le Film" @click="deleteMovie()" />
         </q-card-actions>
         </q-card>
     </q-dialog>
