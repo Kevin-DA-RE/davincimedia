@@ -244,32 +244,33 @@ const sendToMovie = await axios
 
 
 async function deleteMovieToBackEnd(movie) {
-const url = `${api.url_backend_delete_movie}/${movieIdOrigin.value}`
+    const url = `${api.url_backend_delete_movie}/${movieIdOrigin.value}`
 
-// Init FormDatato pour envoyer les datas
-const formData = new FormData()
-    formData.append(`id_movie`, parseInt(movie.id))
-    formData.append(`name`, movie.name)
-    formData.append(`synopsis`, movie.synopsis)
-    formData.append(`url_img`, movie.url_img)
-    movie.genre.forEach((genre, genreIndex) => {
-        formData.append(`genre[${genreIndex}][id_genre]`, parseInt(genre.id_genre))
-        formData.append(`genre[${genreIndex}][name]`, genre.name)
+    // Init FormDatato pour envoyer les datas
+    const jsonData = {
+        "id_movie": parseInt(movie.id)
+    }
+    jsonData["genres"]= []
 
-    })
+        movie.genres.forEach((genre) => {
+            jsonData["genres"].push({
+                "id_genre":parseInt(genre.id_genre),
+                "name" : genre.name
+            })
+        })
 
+    await axios.post(url, jsonData, {
+                            headers: {
+                            Accept: "applicaton/json"
+                            }})
+                        .then((response) => {return response.data.code}
+                        )
+                        .catch((error) =>
+                            console.log(`Erreur lors de la suppression des datas sur le film \n ${error}`)
+                        );
 
-await axios.post(url, formData, {
-                          headers: {
-                          Accept: "multipart/form-data"
-                        }})
-                      .then((response) => {return response.data.code}
-                      )
-                      .catch((error) =>
-                        console.log(`Erreur lors de la suppression des datas sur le film \n ${error}`)
-                      );
   formDeleteMovie.value = false
-  await showMovies()
+  await showMovieWithGenres()
 }
 
 function showFormUpdateMovie(movie, index){
