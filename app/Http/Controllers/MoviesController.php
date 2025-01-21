@@ -6,16 +6,14 @@ use App\Models\Genre;
 use App\Models\Movie;
 use App\Http\Requests\MovieListRequest;
 use App\Http\Requests\MovieRequest;
-use App\Http\Resources\GenresResources;
 use App\Http\Resources\MoviesResources;
 
 class MoviesController extends Controller
 {
-    public function showMovie(){
-        return  MoviesResources::collection(Movie::all());
-    }
-    public function showGenre(){
-        return GenresResources::collection(Genre::all());
+    public function showMovieWithGenres(){
+        $movies = Movie::with('genre')->get();
+        $movies = MoviesResources::collection($movies);
+        return response()->json($movies);
     }
     public function createMovie (MovieListRequest $request)
     {
@@ -95,6 +93,6 @@ class MoviesController extends Controller
 
     public function test()
     {
-        return response()->json(["code"=> 200, "message" => "Bienvenu dans test"]);
+        return $this->showMovieWithGenres();
     }
 }

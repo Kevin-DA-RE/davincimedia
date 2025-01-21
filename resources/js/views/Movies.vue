@@ -25,14 +25,13 @@ const api = {
   url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
   url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
   url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
-  url_backend_show_movie_movie: "http://127.0.0.1:8000/api/movie/show-movie",
-  url_backend_show_movie_genre: "http://127.0.0.1:8000/api/movie/show-genre",
+  url_backend_show_movies_with_genres: "http://127.0.0.1:8000/api/movie/show-movie-genres",
 };
 
-async function showMovies(){
+async function showMovieWithGenres(){
   try {
   const movies = await axios
-                  .get(api.url_backend_show_movie_movie, {
+                  .get(api.url_backend_show_movies_with_genres, {
                         headers: {
                         accept: "application/json",
                         },
@@ -45,35 +44,14 @@ async function showMovies(){
   }
 }
 
-async function showGenres(){
-  try {
-    const genres = await axios
-                  .get(api.url_backend_show_movie_genre, {
-                        headers: {
-                        accept: "application/json",
-                        },
-                  })
-  genresListLoaded.value = genres.data.data
-            }
-            catch (error) {
-        console.log(error);
-  }
-}
+
 
 onMounted( async() => {
       try {
-        await showMovies()
+        await showMovieWithGenres()
       } catch (error) {
-        console.log("error showMovie"+error);
+        console.log("error showMovieWithGenres"+error);
       }
-
-      try {
-        await showGenres()
-      } catch (error) {
-        console.log("error ShowGenre"+error);
-      }
-
-
 })
 
 
