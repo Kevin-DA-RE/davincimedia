@@ -92,4 +92,9 @@ class MoviesController extends Controller
         $movie->genre()->sync($genre_ids);
         return response()->json(["code"=> 200, "message" => "le film a bien été modifié"]);
     }
+
+    public function test()
+    {
+        return response()->json(["code"=> 200, "message" => "Bienvenu dans test"]);
+    }
 }
