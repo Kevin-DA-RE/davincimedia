@@ -30,14 +30,13 @@ const api = {
 
 async function showMovieWithGenres(){
   try {
-  const movies = await axios
+        const movies = await axios
                   .get(api.url_backend_show_movies_with_genres, {
                         headers: {
                         accept: "application/json",
                         },
               })
-
-  moviesListLoaded.value = movies.data.data
+        moviesListLoaded.value = movies.data
             }
             catch (error) {
         console.log(error);
@@ -166,7 +165,9 @@ async function getGenre(arrayId) {
 }
 
 function AddMovie(movie) {
-moviesList.value.push(movie)
+    moviesList.value.push(movie)
+    movieCreated.value = {}
+    movieName.value = ""
 }
 
 async function onSubmit() {
@@ -174,7 +175,6 @@ async function onSubmit() {
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
 moviesList.value.forEach((movie, index) => {
-
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id))
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
@@ -199,7 +199,7 @@ const sendToMovies = await axios
 if(sendToMovies === 200)
 movieName.value = ""
 formAddMovies.value = false
-await showMovies()
+await showMovieWithGenres()
 }
 
 async function updateMovieToBackEnd(movie) {
@@ -239,7 +239,7 @@ const sendToMovie = await axios
     }
   }
 
-  await showMovies()
+  await showMovieWithGenres()
 }
 
 

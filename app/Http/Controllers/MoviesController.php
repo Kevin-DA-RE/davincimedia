@@ -93,6 +93,8 @@ class MoviesController extends Controller
 
     public function test()
     {
-        return $this->showMovieWithGenres();
+        $movies = Movie::with('genre')->get();
+        $movies = MoviesResources::collection($movies);
+        return response()->json($movies);
     }
 }
