@@ -90,7 +90,7 @@ async function getMovieWithGenre(name) {
       name: name,
     };
   } else {
-    if (formAddMovies === true) {
+    if (formAddMovies.value === true) {
       console.log("movie du formulaire de creation");
       return movieCreated.value = movie
     } else {
@@ -344,7 +344,7 @@ function onReset(){
 
 <template>
   <q-page class="">
-    <q-btn color="secondary" @click="showFormAddMovies = true" label="Ajouter film"/>
+    <q-btn color="secondary" @click="formAddMovies = true" label="Ajouter film"/>
     <div class="row justify-start">
         <div
         v-for="(movie, index) in moviesListLoaded" :key="movie.id"
@@ -393,7 +393,7 @@ function onReset(){
         </q-card-actions>
         </q-card>
     </q-dialog>
-        <q-dialog  v-model="showFormAddMovies" persistent full-width full-height>
+        <q-dialog  v-model="formAddMovies" persistent full-width full-height>
             <div class="row  bg-white q-pa-md">
                 <div class="col-4">
                     <h6 class="text-h6">Saisir le nom du film</h6>
