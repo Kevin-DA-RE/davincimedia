@@ -340,10 +340,6 @@ function resetDeleteMovie(){
   formDeleteMovie.value = false
 }
 
-function deleteMovie(){
-  movieDeleted.value = {}
-  formDeleteMovie.value = false
-}
 
 function onReset(){
   moviesList.length = 0
