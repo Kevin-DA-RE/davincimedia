@@ -1,0 +1,49 @@
+meta {
+  name: deleteMovie
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{DEV}}/api/movie/delete-movie/1
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: applicaton/json
+  Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+  Connection: keep-alive
+  Content-Type: application/json
+  Cookie: XSRF-TOKEN=eyJpdiI6ImZMbnJoQ0RJanJoZEM1Qlg1dTVDV3c9PSIsInZhbHVlIjoidUJ3cEdLZFRweWNmKzdMaG9tdGFKWnBqdExJNFZrL1RsOHNHaVEvWFdHQm0wWEg2QnFJU0x2OVVtZVJSWXlkRUVobXBrTi9JR09vcTM3Zy9yQzBuMUlpbXd0TDMxSWNPN0MrNUNoR2FqWjJNcC9ldnlqM3ZXa1lBWXl5ZWlXanUiLCJtYWMiOiJmN2MxZmQ4M2RiMWZlNjU4YjQ5NTJhYTg4NDdkMjg5MzQ2NmIxMzcxNTE5ZTNjZGE4YzM5ZDYzNjkxNTQ5MzMyIiwidGFnIjoiIn0%3D; laravel_session=eyJpdiI6IlhTd2gwREcwK1N4R0h1TWtrR0hUVEE9PSIsInZhbHVlIjoiL2JUamdPcTN5Z21seXNaNmFUK0NqeHYzMEZwSTloRUI0MGhpem5kOHNRZ01FTDNvOVV4SGN5ZXVtUW9VeG9vOWdYTFNDSDJVS2U4bEhzaExVYmN3MUpJU2V0aVdlQ3l5MURWQ1kzcW9OV2ZYaTlmV2lnanBLN3J2c1d6enpEYlgiLCJtYWMiOiI3NDI5NDU5Yzg5ZjUxYTcwMzUyNjM4M2ZkODA2YmU5MWI5OTlkODg5NGJhYjIyZTIwN2UwNzQ5ODhkZWFkZWRkIiwidGFnIjoiIn0%3D
+  Origin: http://127.0.0.1:8000
+  Referer: http://127.0.0.1:8000/
+  Sec-Fetch-Dest: empty
+  Sec-Fetch-Mode: cors
+  Sec-Fetch-Site: same-origin
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+  X-XSRF-TOKEN: eyJpdiI6ImZMbnJoQ0RJanJoZEM1Qlg1dTVDV3c9PSIsInZhbHVlIjoidUJ3cEdLZFRweWNmKzdMaG9tdGFKWnBqdExJNFZrL1RsOHNHaVEvWFdHQm0wWEg2QnFJU0x2OVVtZVJSWXlkRUVobXBrTi9JR09vcTM3Zy9yQzBuMUlpbXd0TDMxSWNPN0MrNUNoR2FqWjJNcC9ldnlqM3ZXa1lBWXl5ZWlXanUiLCJtYWMiOiJmN2MxZmQ4M2RiMWZlNjU4YjQ5NTJhYTg4NDdkMjg5MzQ2NmIxMzcxNTE5ZTNjZGE4YzM5ZDYzNjkxNTQ5MzMyIiwidGFnIjoiIn0=
+  sec-ch-ua: "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+  sec-ch-ua-mobile: ?0
+  sec-ch-ua-platform: "Windows"
+}
+
+body:json {
+  {
+    "id_movie": 1,
+    "genres": [
+      {
+        "id_genre": 5,
+        "name": "Horreur"
+      },
+      {
+        "id_genre": 6,
+        "name": "Mystère"
+      },
+      {
+        "id_genre": 7,
+        "name": "Crime"
+      }
+    ]
+  }
+}

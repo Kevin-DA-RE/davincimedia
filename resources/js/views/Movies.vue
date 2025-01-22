@@ -259,6 +259,9 @@ async function deleteMovieToBackEnd(movie) {
             })
         })
 
+        console.log(jsonData);
+        
+
     await axios.post(url, jsonData, {
                             headers: {
                             Accept: "applicaton/json"
@@ -271,6 +274,7 @@ async function deleteMovieToBackEnd(movie) {
 
   formDeleteMovie.value = false
   await showMovieWithGenres()
+
 }
 
 function showFormUpdateMovie(movie, index){

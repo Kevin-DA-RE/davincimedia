@@ -76,17 +76,15 @@ class MoviesController extends Controller
 
     public function deleteMovie (Request $request, Movie $movie)
     {
-        $item = Validator::make($request->all(),[
-            'id_movie' => 'required|integer',
-            'genres' => [
-                "id_genre" => 'required|integer',
-                "name" => 'required|string'
-            ],
+        $item = $request->validate([
+            'id_movie' => 'required', 'integer',
+            "genres.*.id_genre" =>  'required', 'integer',
+            "genres.*.name" => 'required', 'string'
         ]);
-        dd($item->validate());
         $genre_ids=[];
+
         foreach ($item["genres"] as $movie_genre) {
-            array_push($genre_ids, $movie_genre->id);
+            array_push($genre_ids, $movie_genre['id_genre']);
         }
         $movie->genre()->detach($genre_ids);
         $movie->delete();
