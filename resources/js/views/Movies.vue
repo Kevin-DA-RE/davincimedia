@@ -25,55 +25,32 @@ const api = {
   url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
   url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
   url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
-  url_backend_show_movie_movie: "http://127.0.0.1:8000/api/movie/show-movie",
-  url_backend_show_movie_genre: "http://127.0.0.1:8000/api/movie/show-genre",
+  url_backend_show_movies_with_genres: "http://127.0.0.1:8000/api/movie/show-movie-genres",
 };
 
-async function showMovies(){
+async function showMovieWithGenres(){
   try {
-  const movies = await axios
-                  .get(api.url_backend_show_movie_movie, {
+        const movies = await axios
+                  .get(api.url_backend_show_movies_with_genres, {
                         headers: {
                         accept: "application/json",
                         },
               })
-
-  moviesListLoaded.value = movies.data.data
+        moviesListLoaded.value = movies.data
             }
             catch (error) {
         console.log(error);
   }
 }
 
-async function showGenres(){
-  try {
-    const genres = await axios
-                  .get(api.url_backend_show_movie_genre, {
-                        headers: {
-                        accept: "application/json",
-                        },
-                  })
-  genresListLoaded.value = genres.data.data
-            }
-            catch (error) {
-        console.log(error);
-  }
-}
+
 
 onMounted( async() => {
       try {
-        await showMovies()
+        await showMovieWithGenres()
       } catch (error) {
-        console.log("error showMovie"+error);
+        console.log("error showMovieWithGenres"+error);
       }
-
-      try {
-        await showGenres()
-      } catch (error) {
-        console.log("error ShowGenre"+error);
-      }
-
-
 })
 
 
@@ -90,7 +67,7 @@ async function getMovieWithGenre(name) {
       name: name,
     };
   } else {
-    if (formAddMovies === true) {
+    if (formAddMovies.value === true) {
       console.log("movie du formulaire de creation");
       return movieCreated.value = movie
     } else {
@@ -188,7 +165,9 @@ async function getGenre(arrayId) {
 }
 
 function AddMovie(movie) {
-moviesList.value.push(movie)
+    moviesList.value.push(movie)
+    movieCreated.value = {}
+    movieName.value = ""
 }
 
 async function onSubmit() {
@@ -196,7 +175,6 @@ async function onSubmit() {
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
 moviesList.value.forEach((movie, index) => {
-
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id))
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
@@ -221,7 +199,7 @@ const sendToMovies = await axios
 if(sendToMovies === 200)
 movieName.value = ""
 formAddMovies.value = false
-await showMovies()
+await showMovieWithGenres()
 }
 
 async function updateMovieToBackEnd(movie) {
@@ -261,37 +239,38 @@ const sendToMovie = await axios
     }
   }
 
-  await showMovies()
+  await showMovieWithGenres()
 }
 
 
 async function deleteMovieToBackEnd(movie) {
-const url = `${api.url_backend_delete_movie}/${movieIdOrigin.value}`
+    const url = `${api.url_backend_delete_movie}/${movieIdOrigin.value}`
 
-// Init FormDatato pour envoyer les datas
-const formData = new FormData()
-    formData.append(`id_movie`, parseInt(movie.id))
-    formData.append(`name`, movie.name)
-    formData.append(`synopsis`, movie.synopsis)
-    formData.append(`url_img`, movie.url_img)
-    movie.genre.forEach((genre, genreIndex) => {
-        formData.append(`genre[${genreIndex}][id_genre]`, parseInt(genre.id_genre))
-        formData.append(`genre[${genreIndex}][name]`, genre.name)
+    // Init FormDatato pour envoyer les datas
+    const jsonData = {
+        "id_movie": parseInt(movie.id)
+    }
+    jsonData["genres"]= []
 
-    })
+        movie.genres.forEach((genre) => {
+            jsonData["genres"].push({
+                "id_genre":parseInt(genre.id_genre),
+                "name" : genre.name
+            })
+        })
 
+    await axios.post(url, jsonData, {
+                            headers: {
+                            Accept: "applicaton/json"
+                            }})
+                        .then((response) => {return response.data.code}
+                        )
+                        .catch((error) =>
+                            console.log(`Erreur lors de la suppression des datas sur le film \n ${error}`)
+                        );
 
-await axios.post(url, formData, {
-                          headers: {
-                          Accept: "multipart/form-data"
-                        }})
-                      .then((response) => {return response.data.code}
-                      )
-                      .catch((error) =>
-                        console.log(`Erreur lors de la suppression des datas sur le film \n ${error}`)
-                      );
   formDeleteMovie.value = false
-  await showMovies()
+  await showMovieWithGenres()
 }
 
 function showFormUpdateMovie(movie, index){
@@ -335,6 +314,12 @@ function resetUpdateMovie () {
   formUpdateMovie.value = false
 }
 
+function resetDeleteMovie(){
+  movieDeleted.value = {}
+  formDeleteMovie.value = false
+}
+
+
 function onReset(){
   moviesList.length = 0
   movieCreated.value = {}
@@ -344,7 +329,7 @@ function onReset(){
 
 <template>
   <q-page class="">
-    <q-btn color="secondary" @click="showFormAddMovies = true" label="Ajouter film"/>
+    <q-btn color="secondary" @click="formAddMovies = true" label="Ajouter film"/>
     <div class="row justify-start">
         <div
         v-for="(movie, index) in moviesListLoaded" :key="movie.id"
@@ -366,7 +351,7 @@ function onReset(){
 
         <q-card-actions align="right" class="text-primary">
             <q-btn flat label="Annuler" @click="resetDeleteMovie()" />
-            <q-btn flat label="Modifier Film" @click="deleteMovie()" />
+            <q-btn flat label="Supprimer le Film" @click="deleteMovie()" />
         </q-card-actions>
         </q-card>
     </q-dialog>
@@ -393,7 +378,7 @@ function onReset(){
         </q-card-actions>
         </q-card>
     </q-dialog>
-        <q-dialog  v-model="showFormAddMovies" persistent full-width full-height>
+        <q-dialog  v-model="formAddMovies" persistent full-width full-height>
             <div class="row  bg-white q-pa-md">
                 <div class="col-4">
                     <h6 class="text-h6">Saisir le nom du film</h6>
