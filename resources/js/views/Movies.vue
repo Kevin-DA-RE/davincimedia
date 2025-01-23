@@ -119,7 +119,6 @@ async function getMovie(name) {
 
     };
   } else {
-    console.log(" aucun film");
     return { code: 400, message: "Aucun film correspond à la recherche" };
   }
 }
@@ -229,11 +228,9 @@ const sendToMovie = await axios
                       );
   if(sendToMovie === 200){
     if (formAddMovies === true) {
-      console.log("envoi du formulaire de creation");
       movieName.value = ""
       formAddMovies.value = false
     } else {
-      console.log("envoi du formulaire de modification");
       movieName.value = ""
       formUpdateMovie.value = false
     }
@@ -260,7 +257,7 @@ async function deleteMovieToBackEnd(movie) {
         })
 
         console.log(jsonData);
-        
+
 
     await axios.post(url, jsonData, {
                             headers: {
