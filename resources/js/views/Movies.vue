@@ -367,8 +367,8 @@ function onReset(){
               <div
               v-for="(movie, index) in moviesListLoaded" :key="movie.id"
               >
-              <q-btn color="deep-purple-8" @click="showFormUpdateMovie(movie, index)">Modifier</q-btn>
-              <q-btn color="deep-orange-7" @click="showFormDeleteMovie(movie, index)">Supprimer</q-btn>
+              <q-btn color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+              <q-btn color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
                   <Movie :movie="movie" />
               </div>
           </div>
