@@ -15,6 +15,8 @@ const movieUpdated = ref({})
 const movieDeleted = ref({})
 const movieIdOrigin = ref()
 const movieIndex = ref()
+const tab = ref('all')
+const splitterModel = ref(20)
 
 
 const api = {
@@ -326,103 +328,144 @@ function onReset(){
   movieCreated.value = {}
   formAddMovies.value = false
 }
+
 </script>
 
 <template>
-  <q-page class="">
-    <q-btn color="secondary" @click="formAddMovies = true" label="Ajouter film"/>
-    <div class="row justify-start">
-        <div
-        v-for="(movie, index) in moviesListLoaded" :key="movie.id"
+    <q-splitter
+      v-model="splitterModel"
+      style="height: 100vh"
+    >
+
+      <template v-slot:before>
+        <q-tabs
+          v-model="tab"
+          vertical
+          class="bg-dark text-teal"
         >
-        <q-btn color="deep-purple-8" @click="showFormUpdateMovie(movie, index)">Modifier</q-btn>
-        <q-btn color="deep-orange-7" @click="showFormDeleteMovie(movie, index)">Supprimer</q-btn>
-            <Movie :movie="movie" />
+        <div class="flex justify-center">
+            <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
         </div>
-    </div>
-    <q-dialog v-model="formDeleteMovie">
-        <q-card style="min-width: 350px">
-            <q-card-section>
-                <h6 class="text-h6">Voulez-vous supprimer ce film</h6>
-            </q-card-section>
+          <q-tab name="all" icon="view_list" label="Tous les genres" />
+          <q-tab name="movies" icon="movie" label="Films" />
 
-        <q-card-section class="q-pt-none">
-                <Movie :movie="movieDeleted" />
-        </q-card-section>
+        </q-tabs>
+      </template>
 
-        <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Annuler" @click="resetDeleteMovie()" />
-            <q-btn flat label="Supprimer le Film" @click="deleteMovie()" />
-        </q-card-actions>
-        </q-card>
-    </q-dialog>
-    <q-dialog v-model="formUpdateMovie">
-        <q-card style="min-width: 350px">
-            <q-card-section>
-                <h6 class="text-h6">Modifier le film</h6>
-            </q-card-section>
+      <template v-slot:after>
+        <q-tab-panels
+          v-model="tab"
+          animated
+          swipeable
+          vertical
+          transition-prev="jump-up"
+          transition-next="jump-up"
+        >
+        
+        <q-tab-panel name="all">
+          <div class="row justify-start">
+              <div
+              v-for="(movie, index) in moviesListLoaded" :key="movie.id"
+              >
+              <q-btn color="deep-purple-8" @click="showFormUpdateMovie(movie, index)">Modifier</q-btn>
+              <q-btn color="deep-orange-7" @click="showFormDeleteMovie(movie, index)">Supprimer</q-btn>
+                  <Movie :movie="movie" />
+              </div>
+          </div>
+          <q-dialog v-model="formDeleteMovie">
+              <q-card style="min-width: 350px">
+                  <q-card-section>
+                      <h6 class="text-h6">Voulez-vous supprimer ce film</h6>
+                  </q-card-section>
 
-        <q-card-section class="q-pt-none">
-            <q-input
-                v-model="movieName"
-                @change="getMovieWithGenre(movieName)"
-                autofocus
-                />
-                <q-card-section>
-                <Movie :movie="movieUpdated" />
-            </q-card-section>
-        </q-card-section>
+              <q-card-section class="q-pt-none">
+                      <Movie :movie="movieDeleted" />
+              </q-card-section>
 
-        <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Annuler" @click="resetUpdateMovie()" />
-            <q-btn flat label="Modifier Film" @click="updateMovie()" />
-        </q-card-actions>
-        </q-card>
-    </q-dialog>
-        <q-dialog  v-model="formAddMovies" persistent full-width full-height>
-            <div class="row  bg-white q-pa-md">
-                <div class="col-4">
-                    <h6 class="text-h6">Saisir le nom du film</h6>
-                    <q-input
-                            v-model="movieName"
-                            @change="getMovieWithGenre(movieName)"
-                            autofocus
-                            />
-                        <div v-if="movieCreated.id">
-                            <q-card-section>
-                            <Movie :movie="movieCreated" />
-                        </q-card-section>
-                        </div>
-                    <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
-                    <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
-                </div>
-                <div class="col-8">
-                    <q-form
-                    @submit.prevent="onSubmit"
-                    @reset="onReset"
-                    class="q-gutter-md"
-                    >
-                        <h6>Liste des films a enregistrer</h6>
-                        <div v-if="moviesList.length > 0">
-                          <div class="row justify-start">
-                            <div
-                            v-for="(movie, index) in moviesList" :key="movie.id"
-                            >
-                            <Movie :movie="movie" />
-                            </div>
+              <q-card-actions align="right" class="text-primary">
+                  <q-btn flat label="Annuler" @click="resetDeleteMovie()" />
+                  <q-btn flat label="Supprimer le Film" @click="deleteMovie()" />
+              </q-card-actions>
+              </q-card>
+          </q-dialog>
+          <q-dialog v-model="formUpdateMovie">
+              <q-card style="min-width: 350px">
+                  <q-card-section>
+                      <h6 class="text-h6">Modifier le film</h6>
+                  </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                  <q-input
+                      v-model="movieName"
+                      @change="getMovieWithGenre(movieName)"
+                      autofocus
+                      />
+                      <q-card-section>
+                      <Movie :movie="movieUpdated" />
+                  </q-card-section>
+              </q-card-section>
+
+              <q-card-actions align="right" class="text-primary">
+                  <q-btn flat label="Annuler" @click="resetUpdateMovie()" />
+                  <q-btn flat label="Modifier Film" @click="updateMovie()" />
+              </q-card-actions>
+              </q-card>
+          </q-dialog>
+          <q-dialog  v-model="formAddMovies" persistent full-width full-height>
+              <div class="row  bg-white q-pa-md">
+                  <div class="col-4">
+                      <h6 class="text-h6">Saisir le nom du film</h6>
+                      <q-input
+                              v-model="movieName"
+                              @change="getMovieWithGenre(movieName)"
+                              autofocus
+                              />
+                          <div v-if="movieCreated.id">
+                              <q-card-section>
+                              <Movie :movie="movieCreated" />
+                          </q-card-section>
                           </div>
-                          <q-btn label="Enregistrer les films" type="submit" color="primary"/>
-                          <q-btn label="Annuler" type="reset" />
-                        </div>
-                        <div v-else>
-                            <p>Aucun film n'est ajouté</p>
-                        </div>
+                      <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
+                      <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
+                  </div>
+                  <div class="col-8">
+                      <q-form
+                      @submit.prevent="onSubmit"
+                      @reset="onReset"
+                      class="q-gutter-md"
+                      >
+                          <h6>Liste des films a enregistrer</h6>
+                          <div v-if="moviesList.length > 0">
+                            <div class="row justify-start">
+                              <div
+                              v-for="(movie, index) in moviesList" :key="movie.id"
+                              >
+                              <Movie :movie="movie" />
+                              </div>
+                            </div>
+                            <q-btn label="Enregistrer les films" type="submit" color="primary"/>
+                            <q-btn label="Annuler" type="reset" />
+                          </div>
+                          <div v-else>
+                              <p>Aucun film n'est ajouté</p>
+                          </div>
 
-                    </q-form>
-                </div>
-            </div>
-        </q-dialog>
-  </q-page>
+                      </q-form>
+                  </div>
+              </div>
+          </q-dialog>
+        </q-tab-panel>
+
+          <q-tab-panel name="movies">
+            <div class="text-h4 q-mb-md">Movies</div>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+          </q-tab-panel>
+
+        </q-tab-panels>
+      </template>
+
+    </q-splitter>
 </template>
 
 <style>
