@@ -335,6 +335,7 @@ function onReset(){
     <q-splitter
       v-model="splitterModel"
       style="height: 100vh"
+      dark
     >
 
       <template v-slot:before>
@@ -360,15 +361,18 @@ function onReset(){
           vertical
           transition-prev="jump-up"
           transition-next="jump-up"
+          dark
         >
         
-        <q-tab-panel name="all">
+        <q-tab-panel name="all"  style="height: 100vh">
           <div class="row justify-start">
               <div
               v-for="(movie, index) in moviesListLoaded" :key="movie.id"
               >
-              <q-btn color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-              <q-btn color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+              <div class="flex justify-center">
+                <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+                <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+              </div>
                   <Movie :movie="movie" />
               </div>
           </div>
