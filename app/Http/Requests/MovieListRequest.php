@@ -26,8 +26,8 @@ class MovieListRequest extends FormRequest
             'moviesList.*.name' => ['required', 'string'],
             'moviesList.*.synopsis' => ['required', 'string'],
             'moviesList.*.url_img' => ['required', 'string'],
-            'moviesList.*.genre.*.id_genre' => ['required', 'integer'],
-            'moviesList.*.genre.*.name' => ['required', 'string'],
+            'moviesList.*.genres.*.id_genre' => ['required', 'integer'],
+            'moviesList.*.genres.*.name' => ['required', 'string'],
         ];
     }
 }

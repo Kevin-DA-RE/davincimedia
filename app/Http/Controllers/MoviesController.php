@@ -23,7 +23,8 @@ class MoviesController extends Controller
         $item = $request->validated();
             foreach ($item["moviesList"] as $request_movie) {
                 $genre_ids =[];
-                foreach ($request_movie["genre"] as $request_genre) {
+
+                foreach ($request_movie["genres"] as $request_genre) {
                     $genre = Genre::firstOrCreate(
                         ["id_genre" => $request_genre["id_genre"]],
                         [
@@ -59,7 +60,7 @@ class MoviesController extends Controller
         $movie->url_img = $item["url_img"];
         $movie->save();
 
-        foreach ($item["genre"] as $movie_genre) {
+        foreach ($item["genres"] as $movie_genre) {
             $genre = Genre::updateOrCreate(
                 ['id_genre' => $movie_genre['id_genre']],
                 [

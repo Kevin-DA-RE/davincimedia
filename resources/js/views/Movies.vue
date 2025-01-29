@@ -110,14 +110,14 @@ async function getMovie(name) {
 
     var urlImg = movie[0].poster_path;
     urlImgCompconpleted = `https://image.tmdb.org/t/p/original${urlImg}`;
-    const genre = await getGenre(movie[0].genre_ids)
+    const genres = await getGenre(movie[0].genre_ids)
 
     return {
       id: movie[0].id,
       name: movie[0].title,
       synopsis: movie[0].overview,
       url_img: urlImgCompconpleted,
-      genre
+      genres
 
     };
   } else {
@@ -149,12 +149,12 @@ async function getGenre(arrayId) {
     );
 
   // Nous comparons la liste de tous les genres avec ceux identifiés et nous gardons que ceux qui sont indenitifiés par le film
-  var genre = [];
+  var genres = [];
   arrayId.forEach((array) => {
 
     categories.forEach((category) => {
       if (array === category.id) {
-        genre.push({
+        genres.push({
             "id_genre": category.id,
             "name": category.name
         })
@@ -162,7 +162,7 @@ async function getGenre(arrayId) {
     });
   });
 
-  return genre;
+  return genres;
 }
 
 function AddMovie(movie) {
@@ -180,9 +180,9 @@ moviesList.value.forEach((movie, index) => {
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
     formData.append(`moviesList[${index}][url_img]`, movie.url_img)
-    movie.genre.forEach((genre, genreIndex) => {
-        formData.append(`moviesList[${index}][genre][${genreIndex}][id_genre]`, parseInt(genre.id_genre))
-        formData.append(`moviesList[${index}][genre][${genreIndex}][name]`, genre.name)
+    movie.genres.forEach((genre, genreIndex) => {
+        formData.append(`moviesList[${index}][genres][${genreIndex}][id_genre]`, parseInt(genre.id_genre))
+        formData.append(`moviesList[${index}][genres][${genreIndex}][name]`, genre.name)
 
     })
 });
@@ -211,9 +211,9 @@ const formData = new FormData()
     formData.append(`name`, movie.name)
     formData.append(`synopsis`, movie.synopsis)
     formData.append(`url_img`, movie.url_img)
-    movie.genre.forEach((genre, genreIndex) => {
-        formData.append(`genre[${genreIndex}][id_genre]`, parseInt(genre.id_genre))
-        formData.append(`genre[${genreIndex}][name]`, genre.name)
+    movie.genres.forEach((genre, genreIndex) => {
+        formData.append(`genres[${genreIndex}][id_genre]`, parseInt(genre.id_genre))
+        formData.append(`genres[${genreIndex}][name]`, genre.name)
 
     })
 
