@@ -30,6 +30,7 @@ Route::prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');
     Route::get('/show-movies', 'showMovies');
+    Route::get('/show-genres', 'showGenres');
     Route::get('/test', 'test');
 });
 

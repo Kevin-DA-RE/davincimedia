@@ -28,6 +28,7 @@ const api = {
   url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
   url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
   url_backend_show_movies: "http://127.0.0.1:8000/api/movie/show-movies",
+  url_backend_show_genres: "http://127.0.0.1:8000/api/movie/show-genres"
 };
 
 async function showMovies(){
@@ -45,13 +46,30 @@ async function showMovies(){
   }
 }
 
+async function showGenres(){
+  try {
+        const genres = await axios
+                  .get(api.url_backend_show_genres, {
+                        headers: {
+                        accept: "application/json",
+                        },
+              })
+              genresListLoaded.value = genres.data
+            }
+            catch (error) {
+        console.log(error);
+  }
+}
+
+
 
 
 onMounted( async() => {
       try {
         await showMovies()
+        await showGenres()
       } catch (error) {
-        console.log("error showMovies"+error);
+        console.log("error onMounted"+error);
       }
 })
 

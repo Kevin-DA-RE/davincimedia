@@ -6,6 +6,7 @@ use App\Models\Genre;
 use App\Models\Movie;
 use App\Http\Requests\MovieListRequest;
 use App\Http\Requests\MovieRequest;
+use App\Http\Resources\GenresResources;
 use App\Http\Resources\MoviesResources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -17,6 +18,13 @@ class MoviesController extends Controller
         $movies = MoviesResources::collection($movies);
         return response()->json($movies);
     }
+
+    public function showGenres(){
+        $genres = Genre::all();
+        $genres = GenresResources::collection($genres);
+        return response()->json($genres);
+    }
+
     public function createMovie (MovieListRequest $request)
     {
         //return response()->json(["code"=> 200, "message"=> "on entre dans le controlleur"]);
@@ -94,8 +102,8 @@ class MoviesController extends Controller
 
     public function test()
     {
-        $movies = Movie::with('genre')->get();
-        $movies = MoviesResources::collection($movies);
-        return response()->json($movies);
+        $genres = Genre::all();
+        $genres = GenresResources::collection($genres);
+        return response()->json($genres);
     }
 }
