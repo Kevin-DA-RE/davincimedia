@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Validator;
 
 class MoviesController extends Controller
 {
+
+    public function test()
+    {
+        $genres = Genre::whereHas('movie')->get();
+        $genres = GenresResources::collection($genres);
+        return response()->json($genres);
+    }
     public function showMovies(){
         $movies = Movie::all();
         $movies = MoviesResources::collection($movies);
@@ -20,9 +27,14 @@ class MoviesController extends Controller
     }
 
     public function showGenres(){
-        $genres = Genre::all();
+        $genres = Genre::whereHas('movie')->get();
         $genres = GenresResources::collection($genres);
         return response()->json($genres);
+    }
+
+    public function showMoviesWithGenres(Genre $genre){
+        $moviesWithGenres = MoviesResources::collection($genre->movie);
+        return response()->json($moviesWithGenres);
     }
 
     public function createMovie (MovieListRequest $request)
@@ -100,10 +112,4 @@ class MoviesController extends Controller
         return response()->json(["code"=> 200, "message" => "le film a bien été supprimé"]);
     }
 
-    public function test()
-    {
-        $genres = Genre::all();
-        $genres = GenresResources::collection($genres);
-        return response()->json($genres);
-    }
 }

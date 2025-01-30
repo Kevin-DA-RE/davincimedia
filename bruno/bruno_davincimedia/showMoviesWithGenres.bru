@@ -1,0 +1,32 @@
+meta {
+  name: showMoviesWithGenres
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://127.0.0.1:8000/api/movie/show-movies-genres/19
+  body: json
+  auth: none
+}
+
+headers {
+  User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0
+  Accept: application/json, text/plain, */*
+  Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3
+  Accept-Encoding: gzip, deflate, br, zstd
+  X-XSRF-TOKEN: eyJpdiI6IjdUaU15RXQrWENuVGJyS2lYaDBQOWc9PSIsInZhbHVlIjoiY1k0YThiM2lBSnJwUEprWjEwd0xSWE9ZRW5qbHdSdXlWU1FBV1d4U0ZrbStLS0N3SmtLR2FhcklPdTh4eUdhRTRmaWpCQVZlWWlPNUxOZWQrYStaTjdvY2d4d1ZRaXkwRFpPeHZKamk2M2liM2lJTHVibFBkMUt2a25XbUhTQ0EiLCJtYWMiOiJhNmY5ODU3YzFhNDhhMzQwNTBkNmI5NGIwYjA4NjcxODJjNjcxODVlMWY1NjliMzI4Mjk1YjQ2MzJiZDgxMjJkIiwidGFnIjoiIn0=
+  Connection: keep-alive
+  Referer: http://127.0.0.1:8000/
+  Cookie: XSRF-TOKEN=eyJpdiI6IjdUaU15RXQrWENuVGJyS2lYaDBQOWc9PSIsInZhbHVlIjoiY1k0YThiM2lBSnJwUEprWjEwd0xSWE9ZRW5qbHdSdXlWU1FBV1d4U0ZrbStLS0N3SmtLR2FhcklPdTh4eUdhRTRmaWpCQVZlWWlPNUxOZWQrYStaTjdvY2d4d1ZRaXkwRFpPeHZKamk2M2liM2lJTHVibFBkMUt2a25XbUhTQ0EiLCJtYWMiOiJhNmY5ODU3YzFhNDhhMzQwNTBkNmI5NGIwYjA4NjcxODJjNjcxODVlMWY1NjliMzI4Mjk1YjQ2MzJiZDgxMjJkIiwidGFnIjoiIn0%3D; laravel_session=eyJpdiI6Im14ZklhOFJNQUFzMmplblR2dUFYYXc9PSIsInZhbHVlIjoiSzBDTzI5MEZTYWtMbGF5K25pSWdwYzNkY3BOMTQxSmJWMlV2Rlo0bmVFTEVNRkhqWHE5OU5wcGFwUHJoUkttdzZyRHhsRjFneXY1VXNTWUxya0VkWURpMzUzcFhQcjhsdVJZRCtYd0Fob21CcEdlUnpnampjSUk1eERHaS85ankiLCJtYWMiOiI5MmZlZjEwMTQ4NGI1ZTE4YjQ3NDQ0ZGNkMzQ1MDhhYzk5NTdhMGVjODEwMWY5ZTc2Y2Y3NTlmN2I2OTVmMzFiIiwidGFnIjoiIn0%3D
+  Sec-Fetch-Dest: empty
+  Sec-Fetch-Mode: cors
+  Sec-Fetch-Site: same-origin
+  Priority: u=0
+}
+
+body:json {
+  {
+    "id": 19
+  }
+}

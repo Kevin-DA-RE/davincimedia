@@ -5,6 +5,7 @@ import Movie from "./component/Movie.vue";
 
 const moviesList = ref([])
 const moviesListLoaded = ref([])
+const moviesListFiltred = ref([])
 const genresListLoaded =ref([])
 const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
@@ -17,6 +18,7 @@ const movieIdOrigin = ref()
 const movieIndex = ref()
 const tab = ref('all')
 const splitterModel = ref(20)
+const panelGenre = ref("")
 
 
 const api = {
@@ -28,7 +30,8 @@ const api = {
   url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
   url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
   url_backend_show_movies: "http://127.0.0.1:8000/api/movie/show-movies",
-  url_backend_show_genres: "http://127.0.0.1:8000/api/movie/show-genres"
+  url_backend_show_genres: "http://127.0.0.1:8000/api/movie/show-genres",
+  url_backend_show_movies_genres: "http://127.0.0.1:8000/api/movie/show-movies-genres"
 };
 
 async function showMovies(){
@@ -61,7 +64,22 @@ async function showGenres(){
   }
 }
 
+async function showMoviesWithGenres(genre) {
+    const url = `${api.url_backend_show_movies_genres}/${genre.id}`
+    panelGenre.value = genre.name
+    const moviesWithGenres = await axios
+                                .get(url, {"id": genre.id},{
+                                headers: {
+                                    accept: "application/json",
+                                },
+                                })
+                                .then((movie) => movie.data)
+                                .catch((error) =>
+                                console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+                                );
 
+                                moviesListFiltred.value = moviesWithGenres
+}
 
 
 onMounted( async() => {
@@ -219,6 +237,7 @@ if(sendToMovies === 200)
 movieName.value = ""
 formAddMovies.value = false
 await showMovies()
+await showGenres()
 }
 
 async function updateMovieToBackEnd(movie) {
@@ -257,6 +276,7 @@ const sendToMovie = await axios
   }
 
   await showMovies()
+  await showGenres()
 }
 
 
@@ -291,7 +311,7 @@ async function deleteMovieToBackEnd(movie) {
 
   formDeleteMovie.value = false
   await showMovies()
-
+  await showGenres()
 }
 
 function showFormUpdateMovie(movie, index){
@@ -347,6 +367,7 @@ function onReset(){
   formAddMovies.value = false
 }
 
+
 </script>
 
 <template>
@@ -367,10 +388,8 @@ function onReset(){
         </div>
           <q-tab name="all" icon="view_list" label="Tous les genres" />
           <div v-for="genre in genresListLoaded" key="genre.id">
-            <q-tab :name="genre.name" icon="movie" :label="genre.name" />
+            <q-tab :name="genre.name" icon="movie" :label="genre.name" @click="showMoviesWithGenres(genre)"/>
           </div>
- 
-
         </q-tabs>
       </template>
 
@@ -384,8 +403,8 @@ function onReset(){
           transition-next="jump-up"
           dark
         >
-        
-        <q-tab-panel name="all"  style="height: 100vh">
+
+        <q-tab-panel name="all" style="height: 100vh">
           <div class="row justify-start">
               <div
               v-for="(movie, index) in moviesListLoaded" :key="movie.id"
@@ -398,7 +417,7 @@ function onReset(){
               </div>
           </div>
 
-          
+
         <q-dialog v-model="formDeleteMovie">
               <q-card style="min-width: 350px">
                   <q-card-section>
@@ -482,11 +501,19 @@ function onReset(){
               </div>
           </q-dialog>
         </q-tab-panel>
-        
-        <q-tab-panel name="movies">
-            <div class="text-h4 q-mb-md">Movies</div>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+
+        <q-tab-panel :name="panelGenre" style="height: 100vh">
+            <div class="row justify-start">
+              <div
+              v-for="(movie, index) in moviesListFiltred" :key="movie.id"
+              >
+              <div class="flex justify-center">
+                <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+                <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+              </div>
+                  <Movie :movie="movie" />
+              </div>
+          </div>
         </q-tab-panel>
       </q-tab-panels>
       </template>
