@@ -16,16 +16,9 @@ class MoviesResources extends JsonResource
     {
        return [
         'id' => $this->id,
-        'id_movie' => $this->id_movie,
         'name' => $this->name,
         'synopsis' => $this->synopsis,
-        'url_img' => $this->url_img,
-        'genres' => $this->genre->map(function ($genre) {
-            return [
-                'id_genre' => $genre->id,
-                'name' => $genre->name
-            ];
-        }),
+        'url_img' => $this->url_img
        ];
     }
 }

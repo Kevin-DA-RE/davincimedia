@@ -27,13 +27,13 @@ const api = {
   url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
   url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
   url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
-  url_backend_show_movies_with_genres: "http://127.0.0.1:8000/api/movie/show-movie-genres",
+  url_backend_show_movies: "http://127.0.0.1:8000/api/movie/show-movies",
 };
 
-async function showMovieWithGenres(){
+async function showMovies(){
   try {
         const movies = await axios
-                  .get(api.url_backend_show_movies_with_genres, {
+                  .get(api.url_backend_show_movies, {
                         headers: {
                         accept: "application/json",
                         },
@@ -49,9 +49,9 @@ async function showMovieWithGenres(){
 
 onMounted( async() => {
       try {
-        await showMovieWithGenres()
+        await showMovies()
       } catch (error) {
-        console.log("error showMovieWithGenres"+error);
+        console.log("error showMovies"+error);
       }
 })
 
@@ -200,7 +200,7 @@ const sendToMovies = await axios
 if(sendToMovies === 200)
 movieName.value = ""
 formAddMovies.value = false
-await showMovieWithGenres()
+await showMovies()
 }
 
 async function updateMovieToBackEnd(movie) {
@@ -238,7 +238,7 @@ const sendToMovie = await axios
     }
   }
 
-  await showMovieWithGenres()
+  await showMovies()
 }
 
 
@@ -272,7 +272,7 @@ async function deleteMovieToBackEnd(movie) {
                         );
 
   formDeleteMovie.value = false
-  await showMovieWithGenres()
+  await showMovies()
 
 }
 

@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Validator;
 
 class MoviesController extends Controller
 {
-    public function showMovieWithGenres(){
-        $movies = Movie::with('genre')->get();
+    public function showMovies(){
+        $movies = Movie::all();
         $movies = MoviesResources::collection($movies);
         return response()->json($movies);
     }
