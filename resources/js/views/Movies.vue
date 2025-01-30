@@ -366,7 +366,10 @@ function onReset(){
             <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
         </div>
           <q-tab name="all" icon="view_list" label="Tous les genres" />
-          <q-tab name="movies" icon="movie" label="Films" />
+          <div v-for="genre in genresListLoaded" key="genre.id">
+            <q-tab :name="genre.name" icon="movie" :label="genre.name" />
+          </div>
+ 
 
         </q-tabs>
       </template>
@@ -394,7 +397,16 @@ function onReset(){
                   <Movie :movie="movie" />
               </div>
           </div>
-          <q-dialog v-model="formDeleteMovie">
+        </q-tab-panel>
+        
+        <q-tab-panel name="movies">
+            <div class="text-h4 q-mb-md">Movies</div>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+        </q-tab-panel>
+
+
+        <q-dialog v-model="formDeleteMovie">
               <q-card style="min-width: 350px">
                   <q-card-section>
                       <h6 class="text-h6">Voulez-vous supprimer ce film</h6>
@@ -476,13 +488,6 @@ function onReset(){
                   </div>
               </div>
           </q-dialog>
-        </q-tab-panel>
-
-          <q-tab-panel name="movies">
-            <div class="text-h4 q-mb-md">Movies</div>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-          </q-tab-panel>
 
         </q-tab-panels>
       </template>
