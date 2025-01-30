@@ -397,15 +397,8 @@ function onReset(){
                   <Movie :movie="movie" />
               </div>
           </div>
-        </q-tab-panel>
-        
-        <q-tab-panel name="movies">
-            <div class="text-h4 q-mb-md">Movies</div>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
-        </q-tab-panel>
 
-
+          
         <q-dialog v-model="formDeleteMovie">
               <q-card style="min-width: 350px">
                   <q-card-section>
@@ -488,8 +481,14 @@ function onReset(){
                   </div>
               </div>
           </q-dialog>
-
-        </q-tab-panels>
+        </q-tab-panel>
+        
+        <q-tab-panel name="movies">
+            <div class="text-h4 q-mb-md">Movies</div>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima assumenda consectetur culpa fuga nulla ullam. In, libero.</p>
+        </q-tab-panel>
+      </q-tab-panels>
       </template>
 
     </q-splitter>
