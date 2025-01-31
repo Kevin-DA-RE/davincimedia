@@ -386,10 +386,10 @@ function onReset(){
         <div class="flex justify-center">
             <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
         </div>
-          <q-tab name="all" icon="view_list" label="Tous les genres" />
-          <div v-for="genre in genresListLoaded" key="genre.id">
-            <q-tab :name="genre.name" icon="movie" :label="genre.name" @click="showMoviesWithGenres(genre)"/>
-          </div>
+          <q-tab name="all" icon="view_list" label="Tous les genres" @click="showMovies()"/>
+            <div v-for="genre in genresListLoaded" key="genre.id">
+              <q-tab :name="genre.name" icon="movie" :label="genre.name" @click="showMoviesWithGenres(genre)"/>
+            </div>
         </q-tabs>
       </template>
 
@@ -507,11 +507,11 @@ function onReset(){
               <div
               v-for="(movie, index) in moviesListFiltred" :key="movie.id"
               >
-              <div class="flex justify-center">
-                <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-                <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
-              </div>
-                  <Movie :movie="movie" />
+                <div class="flex justify-center">
+                  <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+                  <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+                </div>
+                <Movie :movie="movie" />
               </div>
           </div>
         </q-tab-panel>
