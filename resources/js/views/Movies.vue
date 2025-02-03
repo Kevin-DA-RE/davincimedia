@@ -57,6 +57,10 @@ async function showGenres(){
                         accept: "application/json",
                         },
               })
+              genres.data.unshift({
+                "id": 0,
+                "name": "all"
+              })
               genresListLoaded.value = genres.data
             }
             catch (error) {
@@ -65,6 +69,9 @@ async function showGenres(){
 }
 
 async function showMoviesWithGenres(genre) {
+  if (genre.id ===0) {
+    await showMovies()
+  } else {
     const url = `${api.url_backend_show_movies_genres}/${genre.id}`
     panelGenre.value = genre.name
     const moviesWithGenres = await axios
@@ -79,6 +86,8 @@ async function showMoviesWithGenres(genre) {
                                 );
 
                                 moviesListFiltred.value = moviesWithGenres
+  }
+
 }
 
 
@@ -386,7 +395,6 @@ function onReset(){
         <div class="flex justify-center">
             <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
         </div>
-          <q-tab name="all" icon="view_list" label="Tous les genres" @click="showMovies()"/>
             <div v-for="genre in genresListLoaded" key="genre.id">
               <q-tab :name="genre.name" icon="movie" :label="genre.name" @click="showMoviesWithGenres(genre)"/>
             </div>

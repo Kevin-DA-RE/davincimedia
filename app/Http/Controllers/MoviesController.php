@@ -20,6 +20,7 @@ class MoviesController extends Controller
         $genres = GenresResources::collection($genres);
         return response()->json($genres);
     }
+    
     public function showMovies(){
         $movies = Movie::all();
         $movies = MoviesResources::collection($movies);
