@@ -1,3 +1,13 @@
+
+<script setup>
+import { ref } from "vue";
+const search = ref()
+function searchMovies(){
+    console.log("click");    
+}
+</script>
+
+
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
 
@@ -17,7 +27,7 @@
             <q-space />
 
             <!-- Barre de recherche à droite -->
-            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md">
+            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" @click="searchMovies(search)">
                 <template v-slot:prepend>
                     <q-icon name="search" />
                 </template>
@@ -44,7 +54,3 @@
 
   </q-layout>
 </template>
-
-  <script setup>
-  import { ref } from "vue";
-  </script>
