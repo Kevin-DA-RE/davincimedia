@@ -10,6 +10,8 @@ const genresListLoaded =ref([])
 const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
 const formDeleteMovie = ref(false)
+const formSearchMovie = ref(false)
+const search = ref()
 const movieName = ref("");
 const movieCreated = ref({})
 const movieUpdated = ref({})
@@ -376,6 +378,21 @@ function onReset(){
   formAddMovies.value = false
 }
 
+function searchMovie(movie){
+    console.log(movie.value);
+
+    movie.value = moviesList.value.find((movie) => {
+    if (movie.name === movieName.value) {
+        movieUpdated.value = movie
+    }
+})
+}
+
+function resetSearchMovie(){
+    movieName.value = ""
+    movieUpdated.value = {}
+    formSearchMovie.value = false
+}
 
 </script>
 
@@ -393,12 +410,44 @@ function onReset(){
           class="bg-dark text-teal"
         >
         <div class="flex justify-center">
+            <!-- Barre de recherche à droite -->
+            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" @click="formSearchMovie = true">
+                <q-icon name="search" />
+            </q-input>
             <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
         </div>
             <div v-for="genre in genresListLoaded" key="genre.id">
               <q-tab :name="genre.name" icon="movie" :label="genre.name" @click="showMoviesWithGenres(genre)"/>
             </div>
         </q-tabs>
+        <q-dialog v-model="formSearchMovie" full-width full-height>
+              <q-card style="min-width: 350px">
+                  <q-card-section>
+                      <h6 class="text-h6">Rechercher un film</h6>
+                  </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                  <q-input
+                      v-model="movieName"
+                      @input="searchMovie(movieName)"
+                      autofocus
+                      />
+                      <div
+                        v-for="(movie, index) in moviesListLoaded" :key="movie.id"
+                        >
+                        <div class="flex justify-center">
+                            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+                            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+                        </div>
+                            <Movie :movie="movie" />
+                        </div>
+              </q-card-section>
+
+              <q-card-actions align="right" class="text-primary">
+                  <q-btn flat label="Fermer" @click="resetSearchMovie()" />
+              </q-card-actions>
+              </q-card>
+          </q-dialog>
       </template>
 
       <template v-slot:after>
@@ -424,7 +473,6 @@ function onReset(){
                   <Movie :movie="movie" />
               </div>
           </div>
-
 
         <q-dialog v-model="formDeleteMovie">
               <q-card style="min-width: 350px">

@@ -1,10 +1,8 @@
 
 <script setup>
 import { ref } from "vue";
-const search = ref()
-function searchMovies(){
-    console.log("click");    
-}
+
+
 </script>
 
 
@@ -25,13 +23,6 @@ function searchMovies(){
             </q-tabs>
 
             <q-space />
-
-            <!-- Barre de recherche à droite -->
-            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" @click="searchMovies(search)">
-                <template v-slot:prepend>
-                    <q-icon name="search" />
-                </template>
-            </q-input>
 
             <q-btn round flat icon="person">
                 <q-menu>
