@@ -11,6 +11,7 @@ const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
 const formDeleteMovie = ref(false)
 const search = ref("")
+const editMode = ref(false)
 const movieName = ref("");
 const movieCreated = ref({})
 const movieUpdated = ref({})
@@ -400,10 +401,9 @@ const filteredMovies = computed(() => {
         >
         <div class="flex justify-center">
             <!-- Barre de recherche à droite -->
-            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search">
-                <q-icon name="search" />
-            </q-input>
+            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" />
             <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
+            <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
         </div>
             <div v-for="genre in genresListLoaded" key="genre.id">
               <q-tab :name="genre.name" icon="movie" :label="genre.name" @click="showMoviesWithGenres(genre)"/>
@@ -428,7 +428,7 @@ const filteredMovies = computed(() => {
               <div
               v-for="(movie, index) in filteredMovies" :key="movie.id"
               >
-              <div class="flex justify-center">
+              <div class="flex justify-center" v-show="editMode">
                 <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
                 <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
               </div>
