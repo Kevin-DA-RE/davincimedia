@@ -32,7 +32,7 @@ Route::prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::get('/show-movies', 'showMovies');
     Route::get('/show-genres', 'showGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
-    Route::get('/test', 'test');
+    Route::get('/test/{parameter}', 'test');
 });
 
 Route::prefix('/post')->controller(PostController::class)->group(function () {
