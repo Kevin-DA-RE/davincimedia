@@ -9,6 +9,7 @@ use App\Http\Requests\MovieRequest;
 use App\Http\Resources\GenresResources;
 use App\Http\Resources\MoviesResources;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class MoviesController extends Controller
@@ -16,11 +17,16 @@ class MoviesController extends Controller
 
     public function test()
     {
-        $genres = Genre::whereHas('movie')->get();
-        $genres = GenresResources::collection($genres);
-        return response()->json($genres);
+
+      $request = Http::withQueryParameters([
+        "query" => "uncharted",
+        "include_adult" => false,
+        "language" => "fr-FR",
+        "page" => 1
+      ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/search/movie');
+      dd($request->json());
     }
-    
+
     public function showMovies(){
         $movies = Movie::all();
         $movies = MoviesResources::collection($movies);
