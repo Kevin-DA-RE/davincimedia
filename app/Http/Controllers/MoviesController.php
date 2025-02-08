@@ -15,26 +15,45 @@ use Illuminate\Support\Facades\Validator;
 class MoviesController extends Controller
 {
 
-    public function test(string $parameter)
+    public function test()
     {
-      $request = Http::withQueryParameters([
-        "query" => $parameter,
-        "include_adult" => false,
-        "language" => "fr-FR",
-        "page" => 1
-      ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/search/movie');
+        $request = Http::withQueryParameters([
+            "query" => ""
+            ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
 
-      $movieList = $request['results'];
-      if(array_key_exists(0, $movieList)){
-        $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$movieList[0]['poster_path'];
-        $movieList[0]['poster_path'] = $urlPictureComplete;
-        return response()->json($movieList[0]);
-      } else{
+        $genresList = $request['genres'];
+        dd($genresList);
+    }
+
+    public function getMovies(string $parameter)
+    {
+        $request = Http::withQueryParameters([
+            "query" => $parameter,
+            "include_adult" => false,
+            "language" => "fr-FR",
+            "page" => 1
+            ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/search/movie');
+
+        $moviesList = $request['results'];
+        if(array_key_exists(0, $moviesList)){
+        $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
+        $moviesList[0]['poster_path'] = $urlPictureComplete;
+        return response()->json($moviesList[0]);
+        } else{
         return response()->json([
             "code"=> 404,
             "message" => "Aucun film trouvé"
         ]);
-      }
+        }
+    }
+
+    public function getGenres()
+    {
+        $request = Http::withQueryParameters([
+            "query" => ""
+            ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
+
+        return response()->json($request['genres']);
     }
 
     public function showMovies(){
@@ -42,6 +61,7 @@ class MoviesController extends Controller
         $movies = MoviesResources::collection($movies);
         return response()->json($movies);
     }
+
 
     public function showGenres(){
         $genres = Genre::whereHas('movie')->get();

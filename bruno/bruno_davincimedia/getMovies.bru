@@ -1,0 +1,16 @@
+meta {
+  name: getMovies
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{DEV}}/api/movie/get-movies/uncharted
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}

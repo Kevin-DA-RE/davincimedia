@@ -30,9 +30,11 @@ Route::prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');
     Route::get('/show-movies', 'showMovies');
+    Route::get('/get-movies/{parameter}', 'getMovies');
+    Route::get('/get-genres', 'getGenres');
     Route::get('/show-genres', 'showGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
-    Route::get('/test/{parameter}', 'test');
+    Route::get('/test', 'test');
 });
 
 Route::prefix('/post')->controller(PostController::class)->group(function () {

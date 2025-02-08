@@ -1,15 +1,16 @@
 meta {
-  name: test
+  name: getGenres
   type: http
-  seq: 9
+  seq: 13
 }
 
 get {
-  url: {{DEV}}/api/movie/test/
+  url: {{DEV}}/api/movie/get-genres
   body: json
   auth: none
 }
 
 headers {
   Accept: application/json
+  Content-Type: application/json
 }
