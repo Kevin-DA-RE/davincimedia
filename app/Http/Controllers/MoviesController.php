@@ -40,10 +40,7 @@ class MoviesController extends Controller
         $moviesList[0]['poster_path'] = $urlPictureComplete;
         return response()->json($moviesList[0]);
         } else{
-        return response()->json([
-            "code"=> 404,
-            "message" => "Aucun film trouvé"
-        ]);
+        return response()->json([]);
         }
     }
 
@@ -54,6 +51,28 @@ class MoviesController extends Controller
             ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
 
         return response()->json($request['genres']);
+    }
+
+    public function getMovieWithGenres(string $name)
+    {
+        $movie = $this->getMovies($name)->getData();
+        //dd($movie->id);
+        if(!$movie->id){
+            return response()->json([
+                "code" => 400,
+                "message" => "Aucun film trouvé"
+            ]);
+        } else {
+            var_dump("on est dans le else");
+            $genresList = $this->getGenres();
+            foreach ($genresList as $key => $value) {
+                var_dump($key);
+                if ($value['id'] === $movie['genre_ids'][0]) {
+                    $movie['genre'] = $value['name'];
+                    return response()->json($movie);
+                }
+            }
+        }
     }
 
     public function showMovies(){

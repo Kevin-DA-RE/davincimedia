@@ -1,0 +1,16 @@
+meta {
+  name: getMoviesWithGenres
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{DEV}}/api/movie/get-movies-with-genres/unchartedfzaav
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
