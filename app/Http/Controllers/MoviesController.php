@@ -38,9 +38,10 @@ class MoviesController extends Controller
         if(array_key_exists(0, $moviesList)){
         $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
         $moviesList[0]['poster_path'] = $urlPictureComplete;
-        return response()->json($moviesList[0]);
+        $movie = new MoviesResources($moviesList[0]);
+        return response()->json($movie->getMovies());
         } else{
-        return response()->json(["code"=> 400, "message"=> "Aucun film trouvé"]);
+        return response()->json(["code"=> $request->status(), "message"=> "Aucun film trouvé"]);
         }
     }
 
@@ -66,7 +67,7 @@ class MoviesController extends Controller
                         $movie->genres[] = [
                             "id" => $valueOrigin->id,
                             "name" => $valueOrigin->name
-                        ];     
+                        ];
                     }
                 }
             }
