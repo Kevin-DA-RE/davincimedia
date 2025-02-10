@@ -56,20 +56,22 @@ class MoviesController extends Controller
     public function getMovieWithGenres(string $name)
     {
         $movie = $this->getMovies($name)->getData();
+
         if(property_exists($movie, "id")){
             $genresList = $this->getGenres()->getData();
             $genresMovie = $movie->genre_ids;
             foreach ($genresList as $valueOrigin) {
                 foreach ($genresMovie as $valueMovie) {
                     if ($valueOrigin->id === $valueMovie) {
-                        $movie->genre_id = $valueOrigin->id;
-                        $movie->genre_name = $valueOrigin->name;
-                        dd($movie);
-                        return response()->json($movie);
+                        $movie->genres[] = [
+                            "id" => $valueOrigin->id,
+                            "name" => $valueOrigin->name
+                        ];     
                     }
                 }
             }
-
+            $movie = new MoviesResources($movie);
+            return response()->json($movie->getMovieWithGenres());
         } else {
             return response()->json([
                 "code" => 400,

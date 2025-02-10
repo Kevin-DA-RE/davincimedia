@@ -22,4 +22,16 @@ class MoviesResources extends JsonResource
        ];
     }
 
+
+    public function getMovieWithGenres()
+    {
+       return [
+        'id_movie' => $this->id,
+        'name' => $this->title,
+        'synopsis' => $this->overview,
+        'url_img' => $this->poster_path,
+        'genres' =>  $this->genres
+       ];
+    }
+
 }
