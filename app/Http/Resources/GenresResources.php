@@ -18,5 +18,13 @@ class GenresResources extends JsonResource
             'id' => $this->id,
             'name' => $this->name
            ];
-        }
+    }
+
+    public function getGenres()
+    {
+       return [
+        'id' => $this["id"],
+        'name' => $this["name"]
+       ];
+    }
 }

@@ -47,11 +47,17 @@ class MoviesController extends Controller
 
     public function getGenres()
     {
-        $request = Http::withQueryParameters([
-            "query" => ""
-            ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
-
-        return response()->json($request['genres']);
+        $request = Http::withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
+        $genres = $request["genres"];
+        dd($genres);
+        foreach ($genres as $genre) {
+            $genre[] = [
+                "id" => $genre["id"],
+                "name" => $genre["name"]
+            ];
+        }
+        dd($genre);
+        return response()->json($genres->getGenres());
     }
 
     public function getMovieWithGenres(string $name)
