@@ -25,7 +25,7 @@ class MoviesController extends Controller
         dd($genresList);
     }
 
-    public function getMovies(string $parameter)
+    public function getMovie(string $parameter)
     {
         $request = Http::withQueryParameters([
             "query" => $parameter,
@@ -36,10 +36,10 @@ class MoviesController extends Controller
 
         $moviesList = $request['results'];
         if(array_key_exists(0, $moviesList)){
-        $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
-        $moviesList[0]['poster_path'] = $urlPictureComplete;
-        $movie = new MoviesResources($moviesList[0]);
-        return response()->json($movie->getMovies());
+            $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
+            $moviesList[0]['poster_path'] = $urlPictureComplete;
+            $movie = new MoviesResources($moviesList[0]);
+        return response()->json($movie->getMovie());
         } else{
         return response()->json(["code"=> $request->status(), "message"=> "Aucun film trouvé"]);
         }
@@ -48,22 +48,13 @@ class MoviesController extends Controller
     public function getGenres()
     {
         $request = Http::withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
-        $genres = $request["genres"];
-        dd($genres);
-        foreach ($genres as $genre) {
-            $genre[] = [
-                "id" => $genre["id"],
-                "name" => $genre["name"]
-            ];
-        }
-        dd($genre);
-        return response()->json($genres->getGenres());
+
+        return response()->json($request->json("genres"));
     }
 
     public function getMovieWithGenres(string $name)
     {
-        $movie = $this->getMovies($name)->getData();
-
+        $movie = $this->getMovie($name)->getData();
         if(property_exists($movie, "id")){
             $genresList = $this->getGenres()->getData();
             $genresMovie = $movie->genre_ids;

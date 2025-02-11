@@ -22,13 +22,14 @@ class MoviesResources extends JsonResource
        ];
     }
 
-    public function getMovies()
+    public function getMovie()
     {
        return [
         'id' => $this['id'],
         'name' => $this['title'],
         'synopsis' => $this['overview'],
-        'url_img' => $this['poster_path']
+        'url_img' => $this['poster_path'],
+        'genre_ids' => $this['genre_ids']
        ];
     }
 
@@ -36,9 +37,9 @@ class MoviesResources extends JsonResource
     {
        return [
         'id_movie' => $this->id,
-        'name' => $this->title,
-        'synopsis' => $this->overview,
-        'url_img' => $this->poster_path,
+        'name' => $this->name,
+        'synopsis' => $this->synopsis,
+        'url_img' => $this->url_img,
         'genres' =>  $this->genres
        ];
     }
