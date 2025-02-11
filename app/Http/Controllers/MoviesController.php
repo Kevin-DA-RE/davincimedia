@@ -49,7 +49,7 @@ class MoviesController extends Controller
     {
         $request = Http::withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
 
-        return response()->json($request->json("genres"));
+        return response()->json(GenresResources::collection($request['genres']));
     }
 
     public function getMovieWithGenres(string $name)
