@@ -24,8 +24,6 @@ const panelGenre = ref("")
 
 
 const api = {
-  url_movies: "https://api.themoviedb.org/3/search/movie",
-  url_genres: "https://api.themoviedb.org/3/genre/movie/list?language=fr",
   url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
   url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
   url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
