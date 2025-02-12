@@ -62,7 +62,7 @@ class MoviesController extends Controller
                 foreach ($genresMovie as $valueMovie) {
                     if ($valueOrigin->id === $valueMovie) {
                         $movie->genres[] = [
-                            "id" => $valueOrigin->id,
+                            "id_genre" => $valueOrigin->id,
                             "name" => $valueOrigin->name
                         ];
                     }
