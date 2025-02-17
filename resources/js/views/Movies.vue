@@ -170,7 +170,7 @@ async function updateMovieToBackEnd(movie) {
 const url = `${api.url_backend_update_movie}/${movieIdOrigin.value}`
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
-    formData.append(`id_movie`, parseInt(movie.id))
+    formData.append(`id_movie`, parseInt(movie.id_movie))
     formData.append(`name`, movie.name)
     formData.append(`synopsis`, movie.synopsis)
     formData.append(`url_img`, movie.url_img)
