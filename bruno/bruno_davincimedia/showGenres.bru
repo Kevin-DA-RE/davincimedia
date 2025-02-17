@@ -1,0 +1,16 @@
+meta {
+  name: showGenres
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{DEV}}/api/movie/show-genres
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
