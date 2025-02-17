@@ -17,17 +17,14 @@ class MoviesController extends Controller
 
     public function test()
     {
-        $request = Http::withQueryParameters([
-            "query" => ""
-            ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
-
-        $genresList = $request['genres'];
-        dd($genresList);
+        $movies = Movie::with('genre')->get();
+        $movies = MoviesResources::collection($movies);
+        return response()->json($movies);
     }
 
     public function getMovie(string $parameter)
     {
-        $request = Http::withQueryParameters([
+        $request = Http::withOptions(['verify' => false])->withQueryParameters([
             "query" => $parameter,
             "include_adult" => false,
             "language" => "fr-FR",
@@ -47,7 +44,7 @@ class MoviesController extends Controller
 
     public function getGenres()
     {
-        $request = Http::withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
+        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
 
         return response()->json(GenresResources::collection($request['genres']));
     }
@@ -79,7 +76,7 @@ class MoviesController extends Controller
     }
 
     public function showMovies(){
-        $movies = Movie::all();
+        $movies = Movie::with('genre')->get();
         $movies = MoviesResources::collection($movies);
         return response()->json($movies);
     }
