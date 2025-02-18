@@ -136,7 +136,7 @@ async function onSubmit() {
 
 // Init FormDatato pour envoyer les datas
 const formData = new FormData()
-moviesList.value.forEach((movie, index) => {  
+moviesList.value.forEach((movie, index) => {
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id_movie))
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)

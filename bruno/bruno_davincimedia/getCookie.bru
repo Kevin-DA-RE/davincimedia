@@ -1,0 +1,15 @@
+meta {
+  name: getCookie
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{DEV}}/api/user
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
