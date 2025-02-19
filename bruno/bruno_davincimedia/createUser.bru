@@ -1,11 +1,11 @@
 meta {
-  name: getCookie
+  name: createUser
   type: http
   seq: 16
 }
 
-get {
-  url: {{DEV}}/api/user
+post {
+  url: {{DEV}}/api/user/register
   body: json
   auth: none
 }

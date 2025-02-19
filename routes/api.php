@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MoviesController;
@@ -16,15 +17,21 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    dd($request->user());
-    return $request->user();
-});
-
 Route::get('/', function () {
     return view('app');
 });
 
+
+Route::prefix('/user')->controller(AuthController::class)->group(function () {
+    Route::post('/register', 'createUser');
+    Route::get('/login', 'loginUsert');
+    Route::post('/logout', 'logoutUser');
+    Route::post('/forgot-password', 'forgotPasswordUser');
+});
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::post('/create-movie', 'createMovie');
@@ -38,6 +45,8 @@ Route::prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
     Route::get('/test', 'test');
 });
+
+
 
 Route::prefix('/post')->controller(PostController::class)->group(function () {
     Route::post('/create-post', 'createPost');
