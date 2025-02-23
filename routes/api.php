@@ -22,18 +22,15 @@ Route::get('/', function () {
 });
 
 
-Route::prefix('/user')->controller(AuthController::class)->group(function () {
+Route::prefix('user')->controller(AuthController::class)->group(function () {
     Route::post('/register', 'createUser');
-    Route::get('/login', 'loginUsert');
+    Route::post('/login', 'loginUser'); // Changement de get à post
     Route::post('/logout', 'logoutUser');
     Route::post('/forgot-password', 'forgotPasswordUser');
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-Route::prefix('movie')->controller(MoviesController::class)->group(function () {
+Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::post('/create-movie', 'createMovie');
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');
@@ -45,7 +42,6 @@ Route::prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
     Route::get('/test', 'test');
 });
-
 
 
 Route::prefix('/post')->controller(PostController::class)->group(function () {

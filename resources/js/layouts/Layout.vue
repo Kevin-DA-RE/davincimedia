@@ -1,14 +1,138 @@
-
 <script setup>
-import { ref } from "vue";
+import axios from "axios";
+import { onMounted, ref } from "vue";
 
+const formUser = ref(false);
+const formUserName = ref();
+const formUserEmail = ref();
+const formUserPassword = ref();
+const tab = ref('register');
 
+async function onSubmit() {
+    // Init FormData pour envoyer les datas
+    const formData = new FormData();
+    formData.append('name', formUserName.value);
+    formData.append('email', formUserEmail.value);
+    formData.append('password', formUserPassword.value);
+
+    const response = await axios
+        .post("http://127.0.0.1:8000/api/user/register", formData, {
+            headers: {
+                accept: "multipart/form-data"
+            }
+        })
+        .then((response) => {
+            return response.status;
+        })
+        .catch((error) => {
+            console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`);
+        });
+
+        tab.value = response === 200 ? 'login': 'register';
+        console.log(tab.value);
+
+}
+
+onMounted(async () => {
+    const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
+        .then((response) => {
+            return response.status;
+        })
+        .catch((error) => {
+            console.log(`error, ${error.response.status}`);
+            return error.response.status;
+        });
+    console.log(status);
+
+    formUser.value = status === 401 ? true : false;
+});
 </script>
-
 
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
+    <div v-if="formUser">
+        <q-dialog v-model="formUser" persistent>
+            <q-card>
+                <q-tabs
+                    v-model="tab"
+                    dense
+                    class="text-grey"
+                    active-color="primary"
+                    indicator-color="primary"
+                    align="justify"
+                    narrow-indicator
+                    >
+                    <q-tab name="register" label="S'inscrire" />
+                    <q-tab name="login" label="Se connecter" />
+                </q-tabs>
 
+                <q-separator />
+
+                <q-tab-panels v-model="tab" animated>
+                    <q-tab-panel name="register">
+                        <q-form
+                        @submit="onSubmit"
+                        @reset="onReset"
+                        class="q-gutter-md bg-white"
+                        >
+                        <h6>S'inscrire</h6>
+                            <q-input
+                                filled
+                                v-model="formUserName"
+                                label="Votre pseudo"
+                            />
+
+                            <q-input
+                                filled
+                                type="mail"
+                                v-model="formUserEmail"
+                                label="Votre adresse Email"
+                            />
+
+                            <q-input
+                                filled
+                                type="password"
+                                v-model="formUserPassword"
+                                label="Votre mot de passe"
+                            />
+                            <div>
+                                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+                                <q-btn label="S'inscrire" type="submit" color="primary"/>
+                            </div>
+                        </q-form>
+                    </q-tab-panel>
+
+                    <q-tab-panel name="login">
+                        <q-form
+                        @submit="onSubmit"
+                        @reset="onReset"
+                        class="q-gutter-md bg-white"
+                        >
+                        <h6>Se connecter</h6>
+                            <q-input
+                                filled
+                                type="mail"
+                                v-model="formUserEmail"
+                                label="Votre adresse Email"
+                            />
+
+                            <q-input
+                                filled
+                                type="password"
+                                v-model="formUserPassword"
+                                label="Votre mot de passe"
+                            />
+                            <div>
+                                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+                                <q-btn label="Se connecter" type="submit" color="primary"/>
+                            </div>
+                        </q-form>
+                    </q-tab-panel>
+                </q-tab-panels>
+            </q-card>
+        </q-dialog>
+    </div>
+    <div v-else>
     <q-header>
         <q-toolbar class="bg-dark text-white shadow-2 rounded-borders">
             <!-- Titre aligné à gauche -->
@@ -40,8 +164,8 @@ import { ref } from "vue";
     </q-header>
 
     <q-page-container>
-          <router-view></router-view>
+        <router-view></router-view>
     </q-page-container>
-
+    </div>
   </q-layout>
 </template>

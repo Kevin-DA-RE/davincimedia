@@ -6,10 +6,16 @@ meta {
 
 post {
   url: {{DEV}}/api/user/register
-  body: json
+  body: multipartForm
   auth: none
 }
 
 headers {
   Accept: application/json
+}
+
+body:multipart-form {
+  name: Kevin
+  email: dare.kevin21000@gmail.com
+  password: corentin*09
 }
