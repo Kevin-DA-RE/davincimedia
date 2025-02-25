@@ -8,7 +8,7 @@ const formUserEmail = ref();
 const formUserPassword = ref();
 const tab = ref('register');
 
-async function onSubmit() {
+async function onRegister() {
     // Init FormData pour envoyer les datas
     const formData = new FormData();
     formData.append('name', formUserName.value);
@@ -29,11 +29,33 @@ async function onSubmit() {
         });
 
         tab.value = response === 200 ? 'login': 'register';
-        console.log(tab.value);
 
 }
 
+async function onLogin() {
+    // Init FormData pour envoyer les datas
+    const formData = new FormData();
+    formData.append('email', formUserEmail.value);
+    formData.append('password', formUserPassword.value);
+
+    const response = await axios
+        .post("http://127.0.0.1:8000/api/user/login", formData, {
+            headers: {
+                accept: "multipart/form-data"
+            }
+        })
+        .then((response) => {
+            return response.data;
+        })
+        .catch((error) => {
+            console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`);
+        });
+
+        formUser.value = response === 200 ? false : true;
+}
 onMounted(async () => {
+    console.log(process.env.TOKEN_BACK_END);
+
     const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
         .then((response) => {
             return response.status;
@@ -42,13 +64,12 @@ onMounted(async () => {
             console.log(`error, ${error.response.status}`);
             return error.response.status;
         });
-    console.log(status);
-
     formUser.value = status === 401 ? true : false;
 });
 </script>
 
 <template>
+
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
     <div v-if="formUser">
         <q-dialog v-model="formUser" persistent>
@@ -71,7 +92,7 @@ onMounted(async () => {
                 <q-tab-panels v-model="tab" animated>
                     <q-tab-panel name="register">
                         <q-form
-                        @submit="onSubmit"
+                        @submit="onRegister"
                         @reset="onReset"
                         class="q-gutter-md bg-white"
                         >
@@ -96,7 +117,7 @@ onMounted(async () => {
                                 label="Votre mot de passe"
                             />
                             <div>
-                                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+                                <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
                                 <q-btn label="S'inscrire" type="submit" color="primary"/>
                             </div>
                         </q-form>
@@ -104,7 +125,7 @@ onMounted(async () => {
 
                     <q-tab-panel name="login">
                         <q-form
-                        @submit="onSubmit"
+                        @submit="onLogin"
                         @reset="onReset"
                         class="q-gutter-md bg-white"
                         >
@@ -123,7 +144,7 @@ onMounted(async () => {
                                 label="Votre mot de passe"
                             />
                             <div>
-                                <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+                                <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
                                 <q-btn label="Se connecter" type="submit" color="primary"/>
                             </div>
                         </q-form>
@@ -133,13 +154,13 @@ onMounted(async () => {
         </q-dialog>
     </div>
     <div v-else>
+
     <q-header>
         <q-toolbar class="bg-dark text-white shadow-2 rounded-borders">
             <!-- Titre aligné à gauche -->
             <q-toolbar-title class="q-mr-md">
                 Bienvenue dans votre bibliothèque DaVinciMedia !
             </q-toolbar-title>
-
             <!-- Tabs centrés -->
             <q-tabs align="center" class="gt-xs">
                 <q-route-tab :to="{ name: 'home' }" label="Accueil" icon="home" />

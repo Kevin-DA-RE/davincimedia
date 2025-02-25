@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -26,6 +27,24 @@ class AuthController extends Controller
             return response()->json(['message' => "l'utilisateur ".$validated['name']." a bien été crée"],200);
         } else {
             return response()->json(['message' => "l'adresse e-mail est déja utilisé"],400);
+        }
+    }
+    
+
+    public function loginUser(Request $request){
+        $validated = $request->validate([
+            'email' => 'required', 'string',
+            'password' => 'required', 'string',
+        ]);
+        $user = User::where('email', $validated['email'])->first();
+        if ($user) {
+            if (Hash::check($validated['password'], $user->password)) {
+                return $user->createToken('authToken')->plainTextToken;
+            } else {
+                return response()->json(['message' => "le mot de passe est incorrect"],400);
+            }
+        } else {
+            return response()->json(['message' => "l'adresse e-mail n'existe pas"],400);
         }
     }
 
