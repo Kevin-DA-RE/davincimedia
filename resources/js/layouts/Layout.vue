@@ -50,11 +50,11 @@ async function onLogin() {
         .catch((error) => {
             console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`);
         });
+console.log(response);
 
         formUser.value = response === 200 ? false : true;
 }
 onMounted(async () => {
-    console.log(process.env.TOKEN_BACK_END);
 
     const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
         .then((response) => {

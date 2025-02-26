@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -38,7 +39,7 @@ class AuthController extends Controller
         ]);
         $user = User::where('email', $validated['email'])->first();
         if ($user) {
-            if (Hash::check($validated['password'], $user->password)) {
+            if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
                 return $user->createToken('authToken')->plainTextToken;
             } else {
                 return response()->json(['message' => "le mot de passe est incorrect"],400);
