@@ -44,7 +44,7 @@ async function showMovies(){
         moviesListLoaded.value = movies.data
             }
             catch (error) {
-        console.log(error);
+                return error.response.data
   }
 }
 
@@ -63,7 +63,7 @@ async function showGenres(){
               genresListLoaded.value = genres.data
             }
             catch (error) {
-        console.log(error);
+                return error.response.data
   }
 }
 
@@ -80,9 +80,9 @@ async function showMoviesWithGenres(genre) {
                                 },
                                 })
                                 .then((movie) => movie.data)
-                                .catch((error) =>
-                                console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
-                                );
+                                .catch((error) => {
+                                  return error.response.data;
+                                });
 
                                 moviesListFiltred.value = moviesWithGenres
   }
@@ -106,9 +106,9 @@ async function getMovieWithGenre(name) {
   const url = `${api.url_backend_get_movies_genres}/${name}`
   const movie = await axios.get(url)
                       .then((movie) => movie.data)
-                      .catch((error) =>
-                        console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
-                      );
+                      .catch((error) =>{
+                        return error.response.data
+                      });
   if (movie.code == 400) {
     return {
       code: 400,

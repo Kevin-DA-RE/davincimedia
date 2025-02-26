@@ -25,7 +25,7 @@ async function onRegister() {
             return response.status;
         })
         .catch((error) => {
-            console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`);
+            return error.response.data;
         });
 
         tab.value = response === 200 ? 'login': 'register';
@@ -45,14 +45,16 @@ async function onLogin() {
             }
         })
         .then((response) => {
-            return response.data;
+            return {
+                'statut': response.status,
+                "data": response.data
+            };
         })
         .catch((error) => {
-            console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`);
+            return error.response.data;
         });
-console.log(response);
 
-        formUser.value = response === 200 ? false : true;
+        formUser.value = response.statut === 200 ? false : true;
 }
 onMounted(async () => {
 
@@ -61,7 +63,6 @@ onMounted(async () => {
             return response.status;
         })
         .catch((error) => {
-            console.log(`error, ${error.response.status}`);
             return error.response.status;
         });
     formUser.value = status === 401 ? true : false;
