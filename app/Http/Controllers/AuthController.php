@@ -30,7 +30,7 @@ class AuthController extends Controller
             return response()->json(['message' => "l'adresse e-mail est déja utilisé"],400);
         }
     }
-    
+
 
     public function loginUser(Request $request){
         $validated = $request->validate([
@@ -47,6 +47,11 @@ class AuthController extends Controller
         } else {
             return response()->json(['message' => "l'adresse e-mail n'existe pas"],400);
         }
+    }
+
+    public function logoutUser(Request $request){
+        Auth::logout();
+        return response()->json(['message' => "vous avez bien été déconnecté"],200);
     }
 
 }

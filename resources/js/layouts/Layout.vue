@@ -56,6 +56,18 @@ async function onLogin() {
 
         formUser.value = response.statut === 200 ? false : true;
 }
+async function onLogout() {
+    const response = await axios
+        .post("http://127.0.0.1:8000/api/user/logout",)
+        .then((response) => {
+            return response.status;
+        })
+        .catch((error) => {
+            return error.response.data;
+        });
+
+        formUser.value = response === 200 ? true : false;
+}
 onMounted(async () => {
 
     const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
@@ -174,10 +186,7 @@ onMounted(async () => {
                 <q-menu>
                     <q-list style="min-width: 150px">
                         <q-item clickable v-close-popup>
-                            <q-item-section>Se connecter</q-item-section>
-                        </q-item>
-                        <q-item clickable v-close-popup>
-                            <q-item-section>S'inscrire</q-item-section>
+                            <q-item-section @click="onLogout">Se deconnecter</q-item-section>
                         </q-item>
                     </q-list>
                 </q-menu>
