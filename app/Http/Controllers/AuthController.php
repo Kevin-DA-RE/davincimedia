@@ -50,6 +50,8 @@ class AuthController extends Controller
     }
 
     public function logoutUser(Request $request){
+        $user = $request->user();
+        $user->tokens()->delete(); // Supprimer tous les tokens de l'utilisateur
         Auth::logout();
         return response()->json(['message' => "vous avez bien été déconnecté"],200);
     }
