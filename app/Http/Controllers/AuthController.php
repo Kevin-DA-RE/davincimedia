@@ -37,9 +37,10 @@ class AuthController extends Controller
             'email' => 'required', 'string',
             'password' => 'required', 'string',
         ]);
+
         $user = User::where('email', $validated['email'])->first();
         if ($user) {
-            if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+            if (Auth::attempt($validated)) {
                 return $user->createToken('authToken')->plainTextToken;
             } else {
                 return response()->json(['message' => "le mot de passe est incorrect"],400);
@@ -51,9 +52,8 @@ class AuthController extends Controller
 
     public function logoutUser(Request $request){
         $user = $request->user();
-        $user->tokens()->delete(); // Supprimer tous les tokens de l'utilisateur
-        Auth::logout();
-        return response()->json(['message' => "vous avez bien été déconnecté"],200);
+            $user->tokens()->delete(); // Supprimer tous les tokens de l'utilisateur
+            return response()->json(['message' => "vous avez bien été déconnecté"],200);
     }
 
 }
