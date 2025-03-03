@@ -154,9 +154,9 @@ class MoviesController extends Controller
     public function deleteMovie (Request $request, Movie $movie)
     {
         $item = $request->validate([
-            'id_movie' => 'required', 'integer',
-            "genres.*.id_genre" =>  'required', 'integer',
-            "genres.*.name" => 'required', 'string'
+            'id_movie' => ['required', 'integer'],
+            "genres.*.id_genre" =>  ['required', 'integer'],
+            "genres.*.name" => ['required', 'string']
         ]);
         $genre_ids=[];
 

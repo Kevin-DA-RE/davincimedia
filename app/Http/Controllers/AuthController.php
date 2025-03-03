@@ -10,32 +10,29 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function testUser(Request $request, User $user)
+    public function testUser(Request $request)
     {
         $passwordRequest = $request->validate([
-            'email' => 'required', 'string',
-            'password' => 'required', 'string',
+            'email' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
-        $user->where('email', $passwordRequest['email'])->first();
+        $user = User::where('email', $passwordRequest['email'])->first();
 
-        if ($user) {
-            if (Hash::check($passwordRequest['password'], $user->password)) {
-                $user->password = Hash::make($passwordRequest['password']);
-                return response()->json(['message' => "Le mot de passe a été modifié avec succès"], 200);
-            } else {
-                return response()->json(['message' => "Les mots de passe ne correspondent pas"], 400);
-            }
-        } else {
-            return response()->json(['message' => "L'utilisateur n'existe pas"], 400);
+        if (!$user && !Hash::check($passwordRequest['password'], $user->password)) {
+            return response()->json(['message' => "Les mots de passe ne correspondent pas"], 400);
         }
+
+        $user->password = Hash::make($passwordRequest['password']);
+        return response()->json(['message' => "Le mot de passe a été modifié avec succès"], 200);
+
     }
 
     public function createUser(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required', 'string',
-            'email' => 'required', 'string',
-            'password' => 'required', 'string',
+            'name' => ['required', 'string'],
+            'email' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
 
         $user = User::firstOrCreate([
@@ -57,44 +54,40 @@ class AuthController extends Controller
     public function loginUser(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required', 'string',
-            'password' => 'required', 'string',
+            'email' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
 
         $user = User::where('email', $validated['email'])->first();
 
-        if ($user && Hash::check($validated['password'], $user->password)) {
-            $token = $user->createToken('authToken')->plainTextToken;
-            return response()->json(['token' => $token, 'message' => "Authentification réussie"], 200);
-        } else {
+        if (!$user || !Hash::check($validated['password'], $user->password)) {
             return response()->json(['message' => "Les identifiants sont incorrects"], 400);
         }
+        $token = $user->createToken('authToken')->plainTextToken;
+        return response()->json(['token' => $token, 'message' => "Authentification réussie"], 200);
+
     }
 
-    public function forgotPassword(Request $request, User $user)
+    public function forgotPassword(Request $request)
     {
         $passwordRequest = $request->validate([
-            'email' => 'required', 'string',
-            'password' => 'required', 'string',
+            'email' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
-        $user->where('email', $passwordRequest['email'])->first();
+        $user = User::where('email', $passwordRequest['email'])->first();
 
-        if ($user) {
-            if (Hash::check($passwordRequest['password'], $user->password)) {
-                $user->password = Hash::make($passwordRequest['password']);
-                return response()->json(['message' => "Le mot de passe a été modifié avec succès"], 200);
-            } else {
-                return response()->json(['message' => "Les mots de passe ne correspondent pas"], 400);
-            }
-        } else {
-            return response()->json(['message' => "L'utilisateur n'existe pas"], 400);
+        if (!$user && !Hash::check($passwordRequest['password'], $user->password)) {
+            return response()->json(['message' => "Les mots de passe ne correspondent pas"], 400);
         }
+
+        $user->password = Hash::make($passwordRequest['password']);
+        return response()->json(['message' => "Le mot de passe a été modifié avec succès"], 200);
+
     }
 
     public function logoutUser(Request $request){
         $user = $request->user();
-        $user->tokens()->delete(); // Supprimer tous les tokens de l'utilisateur
-        Auth::logout();
+        $user->tokens()->delete();
         return response()->json(['message' => "vous avez bien été déconnecté"],200);
     }
 
