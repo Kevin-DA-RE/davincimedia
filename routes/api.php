@@ -25,10 +25,11 @@ Route::get('/', function () {
 Route::prefix('user')->controller(AuthController::class)->group(function () {
     Route::post('/register', 'createUser');
     Route::post('/login', 'loginUser'); // Changement de get à post
-    Route::middleware('auth:sanctum')->group(function () {        
+    Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', 'logoutUser');
-        Route::post('/forgot-password', 'forgotPasswordUser');
-    });    
+    });
+    Route::post('/forgot-password', 'forgotPasswordUser');
+    Route::post('/test_user', 'testUser');
 });
 
 

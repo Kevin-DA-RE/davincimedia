@@ -1,0 +1,20 @@
+meta {
+  name: testUser
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{DEV}}/api/user/test_user/
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+body:multipart-form {
+  email: kevin@gmail.com
+  password: kevin
+}

@@ -3,10 +3,25 @@ import axios from "axios";
 import { onMounted, ref } from "vue";
 
 const formUser = ref(false);
+const forgotPassword = ref(false);
 const formUserName = ref();
 const formUserEmail = ref();
 const formUserPassword = ref();
 const tab = ref('register');
+
+
+onMounted(async () => {
+
+const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
+    .then((response) => {
+        return response.status;
+    })
+    .catch((error) => {
+        return error.response.status;
+    });
+formUser.value = status === 401 ? true : false;
+tab.value = 'login';
+});
 
 async function onRegister() {
     // Init FormData pour envoyer les datas
@@ -68,17 +83,28 @@ async function onLogout() {
 
         formUser.value = response === 200 ? true : false;
 }
-onMounted(async () => {
 
-    const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
+
+async function onResetPassword() {
+    const response = await axios
+        .post("http://127.0.0.1:8000/api/user/forgot-password",)
         .then((response) => {
             return response.status;
         })
         .catch((error) => {
-            return error.response.status;
+            return error.response.data;
         });
-    formUser.value = status === 401 ? true : false;
-});
+
+        tab.value = response === 200 ? 'login': tab.value;
+        forgotPassword.value = false;
+
+}
+
+async function onCancelPassword() {
+    forgotPassword.value = false;
+}
+
+
 </script>
 
 <template>
@@ -156,13 +182,41 @@ onMounted(async () => {
                                 v-model="formUserPassword"
                                 label="Votre mot de passe"
                             />
+                            <p style="color: blue;cursor: pointer;" @click="forgotPassword = true">Mot de passe oublié ?</p>
                             <div>
                                 <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
                                 <q-btn label="Se connecter" type="submit" color="primary"/>
                             </div>
                         </q-form>
                     </q-tab-panel>
+
                 </q-tab-panels>
+                <q-dialog name="forgotPassword" v-model="forgotPassword" persistent>
+                        <q-form
+                        @submit="onResetPassword"
+                        @reset="onCancelPassword"
+                        class="q-gutter-md bg-white"
+                        >
+                        <h6>Mot de passe oublié</h6>
+                            <q-input
+                                filled
+                                type="password"
+                                v-model="formForgotPassword"
+                                label="Veuillez saisir votre nouveau mot de passe"
+                            />
+
+                            <q-input
+                                filled
+                                type="password"
+                                v-model="confirmFormForgotPassword"
+                                label="Confirmer votre nouveau mot de passe"
+                            />
+                            <div>
+                                <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
+                                <q-btn label="Réinitialiser votre mot de passe" type="submit" color="primary"/>
+                            </div>
+                        </q-form>
+                    </q-dialog>
             </q-card>
         </q-dialog>
     </div>

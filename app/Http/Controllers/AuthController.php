@@ -10,6 +10,26 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function testUser(Request $request, User $user)
+    {
+        $passwordRequest = $request->validate([
+            'email' => 'required', 'string',
+            'password' => 'required', 'string',
+        ]);
+        $user->where('email', $passwordRequest['email'])->first();
+
+        if ($user) {
+            if (Hash::check($passwordRequest['password'], $user->password)) {
+                $user->password = Hash::make($passwordRequest['password']);
+                return response()->json(['message' => "Le mot de passe a été modifié avec succès"], 200);
+            } else {
+                return response()->json(['message' => "Les mots de passe ne correspondent pas"], 400);
+            }
+        } else {
+            return response()->json(['message' => "L'utilisateur n'existe pas"], 400);
+        }
+    }
+
     public function createUser(Request $request)
     {
         $validated = $request->validate([
@@ -17,43 +37,65 @@ class AuthController extends Controller
             'email' => 'required', 'string',
             'password' => 'required', 'string',
         ]);
-        $user = User::where('email', $validated['email'])->first();
 
-        if (!$user) {
-            $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => bcrypt($validated['password']),
-            ]);
-            return response()->json(['message' => "l'utilisateur ".$validated['name']." a bien été crée"],200);
+        $user = User::firstOrCreate([
+            'email' => $validated['email'],
+        ], [
+            'name' => $validated['name'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        if ($user->id) {
+            return response()->json(['message' => "l'utilisateur est deja inscrit sur le site"],226);
         } else {
-            return response()->json(['message' => "l'adresse e-mail est déja utilisé"],400);
+            return response()->json(['message' => "L'utilisateur a été crée qvec succès"],201);
         }
+
     }
 
 
-    public function loginUser(Request $request){
+    public function loginUser(Request $request)
+    {
         $validated = $request->validate([
             'email' => 'required', 'string',
             'password' => 'required', 'string',
         ]);
 
         $user = User::where('email', $validated['email'])->first();
+
+        if ($user && Hash::check($validated['password'], $user->password)) {
+            $token = $user->createToken('authToken')->plainTextToken;
+            return response()->json(['token' => $token, 'message' => "Authentification réussie"], 200);
+        } else {
+            return response()->json(['message' => "Les identifiants sont incorrects"], 400);
+        }
+    }
+
+    public function forgotPassword(Request $request, User $user)
+    {
+        $passwordRequest = $request->validate([
+            'email' => 'required', 'string',
+            'password' => 'required', 'string',
+        ]);
+        $user->where('email', $passwordRequest['email'])->first();
+
         if ($user) {
-            if (Auth::attempt($validated)) {
-                return $user->createToken('authToken')->plainTextToken;
+            if (Hash::check($passwordRequest['password'], $user->password)) {
+                $user->password = Hash::make($passwordRequest['password']);
+                return response()->json(['message' => "Le mot de passe a été modifié avec succès"], 200);
             } else {
-                return response()->json(['message' => "le mot de passe est incorrect"],400);
+                return response()->json(['message' => "Les mots de passe ne correspondent pas"], 400);
             }
         } else {
-            return response()->json(['message' => "l'adresse e-mail n'existe pas"],400);
+            return response()->json(['message' => "L'utilisateur n'existe pas"], 400);
         }
     }
 
     public function logoutUser(Request $request){
         $user = $request->user();
-            $user->tokens()->delete(); // Supprimer tous les tokens de l'utilisateur
-            return response()->json(['message' => "vous avez bien été déconnecté"],200);
+        $user->tokens()->delete(); // Supprimer tous les tokens de l'utilisateur
+        Auth::logout();
+        return response()->json(['message' => "vous avez bien été déconnecté"],200);
     }
 
 }
