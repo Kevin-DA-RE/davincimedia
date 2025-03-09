@@ -1,26 +1,27 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref } from "vue";
+import FormUser from "../views/slot/formUser.vue";
 
 const formUser = ref(false);
+const modeForm = ref("login");
 const forgotPassword = ref(false);
-const formUserName = ref();
-const formUserEmail = ref();
-const formUserPassword = ref();
-const tab = ref('register');
-
+const formUserName = ref("");
+const formUserEmail = ref("");
+const formUserPassword = ref("");
+const formForgotPassword = ref("");
+const confirmFormForgotPassword = ref("");
+const checkAccount = ref(false);
 
 onMounted(async () => {
-
-const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
-    .then((response) => {
-        return response.status;
-    })
-    .catch((error) => {
-        return error.response.status;
-    });
-formUser.value = status === 401 ? true : false;
-tab.value = 'login';
+    const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
+        .then((response) => {
+            return response.status;
+        })
+        .catch((error) => {
+            return error.response.status;
+        });
+    formUser.value = status === 401 ? true : false;
 });
 
 async function onRegister() {
@@ -43,8 +44,7 @@ async function onRegister() {
             return error.response.data;
         });
 
-        tab.value = response === 200 ? 'login': 'register';
-
+        modeForm.value = response === 200 ? 'login' : 'register';
 }
 
 async function onLogin() {
@@ -69,8 +69,9 @@ async function onLogin() {
             return error.response.data;
         });
 
-        formUser.value = response.statut === 200 ? false : true;
+    formUser.value = response.statut === 200 ? false : true;
 }
+
 async function onLogout() {
     const response = await axios
         .post("http://127.0.0.1:8000/api/user/logout",)
@@ -81,13 +82,16 @@ async function onLogout() {
             return error.response.data;
         });
 
-        formUser.value = response === 200 ? true : false;
+    formUser.value = response === 200 ? true : false;
 }
 
 
 async function onResetPassword() {
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/forgot-password",)
+        .post("http://127.0.0.1:8000/api/user/forgot-password", {
+            email: formUserEmail.value,
+            password: formForgotPassword.value,
+        })
         .then((response) => {
             return response.status;
         })
@@ -95,133 +99,116 @@ async function onResetPassword() {
             return error.response.data;
         });
 
-        tab.value = response === 200 ? 'login': tab.value;
-        forgotPassword.value = false;
-
-}
-
-async function onCancelPassword() {
+    tab.value = response === 200 ? 'login' : tab.value;
     forgotPassword.value = false;
 }
 
+async function checkEmail() {
+    const response = await axios
+        .post("http://127.0.0.1:8000/api/user/check-email",)
+        .then((response) => {
+            return response.status;
+        })
+        .catch((error) => {
+            return error.response.data;
+        });
 
+        checkAccount.value = response === 200 ? true : false;
+}
+
+async function onSubmit() {
+    switch (modeForm.value) {
+        case 'register':
+            await onRegister();
+            break;
+
+        case 'login':
+            await onLogin();
+            break;
+
+        default:
+            await onResetPassword();
+            break;
+    }
+}
+
+function onReset() {
+    formUserName.value = '';
+    formUserEmail.value = '';
+    formUserPassword.value = '';
+    formForgotPassword.value = '';
+    confirmFormForgotPassword.value = '';
+}
 </script>
 
 <template>
-
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
     <div v-if="formUser">
-        <q-dialog v-model="formUser" persistent>
-            <q-card>
-                <q-tabs
-                    v-model="tab"
-                    dense
-                    class="text-grey"
-                    active-color="primary"
-                    indicator-color="primary"
-                    align="justify"
-                    narrow-indicator
-                    >
-                    <q-tab name="register" label="S'inscrire" />
-                    <q-tab name="login" label="Se connecter" />
-                </q-tabs>
+        <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+            <div v-if="modeForm === 'register'">
+                <q-input
+                filled
+                v-model="formUserName"
+                label="Votre pseudo"
+                />
 
-                <q-separator />
-
-                <q-tab-panels v-model="tab" animated>
-                    <q-tab-panel name="register">
-                        <q-form
-                        @submit="onRegister"
-                        @reset="onReset"
-                        class="q-gutter-md bg-white"
-                        >
-                        <h6>S'inscrire</h6>
-                            <q-input
-                                filled
-                                v-model="formUserName"
-                                label="Votre pseudo"
-                            />
-
-                            <q-input
-                                filled
-                                type="mail"
-                                v-model="formUserEmail"
-                                label="Votre adresse Email"
-                            />
-
-                            <q-input
-                                filled
-                                type="password"
-                                v-model="formUserPassword"
-                                label="Votre mot de passe"
-                            />
-                            <div>
-                                <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
-                                <q-btn label="S'inscrire" type="submit" color="primary"/>
-                            </div>
-                        </q-form>
-                    </q-tab-panel>
-
-                    <q-tab-panel name="login">
-                        <q-form
-                        @submit="onLogin"
-                        @reset="onReset"
-                        class="q-gutter-md bg-white"
-                        >
-                        <h6>Se connecter</h6>
-                            <q-input
-                                filled
-                                type="mail"
-                                v-model="formUserEmail"
-                                label="Votre adresse Email"
-                            />
-
-                            <q-input
-                                filled
-                                type="password"
-                                v-model="formUserPassword"
-                                label="Votre mot de passe"
-                            />
-                            <p style="color: blue;cursor: pointer;" @click="forgotPassword = true">Mot de passe oublié ?</p>
-                            <div>
-                                <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
-                                <q-btn label="Se connecter" type="submit" color="primary"/>
-                            </div>
-                        </q-form>
-                    </q-tab-panel>
-
-                </q-tab-panels>
-                <q-dialog name="forgotPassword" v-model="forgotPassword" persistent>
-                        <q-form
-                        @submit="onResetPassword"
-                        @reset="onCancelPassword"
-                        class="q-gutter-md bg-white"
-                        >
-                        <h6>Mot de passe oublié</h6>
-                            <q-input
-                                filled
-                                type="password"
-                                v-model="formForgotPassword"
-                                label="Veuillez saisir votre nouveau mot de passe"
-                            />
-
-                            <q-input
-                                filled
-                                type="password"
-                                v-model="confirmFormForgotPassword"
-                                label="Confirmer votre nouveau mot de passe"
-                            />
-                            <div>
-                                <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
-                                <q-btn label="Réinitialiser votre mot de passe" type="submit" color="primary"/>
-                            </div>
-                        </q-form>
-                    </q-dialog>
-            </q-card>
-        </q-dialog>
+                <q-input
+                    filled
+                    type="mail"
+                    v-model="formUserEmail"
+                    label="Votre adresse Email"
+                />
+                <q-input
+                    filled
+                    type="password"
+                    v-model="formUserPassword"
+                    label="Votre mot de passe"
+                />
+            </div>
+            <div v-else-if="modeForm === 'login'">
+                <q-input
+                filled
+                type="mail"
+                v-model="formUserEmail"
+                label="Votre adresse Email"
+                />
+                <q-input
+                    filled
+                    type="password"
+                    v-model="formUserPassword"
+                    label="Votre mot de passe"
+                />
+                <p style="color: blue;cursor: pointer;" @click="forgotPassword = true">Mot de passe oublié ?</p>
+            </div>
+            <div v-else>
+                <q-input
+                    filled
+                    type="mail"
+                    v-model="formUserEmail"
+                    label="Votre adresse Email"
+                    @change="checkEmail()"
+                />
+                <div v-if="checkAccount === true">
+                    <q-input
+                        filled
+                        type="password"
+                        v-model="formForgotPassword"
+                        label="Votre nouveau mot de passe"
+                    />
+                    <q-input
+                        filled
+                        type="password"
+                        v-model="confirmFormForgotPassword"
+                        label="Confirmer votre mot de passe"
+                    />
+                </div>
+                <div v-else>
+                    <p style="color: red;">Veuillez saisire une autre adresse mail</p>
+                </div>
+            </div>
+        </FormUser>
     </div>
     <div v-else>
-
     <q-header>
         <q-toolbar class="bg-dark text-white shadow-2 rounded-borders">
             <!-- Titre aligné à gauche -->

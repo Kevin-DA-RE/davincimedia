@@ -28,6 +28,7 @@ Route::prefix('user')->controller(AuthController::class)->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', 'logoutUser');
     });
+    Route::post('/check-email', 'checkEmail');
     Route::post('/forgot-password', 'forgotPasswordUser');
     Route::post('/test_user', 'testUser');
 });
