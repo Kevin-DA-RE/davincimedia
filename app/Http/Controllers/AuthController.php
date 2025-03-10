@@ -28,5 +28,17 @@ class AuthController extends Controller
             return response()->json(['message' => "l'adresse e-mail est déja utilisé"],400);
         }
     }
+    public function checkEmail(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required', 'string',
+        ]);
+        $user = User::where('email', $validated['email'])->first();
+        if ($user) {
+            return response()->json(['code'=> 200, 'message' => "l'adresse e-mail est presente en base"]);
+        } else {
+            return response()->json(['code'=> 400,'message' => "Aucun compte n'est associé a cette adresse"]);
+        }
+    }
 
 }

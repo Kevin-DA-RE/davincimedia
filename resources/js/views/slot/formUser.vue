@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits, computed } from 'vue'
+import { defineProps, computed } from 'vue'
 
 const props = defineProps({
     mode: String
@@ -41,7 +41,7 @@ function onResetForm(){
 
 
 <template>
-    <q-dialog persistent>
+   
     <q-form
         @submit.prevent="onSubmitForm"
         @reset="onResetForm"
@@ -54,7 +54,7 @@ function onResetForm(){
             <q-btn :label="labelSubmit" type="submit" color="primary"/>
         </div>
         </q-form>
-    </q-dialog>
+
 </template>
 
 
