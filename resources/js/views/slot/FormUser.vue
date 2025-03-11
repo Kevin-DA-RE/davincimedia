@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, computed } from 'vue'
+import {  computed } from 'vue'
 
 const props = defineProps({
     mode: String
@@ -41,7 +41,7 @@ function onResetForm(){
 
 
 <template>
-   
+
     <q-form
         @submit.prevent="onSubmitForm"
         @reset="onResetForm"
