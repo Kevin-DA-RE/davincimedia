@@ -1,0 +1,15 @@
+meta {
+  name: checkUser
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{DEV}}/api/user/check-user
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}

@@ -5,20 +5,18 @@ import Auth from "./Auth.vue";
 import axios from "axios";
 
 
-const isAuthentified = ref(false);
+const isAuthentified = ref();
 
 
 onMounted(async () => {
-    /*
-    const status = await axios.get("http://127.0.0.1:8000/api/movie/show-movies")
+    const status = await axios.get("http://127.0.0.1:8000/api/user/check-user")
         .then((response) => {
-            return response.status;
+            return response.data;
         })
         .catch((error) => {
             return error.response.status;
         });
-        */
-
+        isAuthentified.value = status.code === 200 ? true : false;
 });
 
 function authValidated() {
@@ -27,7 +25,7 @@ function authValidated() {
 
 async function onLogout() {
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/logout",)
+        .post("http://127.0.0.1:8000/api/user/logout",{}, { withCredentials: true })
         .then((response) => {
             return response.status;
         })

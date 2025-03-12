@@ -23,6 +23,7 @@ Route::get('/', function () {
 
 
 Route::prefix('user')->controller(AuthController::class)->group(function () {
+    Route::get('/check-user', 'checkUser');
     Route::post('/register', 'createUser');
     Route::post('/login', 'loginUser');
     Route::middleware('auth:sanctum')->group(function () {
@@ -30,7 +31,6 @@ Route::prefix('user')->controller(AuthController::class)->group(function () {
     });
     Route::post('/check-email', 'checkEmail');
     Route::post('/forgot-password', 'forgotPasswordUser');
-    Route::post('/test_user', 'testUser');
 });
 
 

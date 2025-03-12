@@ -85,9 +85,7 @@ async function onResetPassword() {
         .catch((error) => {
             return error.response.data;
         });
-
-    tab.value = response === 200 ? 'login' : tab.value;
-    forgotPassword.value = false;
+        modeForm.value = "login"
 }
 
 async function checkEmailLogin() {
@@ -129,17 +127,14 @@ async function checkEmailRegister() {
 async function onSubmit() {
     switch (modeForm.value) {
         case 'register':
-            console.log("on passe dans register ");
             await onRegister();
             break;
 
         case 'login':
-            console.log("on passe dans login ");
             await onLogin();
             break;
 
         default:
-            console.log("on passe dans default ");
             await onResetPassword();
             break;
     }

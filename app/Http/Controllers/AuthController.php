@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -22,7 +23,7 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => bcrypt($validated['password']),
+                'password' => Hash::make($validated['password']),
             ]);
             return response()->json(['message' => "l'utilisateur ".$validated['name']." a bien été crée"],200);
         } else {
@@ -36,21 +37,17 @@ class AuthController extends Controller
             'email' => 'required', 'string',
             'password' => 'required', 'string',
         ]);
-        $user = User::where('email', $validated['email'])->first();
-        if ($user) {
-            if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
-                $user->createToken('authToken')->plainTextToken;
-                return response()->json(['message' => "l'utilisateur est connecté"],200);
-            } else {
-                return response()->json(['message' => "l'adresse e-mail ou le mot de passe est incorrect"],400);
-            }
+        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+            $request->session()->regenerate(); // Sécurise la session
+
+            return response()->json(['message' => "l'utilisateur est connecté"],200);
         } else {
             return response()->json(['message' => "l'adresse e-mail ou le mot de passe est incorrect"],400);
         }
     }
 
     public function logoutUser(Request $request){
-        Auth::logout();
+        Auth::guard('web')->logout(); // Déconnecte l'utilisateur
         return response()->json(['message' => "vous avez bien été déconnecté"],200);
     }
 
@@ -67,5 +64,25 @@ class AuthController extends Controller
         }
     }
 
+    public function checkUser(){
+        if (Auth::check()) {
+            return response()->json(['code'=> 200,'message' => "L'utilisateur est authentifié"]);
+        } else {
+            return response()->json(['code'=> 400,'message' => "L'utilisateur n'est pas authentifié"]);
+        }
+    }
+    public function forgotPasswordUser(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required', 'string',
+            'password' => 'required', 'string',
+        ]);
+        $user = User::where('email', $validated['email'])->first();
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        return response()->json(['code'=> 200,'message' => "Votre mot de passe a été réinitalisée"]);
+
+    }
 
 }

@@ -1,0 +1,21 @@
+meta {
+  name: loginUser
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{DEV}}/api/user/login
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+body:multipart-form {
+  name: Kevin
+  email: dare.kevin21000@gmail.com
+  password: corentin*09
+}
