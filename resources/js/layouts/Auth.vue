@@ -6,7 +6,6 @@ import FormUser from "../views/slot/FormUser.vue";
 const formDialog = ref(false);
 const modeForm = ref("register");
 const initAuth = ref(true)
-const forgotPassword = ref(false);
 const formUserName = ref("");
 const formUserEmail = ref("");
 const formUserPassword = ref("");
@@ -173,13 +172,11 @@ function backToRegister() {
 
 <template>
     <q-dialog v-model="initAuth" persistent >
-        <div>
+        
             <div>
-                <p>Bienvenue sur l'écran de connection à votre application <br>
+                <p class="text-h6">Bienvenue sur
                 Da Vinci Media !
                 </p>
-            </div>
-            <div>
                 <FormUser
                 :mode="modeForm"
                 @submit="onSubmit"
@@ -189,6 +186,7 @@ function backToRegister() {
                     filled
                     v-model="formUserName"
                     label="Votre pseudo"
+                    class="q-pa-md"
                     />
 
                     <q-input
@@ -196,20 +194,26 @@ function backToRegister() {
                         type="mail"
                         v-model="formUserEmail"
                         label="Votre adresse Email"
+                        class="q-pa-md"
                         @change="checkEmailRegister()"
                     />
                     <q-input
                         filled
                         type="password"
                         v-model="formUserPassword"
+                        class="q-pa-md"
                         label="Votre mot de passe"
                     />
                     <div v-show="checkErrorMail">
                         <p style="color: red;">{{messageError}}</p>
                     </div>
                 </FormUser>
-                <q-btn color="primary" label="Se connecter" @click="Login()"/>
-            </div>
+                <div class="bg-white q-pa-md">
+                    <p>Se Connecter</p>
+                     <q-btn color="primary" label="Se connecter" @click="Login()"/>
+                </div>
+               
+
         </div>
     </q-dialog>
     <q-dialog v-model="formDialog" persistent>
@@ -220,15 +224,17 @@ function backToRegister() {
                     filled
                     type="mail"
                     v-model="formUserEmail"
+                    class="q-pa-md"
                     label="Votre adresse Email"
                     />
                     <q-input
                         filled
                         type="password"
                         v-model="formUserPassword"
+                        class="q-pa-md"
                         label="Votre mot de passe"
                     />
-                    <p class="forgotPassword"  @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
+                    <p class="forgotPassword q-pl-md"  @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
                 </FormUser>
                 <q-btn color="primary" label="Revenir à la page de connexion" @click="backToRegister()"/>
 
@@ -240,6 +246,7 @@ function backToRegister() {
                         filled
                         type="mail"
                         v-model="formUserEmail"
+                        class="q-pa-md"
                         label="Votre adresse Email"
                         @change="checkEmailLogin()"
                     />
@@ -248,12 +255,14 @@ function backToRegister() {
                             filled
                             type="password"
                             v-model="formForgotPassword"
+                            class="q-pa-md"
                             label="Votre nouveau mot de passe"
                         />
                         <q-input
                             filled
                             type="password"
                             v-model="confirmFormForgotPassword"
+                            class="q-pa-md"
                             label="Confirmer votre mot de passe"
                         />
                     </div>

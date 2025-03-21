@@ -5,6 +5,7 @@ import Auth from "./Auth.vue";
 import axios from "axios";
 
 
+
 const isAuthentified = ref();
 
 
@@ -40,7 +41,7 @@ async function onLogout() {
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
     <div v-if="!isAuthentified">
-        <Auth :formDialog="formDialog" @authValidated="authValidated"/>
+        <Auth @authValidated="authValidated"/>
     </div>
     <div v-else>
         <q-header>

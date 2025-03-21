@@ -41,20 +41,21 @@ function onResetForm(){
 
 
 <template>
-
+<div class="q-mb-md">
     <q-form
         @submit.prevent="onSubmitForm"
         @reset="onResetForm"
         class="q-gutter-md bg-white"
+        dark
         >
-        <h6>{{title}}</h6>
+        <p class="text-h6 q-pl-md q-pt-md">{{title}}</p>
         <slot></slot>
-        <div>
-            <q-btn label="Annuler" type="reset" color="primary" flat class="q-ml-sm" />
+        <div >
+            <q-btn label="Annuler" type="reset" color="primary" flat class="q-ma-md" />
             <q-btn :label="labelSubmit" type="submit" color="primary"/>
         </div>
         </q-form>
-
+    </div>
 </template>
 
 
