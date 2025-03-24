@@ -3,10 +3,12 @@
 import { onMounted, ref } from "vue";
 import Auth from "./Auth.vue";
 import axios from "axios";
+import {useQuasar}  from "quasar"
 
 
 
 const isAuthentified = ref();
+const quasar = useQuasar()
 
 
 onMounted(async () => {
