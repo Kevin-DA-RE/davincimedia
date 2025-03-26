@@ -4,7 +4,6 @@ import axios from "axios";
 import FormUser from "../views/slot/FormUser.vue";
 
 const formDialog = ref(false);
-const modeForm = ref("register");
 const initAuth = ref(true)
 const formUserName = ref("");
 const formUserEmail = ref("");
@@ -16,6 +15,11 @@ const checkErrorMail = ref(false);
 const messageError = ref()
 
 const emit = defineEmits(['authValidated'])
+
+const props = defineProps({
+    mode: String
+})
+
 
 async function onRegister() {
     // Init FormData pour envoyer les datas
@@ -68,12 +72,8 @@ async function onLogin() {
         emit('authValidated')
 }
 
-
-
-
-
 async function onResetPassword() {
-    const response = await axios
+    await axios
         .post("http://127.0.0.1:8000/api/user/forgot-password", {
             email: formUserEmail.value,
             password: formForgotPassword.value,
@@ -172,13 +172,10 @@ function backToRegister() {
 
 <template>
     <q-dialog v-model="initAuth" persistent >
-        
-            <div>
-                <p class="text-h6">Bienvenue sur
-                Da Vinci Media !
-                </p>
+
+            <div v-if="props.mode === 'register'">
                 <FormUser
-                :mode="modeForm"
+                :mode="props.mode"
                 @submit="onSubmit"
                 @reset="onReset"
                 >
@@ -212,14 +209,9 @@ function backToRegister() {
                     <p>Se Connecter</p>
                      <q-btn color="primary" label="Se connecter" @click="Login()"/>
                 </div>
-               
-
-        </div>
-    </q-dialog>
-    <q-dialog v-model="formDialog" persistent>
-            <div v-if="modeForm === 'login'">
-
-                <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+            </div>
+            <div v-else-if="props.mode === 'login'">
+                <FormUser :mode="props.mode" @submit="onSubmit" @reset="onReset">
                     <q-input
                     filled
                     type="mail"
@@ -237,11 +229,9 @@ function backToRegister() {
                     <p class="forgotPassword q-pl-md"  @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
                 </FormUser>
                 <q-btn color="primary" label="Revenir à la page de connexion" @click="backToRegister()"/>
-
             </div>
             <div v-else>
-
-                <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+                <FormUser :mode="props.mode" @submit="onSubmit" @reset="onReset">
                     <q-input
                         filled
                         type="mail"
@@ -271,7 +261,6 @@ function backToRegister() {
                         <p style="color: red;">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
                     </div>
                 </FormUser>
-
             </div>
-        </q-dialog>
+    </q-dialog>
 </template>

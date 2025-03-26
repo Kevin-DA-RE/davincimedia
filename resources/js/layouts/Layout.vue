@@ -6,8 +6,8 @@ import axios from "axios";
 
 
 
-const isAuthentified = ref();
-
+const modeForm = ref();
+const isAuthentified = ref(false);
 
 onMounted(async () => {
     const status = await axios.get("http://127.0.0.1:8000/api/user/check-user")
@@ -17,6 +17,7 @@ onMounted(async () => {
         .catch((error) => {
             return error.response.status;
         });
+        modeForm.value = status.code === 200 ? 'login' : 'register';
         isAuthentified.value = status.code === 200 ? true : false;
 });
 
@@ -41,7 +42,7 @@ async function onLogout() {
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
     <div v-if="!isAuthentified">
-        <Auth @authValidated="authValidated"/>
+        <Auth :mode="modeForm" @authValidated="authValidated"/>
     </div>
     <div v-else>
         <q-header>
