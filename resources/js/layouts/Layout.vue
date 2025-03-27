@@ -3,13 +3,9 @@
 import { onMounted, ref } from "vue";
 import Auth from "./Auth.vue";
 import axios from "axios";
-import {useQuasar}  from "quasar"
 
-
-
-const isAuthentified = ref();
-const quasar = useQuasar()
-
+const modeForm = ref();
+const isAuthentified = ref(false);
 
 onMounted(async () => {
     const status = await axios.get("http://127.0.0.1:8000/api/user/check-user")
@@ -19,6 +15,7 @@ onMounted(async () => {
         .catch((error) => {
             return error.response.status;
         });
+        modeForm.value = status.code === 200 ? 'login' : 'register';
         isAuthentified.value = status.code === 200 ? true : false;
 });
 

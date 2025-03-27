@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import axios from "axios";
 import FormUser from "../views/slot/FormUser.vue";
 
-const formDialog = ref(false);
+
+const initAuth = ref(true);
 const modeForm = ref("register");
-const initAuth = ref(true)
 const formUserName = ref("");
 const formUserEmail = ref("");
 const formUserPassword = ref("");
@@ -16,6 +16,7 @@ const checkErrorMail = ref(false);
 const messageError = ref()
 
 const emit = defineEmits(['authValidated'])
+
 
 async function onRegister() {
     // Init FormData pour envoyer les datas
@@ -39,7 +40,6 @@ async function onRegister() {
 
         modeForm.value = response === 200 ? 'login' : 'register';
         initAuth.value = false
-        formDialog.value = true
 }
 
 async function onLogin() {
@@ -64,16 +64,11 @@ async function onLogin() {
             return error.response.data;
         });
 
-        formDialog.value = response.statut === 200 ? false : true;
         emit('authValidated')
 }
 
-
-
-
-
 async function onResetPassword() {
-    const response = await axios
+    await axios
         .post("http://127.0.0.1:8000/api/user/forgot-password", {
             email: formUserEmail.value,
             password: formForgotPassword.value,
@@ -145,6 +140,19 @@ function onReset() {
     formUserPassword.value = '';
     formForgotPassword.value = '';
     confirmFormForgotPassword.value = '';
+    switch (modeForm.value) {
+        case "login":
+        modeForm.value = 'register';
+            break;
+        case "forgotPassword":
+        modeForm.value = 'login';
+            break;
+    
+        default:
+        modeForm.value = 'register';
+            break;
+    }
+
 }
 function dialogFormForgotPassword() {
     modeForm.value = 'forgotPassword';
@@ -159,24 +167,14 @@ function redirectRegister() {
     checkErrorMail.value =false
 }
 function Login() {
-    initAuth.value = false
-    formDialog.value = true
     modeForm.value = 'login';
 }
 
-function backToRegister() {
-    initAuth.value = true
-    formDialog.value = false
-}
 </script>
 
 <template>
     <q-dialog v-model="initAuth" persistent >
-        
-            <div>
-                <p class="text-h6">Bienvenue sur
-                Da Vinci Media !
-                </p>
+            <div v-if="modeForm === 'register'">
                 <FormUser
                 :mode="modeForm"
                 @submit="onSubmit"
@@ -212,14 +210,12 @@ function backToRegister() {
                     <p>Se Connecter</p>
                      <q-btn color="primary" label="Se connecter" @click="Login()"/>
                 </div>
-               
-
-        </div>
-    </q-dialog>
-    <q-dialog v-model="formDialog" persistent>
-            <div v-if="modeForm === 'login'">
-
-                <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+            </div>
+            <div v-else-if="modeForm === 'login'">
+                <FormUser 
+                :mode="modeForm" 
+                @submit="onSubmit" 
+                @reset="onReset">
                     <q-input
                     filled
                     type="mail"
@@ -236,12 +232,12 @@ function backToRegister() {
                     />
                     <p class="forgotPassword q-pl-md"  @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
                 </FormUser>
-                <q-btn color="primary" label="Revenir à la page de connexion" @click="backToRegister()"/>
-
             </div>
             <div v-else>
-
-                <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+                <FormUser 
+                :mode="modeForm" 
+                @submit="onSubmit" 
+                @reset="onReset">
                     <q-input
                         filled
                         type="mail"
@@ -271,7 +267,6 @@ function backToRegister() {
                         <p style="color: red;">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
                     </div>
                 </FormUser>
-
             </div>
-        </q-dialog>
+    </q-dialog>
 </template>
