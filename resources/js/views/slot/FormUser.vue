@@ -53,7 +53,7 @@ function onResetForm(){
         <slot></slot>
         <div >
             <q-btn label="Annuler" type="reset" color="primary" flat class="q-ma-md" />
-            <q-btn :label="labelSubmit" type="submit" color="primary"/>
+            <q-btn class="q-ma-md"  :label="labelSubmit" type="submit" color="primary"/>
         </div>
         </q-form>
     </div>

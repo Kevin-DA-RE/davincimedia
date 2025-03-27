@@ -3,8 +3,9 @@ import { ref } from 'vue'
 import axios from "axios";
 import FormUser from "../views/slot/FormUser.vue";
 
-const formDialog = ref(false);
-const initAuth = ref(true)
+
+const initAuth = ref(true);
+const modeForm = ref("register");
 const formUserName = ref("");
 const formUserEmail = ref("");
 const formUserPassword = ref("");
@@ -15,10 +16,6 @@ const checkErrorMail = ref(false);
 const messageError = ref()
 
 const emit = defineEmits(['authValidated'])
-
-const props = defineProps({
-    mode: String
-})
 
 
 async function onRegister() {
@@ -43,7 +40,6 @@ async function onRegister() {
 
         modeForm.value = response === 200 ? 'login' : 'register';
         initAuth.value = false
-        formDialog.value = true
 }
 
 async function onLogin() {
@@ -68,7 +64,6 @@ async function onLogin() {
             return error.response.data;
         });
 
-        formDialog.value = response.statut === 200 ? false : true;
         emit('authValidated')
 }
 
@@ -145,6 +140,19 @@ function onReset() {
     formUserPassword.value = '';
     formForgotPassword.value = '';
     confirmFormForgotPassword.value = '';
+    switch (modeForm.value) {
+        case "login":
+        modeForm.value = 'register';
+            break;
+        case "forgotPassword":
+        modeForm.value = 'login';
+            break;
+    
+        default:
+        modeForm.value = 'register';
+            break;
+    }
+
 }
 function dialogFormForgotPassword() {
     modeForm.value = 'forgotPassword';
@@ -159,23 +167,16 @@ function redirectRegister() {
     checkErrorMail.value =false
 }
 function Login() {
-    initAuth.value = false
-    formDialog.value = true
     modeForm.value = 'login';
 }
 
-function backToRegister() {
-    initAuth.value = true
-    formDialog.value = false
-}
 </script>
 
 <template>
     <q-dialog v-model="initAuth" persistent >
-
-            <div v-if="props.mode === 'register'">
+            <div v-if="modeForm === 'register'">
                 <FormUser
-                :mode="props.mode"
+                :mode="modeForm"
                 @submit="onSubmit"
                 @reset="onReset"
                 >
@@ -210,8 +211,11 @@ function backToRegister() {
                      <q-btn color="primary" label="Se connecter" @click="Login()"/>
                 </div>
             </div>
-            <div v-else-if="props.mode === 'login'">
-                <FormUser :mode="props.mode" @submit="onSubmit" @reset="onReset">
+            <div v-else-if="modeForm === 'login'">
+                <FormUser 
+                :mode="modeForm" 
+                @submit="onSubmit" 
+                @reset="onReset">
                     <q-input
                     filled
                     type="mail"
@@ -228,10 +232,12 @@ function backToRegister() {
                     />
                     <p class="forgotPassword q-pl-md"  @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
                 </FormUser>
-                <q-btn color="primary" label="Revenir à la page de connexion" @click="backToRegister()"/>
             </div>
             <div v-else>
-                <FormUser :mode="props.mode" @submit="onSubmit" @reset="onReset">
+                <FormUser 
+                :mode="modeForm" 
+                @submit="onSubmit" 
+                @reset="onReset">
                     <q-input
                         filled
                         type="mail"

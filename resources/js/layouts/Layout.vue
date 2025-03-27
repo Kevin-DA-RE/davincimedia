@@ -4,8 +4,6 @@ import { onMounted, ref } from "vue";
 import Auth from "./Auth.vue";
 import axios from "axios";
 
-
-
 const modeForm = ref();
 const isAuthentified = ref(false);
 
@@ -42,7 +40,7 @@ async function onLogout() {
 <template>
   <q-layout view="hHh Lpr lff" class="shadow-2 rounded-borders">
     <div v-if="!isAuthentified">
-        <Auth :mode="modeForm" @authValidated="authValidated"/>
+        <Auth @authValidated="authValidated"/>
     </div>
     <div v-else>
         <q-header>
