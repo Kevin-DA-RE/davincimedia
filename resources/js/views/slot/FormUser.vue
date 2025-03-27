@@ -1,10 +1,14 @@
 <script setup>
 import {  computed } from 'vue'
+import { useQuasar } from 'quasar';
+
+
 
 const props = defineProps({
     mode: String
 })
 
+const quasar = useQuasar();
 const emit = defineEmits(['submit', 'reset'])
 
 const title = computed(() => {
@@ -41,7 +45,7 @@ function onResetForm(){
 
 
 <template>
-    <p class="text-h6">Bienvenue sur Da Vinci Media !</p>
+    <p class="text-h6 text-center">Bienvenue sur Da Vinci Media !</p>
     <q-form
         @submit.prevent="onSubmitForm"
         @reset="onResetForm"
@@ -50,8 +54,8 @@ function onResetForm(){
         >
         <p class="text-h6 q-pl-md q-pt-md">{{title}}</p>
         <slot></slot>
-        <div >
-            <q-btn label="Annuler" type="reset" color="primary" flat class="q-ma-md" />
+        <div class="flex justify-around">
+            <q-btn label="Annuler" type="reset" flat class="q-ma-md" />
             <q-btn class="q-ma-md"  :label="labelSubmit" type="submit" color="primary"/>
         </div>
         </q-form>
