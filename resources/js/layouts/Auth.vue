@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import axios from "axios";
 import FormUser from "../views/slot/FormUser.vue";
+import { useQuasar } from 'quasar';
 
 
 const initAuth = ref(true);
@@ -14,6 +15,7 @@ const confirmFormForgotPassword = ref("");
 const checkAccount = ref(false);
 const checkErrorMail = ref(false);
 const messageError = ref()
+const quasar = useQuasar();
 
 const emit = defineEmits(['authValidated'])
 
@@ -38,8 +40,8 @@ async function onRegister() {
             return error.response.data;
         });
 
-        modeForm.value = response === 200 ? 'login' : 'register';
-        initAuth.value = false
+    modeForm.value = response === 200 ? 'login' : 'register';
+    initAuth.value = false
 }
 
 async function onLogin() {
@@ -64,7 +66,7 @@ async function onLogin() {
             return error.response.data;
         });
 
-        emit('authValidated')
+    emit('authValidated')
 }
 
 async function onResetPassword() {
@@ -79,7 +81,7 @@ async function onResetPassword() {
         .catch((error) => {
             return error.response.data;
         });
-        modeForm.value = "login"
+    modeForm.value = "login"
 }
 
 async function checkEmailLogin() {
@@ -87,7 +89,7 @@ async function checkEmailLogin() {
     formData.append('email', formUserEmail.value);
 
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/check-email",formData)
+        .post("http://127.0.0.1:8000/api/user/check-email", formData)
         .then((response) => {
             return response.data;
         })
@@ -95,10 +97,10 @@ async function checkEmailLogin() {
             return error.response.data;
         });
 
-        checkAccount.value = response.code === 200 ? true : false;
-        checkErrorMail.value = response.code !==200 ?  true : false;
+    checkAccount.value = response.code === 200 ? true : false;
+    checkErrorMail.value = response.code !== 200 ? true : false;
 
-        messageError.value =  response.code !==200 ? response.message : '';
+    messageError.value = response.code !== 200 ? response.message : '';
 }
 
 async function checkEmailRegister() {
@@ -106,7 +108,7 @@ async function checkEmailRegister() {
     formData.append('email', formUserEmail.value);
 
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/check-email",formData)
+        .post("http://127.0.0.1:8000/api/user/check-email", formData)
         .then((response) => {
             return response.data;
         })
@@ -114,8 +116,8 @@ async function checkEmailRegister() {
             return error.response.data;
         });
 
-        checkErrorMail.value = response.code === 400 ? false : true;
-        messageError.value =  response.code === 400 ? '': response.message;
+    checkErrorMail.value = response.code === 400 ? false : true;
+    messageError.value = response.code === 400 ? '' : response.message;
 }
 
 async function onSubmit() {
@@ -142,14 +144,14 @@ function onReset() {
     confirmFormForgotPassword.value = '';
     switch (modeForm.value) {
         case "login":
-        modeForm.value = 'register';
+            modeForm.value = 'register';
             break;
         case "forgotPassword":
-        modeForm.value = 'login';
+            modeForm.value = 'login';
             break;
-    
+
         default:
-        modeForm.value = 'register';
+            modeForm.value = 'register';
             break;
     }
 
@@ -157,14 +159,14 @@ function onReset() {
 function dialogFormForgotPassword() {
     modeForm.value = 'forgotPassword';
     checkAccount.value = false
-    checkErrorMail.value =false
+    checkErrorMail.value = false
 }
 
 function redirectRegister() {
     modeForm.value = 'register';
     onReset()
     checkAccount.value = false
-    checkErrorMail.value =false
+    checkErrorMail.value = false
 }
 function Login() {
     modeForm.value = 'login';
@@ -173,100 +175,94 @@ function Login() {
 </script>
 
 <template>
-    <q-dialog v-model="initAuth" persistent >
-            <div v-if="modeForm === 'register'">
-                <FormUser
-                :mode="modeForm"
-                @submit="onSubmit"
-                @reset="onReset"
-                >
-                    <q-input
-                    filled
-                    v-model="formUserName"
-                    label="Votre pseudo"
-                    class="q-pa-md"
-                    />
+    <div v-if="quasar.screen.lt.sm">
+    <div v-if="modeForm === 'register'">
+        <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+            <q-input filled v-model="formUserName" label="Votre pseudo" class="q-pa-md" />
 
-                    <q-input
-                        filled
-                        type="mail"
-                        v-model="formUserEmail"
-                        label="Votre adresse Email"
-                        class="q-pa-md"
-                        @change="checkEmailRegister()"
-                    />
-                    <q-input
-                        filled
-                        type="password"
-                        v-model="formUserPassword"
-                        class="q-pa-md"
-                        label="Votre mot de passe"
-                    />
-                    <div v-show="checkErrorMail">
-                        <p style="color: red;">{{messageError}}</p>
-                    </div>
-                </FormUser>
-                <div class="bg-white q-pa-md">
-                    <p>Se Connecter</p>
-                     <q-btn color="primary" label="Se connecter" @click="Login()"/>
-                </div>
+            <q-input filled type="mail" v-model="formUserEmail" label="Votre adresse Email" class="q-pa-md"
+                @change="checkEmailRegister()" />
+            <q-input filled type="password" v-model="formUserPassword" class="q-pa-md" label="Votre mot de passe" />
+            <div v-show="checkErrorMail">
+                <p style="color: red;">{{ messageError }}</p>
             </div>
-            <div v-else-if="modeForm === 'login'">
-                <FormUser 
-                :mode="modeForm" 
-                @submit="onSubmit" 
-                @reset="onReset">
-                    <q-input
-                    filled
-                    type="mail"
-                    v-model="formUserEmail"
-                    class="q-pa-md"
-                    label="Votre adresse Email"
-                    />
-                    <q-input
-                        filled
-                        type="password"
-                        v-model="formUserPassword"
-                        class="q-pa-md"
-                        label="Votre mot de passe"
-                    />
-                    <p class="forgotPassword q-pl-md"  @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
-                </FormUser>
+        </FormUser>
+        <div class="bg-white q-pa-md">
+            <p>Se Connecter</p>
+            <q-btn color="primary" label="Se connecter" @click="Login()" />
+        </div>
+    </div>
+    <div v-else-if="modeForm === 'login'">
+        <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+            <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email" />
+            <q-input filled type="password" v-model="formUserPassword" class="q-pa-md" label="Votre mot de passe" />
+            <p class="forgotPassword q-pl-md" @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
+        </FormUser>
+    </div>
+    <div v-else>
+        <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+            <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email"
+                @change="checkEmailLogin()" />
+            <div v-show="checkAccount">
+                <q-input filled type="password" v-model="formForgotPassword" class="q-pa-md"
+                    label="Votre nouveau mot de passe" />
+                <q-input filled type="password" v-model="confirmFormForgotPassword" class="q-pa-md"
+                    label="Confirmer votre mot de passe" />
             </div>
-            <div v-else>
-                <FormUser 
-                :mode="modeForm" 
-                @submit="onSubmit" 
-                @reset="onReset">
-                    <q-input
-                        filled
-                        type="mail"
-                        v-model="formUserEmail"
-                        class="q-pa-md"
-                        label="Votre adresse Email"
-                        @change="checkEmailLogin()"
-                    />
-                    <div v-show="checkAccount">
-                        <q-input
-                            filled
-                            type="password"
-                            v-model="formForgotPassword"
-                            class="q-pa-md"
-                            label="Votre nouveau mot de passe"
-                        />
-                        <q-input
-                            filled
-                            type="password"
-                            v-model="confirmFormForgotPassword"
-                            class="q-pa-md"
-                            label="Confirmer votre mot de passe"
-                        />
-                    </div>
-                    <div v-show="checkErrorMail">
-                        <p style="color: red;">{{messageError}}</p>
-                        <p style="color: red;">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
-                    </div>
-                </FormUser>
+            <div v-show="checkErrorMail">
+                <p style="color: red;">{{ messageError }}</p>
+                <p style="color: red;">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong
+                        style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
             </div>
-    </q-dialog>
+        </FormUser>
+    </div>
+    <div v-else>
+        <q-dialog v-model="initAuth" persistent>
+
+            <div class="q-mb-md">
+                <div v-if="modeForm === 'register'">
+                    <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+                        <q-input filled v-model="formUserName" label="Votre pseudo" class="q-pa-md" />
+
+                        <q-input filled type="mail" v-model="formUserEmail" label="Votre adresse Email" class="q-pa-md"
+                            @change="checkEmailRegister()" />
+                        <q-input filled type="password" v-model="formUserPassword" class="q-pa-md"
+                            label="Votre mot de passe" />
+                        <div v-show="checkErrorMail">
+                            <p style="color: red;">{{ messageError }}</p>
+                        </div>
+                    </FormUser>
+                    <div class="bg-white q-pa-md">
+                        <p>Se Connecter</p>
+                        <q-btn color="primary" label="Se connecter" @click="Login()" />
+                    </div>
+                    <div v-else-if="modeForm === 'login'">
+                        <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+                            <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md"
+                                label="Votre adresse Email" />
+                            <q-input filled type="password" v-model="formUserPassword" class="q-pa-md"
+                                label="Votre mot de passe" />
+                            <p class="forgotPassword q-pl-md" @click="dialogFormForgotPassword()">Mot de passe oublié ?
+                            </p>
+                        </FormUser>
+                    </div>
+                    <div v-else>
+                        <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
+                            <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md"
+                                label="Votre adresse Email" @change="checkEmailLogin()" />
+                            <div v-show="checkAccount">
+                                <q-input filled type="password" v-model="formForgotPassword" class="q-pa-md"
+                                    label="Votre nouveau mot de passe" />
+                                <q-input filled type="password" v-model="confirmFormForgotPassword" class="q-pa-md"
+                                    label="Confirmer votre mot de passe" />
+                            </div>
+                            <div v-show="checkErrorMail">
+                                <p style="color: red;">{{ messageError }}</p>
+                                <p style="color: red;">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong
+                                        style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
+                            </div>
+                        </FormUser>
+                    </div>
+        </q-dialog>
+    </div>
 </template>

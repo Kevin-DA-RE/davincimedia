@@ -41,7 +41,6 @@ function onResetForm(){
 
 
 <template>
-<div class="q-mb-md">
     <p class="text-h6">Bienvenue sur Da Vinci Media !</p>
     <q-form
         @submit.prevent="onSubmitForm"
@@ -56,7 +55,6 @@ function onResetForm(){
             <q-btn class="q-ma-md"  :label="labelSubmit" type="submit" color="primary"/>
         </div>
         </q-form>
-    </div>
 </template>
 
 
