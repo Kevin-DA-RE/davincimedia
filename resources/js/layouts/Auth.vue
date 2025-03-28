@@ -190,7 +190,8 @@ function Login() {
 
 </script>
 
-<template>    
+<template>
+  
     <q-dialog v-model="initAuthDialog" persistent>
         <q-card>
             <q-card-section>
