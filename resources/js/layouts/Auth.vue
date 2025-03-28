@@ -1,12 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import axios from "axios";
 import FormUser from "../views/slot/FormUser.vue";
 import { useQuasar } from 'quasar';
 
 
-const initAuth = ref(true);
-const modeForm = ref("register");
+const initAuth = ref(false);
+const initAuthDialog = ref(true)
+const modeForm = ref();
 const formUserName = ref("");
 const formUserEmail = ref("");
 const formUserPassword = ref("");
@@ -40,8 +41,7 @@ async function onRegister() {
             return error.response.data;
         });
 
-    modeForm.value = response === 200 ? 'login' : 'register';
-    initAuth.value = false
+    modeForm.value = response === 200 ? 'login':'register';
 }
 
 async function onLogin() {
@@ -50,7 +50,7 @@ async function onLogin() {
     formData.append('email', formUserEmail.value);
     formData.append('password', formUserPassword.value);
 
-    const response = await axios
+    await axios
         .post("http://127.0.0.1:8000/api/user/login", formData, {
             headers: {
                 accept: "multipart/form-data"
@@ -121,6 +121,7 @@ async function checkEmailRegister() {
 }
 
 async function onSubmit() {
+    
     switch (modeForm.value) {
         case 'register':
             await onRegister();
@@ -142,6 +143,7 @@ function onReset() {
     formUserPassword.value = '';
     formForgotPassword.value = '';
     confirmFormForgotPassword.value = '';
+    
     switch (modeForm.value) {
         case "login":
             modeForm.value = 'register';
@@ -168,14 +170,40 @@ function redirectRegister() {
     checkAccount.value = false
     checkErrorMail.value = false
 }
+
+function redirectLogin() {
+    modeForm.value = 'login';
+    checkAccount.value = false
+    checkErrorMail.value = false
+}
+
+function Register() {
+    modeForm.value = 'register';
+    initAuthDialog.value = false
+    initAuth.value = true
+}
 function Login() {
     modeForm.value = 'login';
+    initAuthDialog.value =false
+    initAuth.value = true
 }
 
 </script>
 
-<template>
-    <div v-if="quasar.screen.lt.sm">
+<template>    
+    <q-dialog v-model="initAuthDialog" persistent>
+        <q-card>
+            <q-card-section>
+            <div class="text-h6">Bonjour et bienvenue dans l'application Da vinci Media</div>
+            </q-card-section>
+            <q-card-actions class="flex-column">
+                <q-btn color="primary" label="S'inscrire'" @click="Register()" />
+                <q-btn color="primary" label="Se connecter" @click="Login()" />
+            </q-card-actions>
+        </q-card>
+    </q-dialog>
+    <div v-if="quasar.screen.lt.sm">        
+        <q-dialog v-model="initAuth" persistent>
         <div v-if="modeForm === 'register'" class="q-mb-md">
             <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
                 <q-input filled v-model="formUserName" label="Votre pseudo" class="q-pa-md" />
@@ -186,11 +214,10 @@ function Login() {
                 <div v-show="checkErrorMail">
                     <p style="color: red;">{{ messageError }}</p>
                 </div>
+                <p style="color: blue;" class="q-pl-sm">Vous souhaitez vous connecter ? <br> veuillez cliquez <strong
+                    style="cursor: pointer;" @click="redirectLogin()">ici </strong></p>
             </FormUser>
-            <div class="q-pa-md q-mt-md">
-                <p>Se Connecter</p>
-                <q-btn color="primary" label="Se connecter" @click="Login()" />
-            </div>
+
         </div>
         <div v-else-if="modeForm === 'login'">
             <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
@@ -211,11 +238,12 @@ function Login() {
                 </div>
                 <div v-show="checkErrorMail" class="q-pl-md">
                     <p style="color: red;">{{ messageError }}</p>
-                    <p style="color: red;">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong
+                    <p style="color: red;" class="q-pl-sm">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong
                             style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
                 </div>
             </FormUser>
         </div>
+        </q-dialog>      
     </div>
     <div v-else>
         <q-dialog v-model="initAuth" persistent>
@@ -226,16 +254,13 @@ function Login() {
 
                         <q-input filled type="mail" v-model="formUserEmail" label="Votre adresse Email" class="q-pa-md"
                             @change="checkEmailRegister()" />
-                        <q-input filled type="password" v-model="formUserPassword" class="q-pa-md"
-                            label="Votre mot de passe" />
+                        <q-input filled type="password" v-model="formUserPassword" class="q-pa-md" label="Votre mot de passe" />
                         <div v-show="checkErrorMail">
                             <p style="color: red;">{{ messageError }}</p>
                         </div>
+                        <p style="color: blue;" class="q-pl-sm">Vous souhaitez vous connecter ? <br> veuillez cliquez <strong
+                            style="cursor: pointer;" @click="redirectLogin()">ici </strong></p>
                     </FormUser>
-                    <div class="bg-white q-pa-md">
-                        <p>Se Connecter</p>
-                        <q-btn color="primary" label="Se connecter" @click="Login()" />
-                    </div>
                 </div>
                 <div v-else-if="modeForm === 'login'">
                     <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
