@@ -47,11 +47,10 @@ async function onLogout() {
             <q-toolbar class="bg-dark text-white shadow-2 rounded-borders">
                 <!-- Titre aligné à gauche -->
                 <q-toolbar-title class="q-mr-md">
-                    Bienvenue dans votre bibliothèque DaVinciMedia !
+                    DaVinciMedia
                 </q-toolbar-title>
                 <!-- Tabs centrés -->
                 <q-tabs align="center" class="gt-xs">
-                    <q-route-tab :to="{ name: 'home' }" label="Accueil" icon="home" />
                     <q-route-tab :to="{ name: 'movies' }" label="Films" class="text-teal" icon="movie" />
                 </q-tabs>
 
