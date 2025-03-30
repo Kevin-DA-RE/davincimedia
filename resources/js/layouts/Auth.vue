@@ -121,7 +121,7 @@ async function checkEmailRegister() {
 }
 
 async function onSubmit() {
-    
+
     switch (modeForm.value) {
         case 'register':
             await onRegister();
@@ -143,7 +143,7 @@ function onReset() {
     formUserPassword.value = '';
     formForgotPassword.value = '';
     confirmFormForgotPassword.value = '';
-    
+
     switch (modeForm.value) {
         case "login":
             modeForm.value = 'register';
@@ -191,20 +191,24 @@ function Login() {
 </script>
 
 <template>
-  
+
     <q-dialog v-model="initAuthDialog" persistent>
         <q-card>
             <q-card-section>
-            <div class="text-h6">Bonjour et bienvenue dans l'application Da vinci Media</div>
+                <div v-if="quasar.screen.lt.sm">
+                    <div class="text-h3">Bonjour et bienvenue <br>dans l'application Da vinci Media</div>
+                </div>
+                <div v-else>
+                    <div class="text-h4">Bonjour et bienvenue <br>dans l'application Da vinci Media</div>
+                </div>
             </q-card-section>
-            <q-card-actions class="flex-column">
+            <q-card-actions class="flex-row justify-around">
                 <q-btn color="primary" label="S'inscrire'" @click="Register()" />
                 <q-btn color="primary" label="Se connecter" @click="Login()" />
             </q-card-actions>
         </q-card>
     </q-dialog>
-    <div v-if="quasar.screen.lt.sm">        
-        <q-dialog v-model="initAuth" persistent>
+    <div v-if="quasar.screen.lt.sm">
         <div v-if="modeForm === 'register'" class="q-mb-md">
             <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
                 <q-input filled v-model="formUserName" label="Votre pseudo" class="q-pa-md" />
@@ -244,7 +248,6 @@ function Login() {
                 </div>
             </FormUser>
         </div>
-        </q-dialog>      
     </div>
     <div v-else>
         <q-dialog v-model="initAuth" persistent>
