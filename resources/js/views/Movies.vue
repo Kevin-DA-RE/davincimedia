@@ -306,26 +306,34 @@ const filteredMovies = computed(() => {
 
 <template>
   <div v-if="quasar.screen.lt.sm" class="bg-dark">
-    <q-btn color="secondary" icon="manage_search" />
-    <q-menu max-height="130px" >
-      <div v-for="genre in genresListLoaded" key="genre.id">
-        <q-list dense>
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </div>
-    </q-menu>
-
-    <div class=" bg-dark row justify-start">
-          <div
-          v-for="(movie, index) in filteredMovies" :key="movie.id"
-          >
-              <Movie :movie="movie" />
-          </div>
+    <div class="flex justify-center">
+        <div v-if="filteredMovies.length > 0">
+        <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" style="width: 150px;"/>
+        <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
+        <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
+        <q-btn color="secondary" icon="manage_search" >
+            <q-menu max-height="130px" >
+                <div v-for="genre in genresListLoaded" key="genre.id">
+                <q-list dense>
+                    <q-item clickable>
+                    <q-item-section>
+                        <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
+                    </q-item-section>
+                    </q-item>
+                </q-list>
+                </div>
+            </q-menu>
+        </q-btn>
+        </div>
+        <div v-else>
+            <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
+        </div>
     </div>
+        <div class="bg-dark row justify-start" style="height: 100vh;">
+            <div v-for="(movie, index) in filteredMovies" :key="movie.id">
+                <Movie :movie="movie" />
+            </div>
+        </div>
   </div>
   <div v-else>
     <q-splitter

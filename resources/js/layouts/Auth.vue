@@ -1,12 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import axios from "axios";
-import FormUser from "../views/slot/FormUser.vue";
+import FormUser from "../views/slot/Form.vue";
 import { useQuasar } from 'quasar';
 
 
 const initAuth = ref(false);
 const initAuthDialog = ref(true)
+const initAuthMobile = ref(false)
 const modeForm = ref();
 const formUserName = ref("");
 const formUserEmail = ref("");
@@ -181,11 +182,13 @@ function Register() {
     modeForm.value = 'register';
     initAuthDialog.value = false
     initAuth.value = true
+    initAuthMobile.value = true
 }
 function Login() {
     modeForm.value = 'login';
     initAuthDialog.value =false
     initAuth.value = true
+    initAuthMobile.value = true
 }
 
 </script>
@@ -195,12 +198,7 @@ function Login() {
     <q-dialog v-model="initAuthDialog" persistent>
         <q-card>
             <q-card-section>
-                <div v-if="quasar.screen.lt.sm">
-                    <div class="text-h3">Bonjour et bienvenue <br>dans l'application Da vinci Media</div>
-                </div>
-                <div v-else>
                     <div class="text-h4">Bonjour et bienvenue <br>dans l'application Da vinci Media</div>
-                </div>
             </q-card-section>
             <q-card-actions class="flex-row justify-around">
                 <q-btn color="primary" label="S'inscrire'" @click="Register()" />
@@ -208,7 +206,7 @@ function Login() {
             </q-card-actions>
         </q-card>
     </q-dialog>
-    <div v-if="quasar.screen.lt.sm">
+    <div v-if="quasar.screen.lt.sm" v-show="initAuthMobile">
         <div v-if="modeForm === 'register'" class="q-mb-md">
             <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
                 <q-input filled v-model="formUserName" label="Votre pseudo" class="q-pa-md" />
