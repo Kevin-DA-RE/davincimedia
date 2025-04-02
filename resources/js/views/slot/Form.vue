@@ -13,6 +13,12 @@ const title = computed(() => {
             return "S'inscrire"
         case 'login':
             return "Se connecter"
+        case 'addMovies':
+            return "Ajouter un ou plusieurs film(s)"
+        case 'updateMovie':
+            return "Modifier un film"
+        case 'deleteMovie':
+            return "Supprimer un film"
         default:
             return "Mot de passe oublié ?"
     }
@@ -24,6 +30,12 @@ const labelSubmit = computed(() => {
             return "S'inscrire"
         case 'login':
             return "Se connecter"
+        case 'addMovies':
+            return "Ajouter"
+        case 'updateMovie':
+            return "Modifier"
+        case 'deleteMovie':
+            return "Supprimer"
         default:
             return "Réinitialiser mot de passe"
     }

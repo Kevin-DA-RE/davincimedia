@@ -33,7 +33,7 @@ Route::prefix('user')->controller(AuthController::class)->group(function () {
     Route::post('/forgot-password', 'forgotPasswordUser');
 });
 
-
+/*
 Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController::class)->group(function () {
     Route::post('/create-movie', 'createMovie');
     Route::post('/update-movie/{movie}', 'updateMovie');
@@ -46,7 +46,19 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController:
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
     Route::get('/test', 'test');
 });
+*/
 
+Route::prefix('movie')->controller(MoviesController::class)->group(function () {
+Route::post('/create-movie', 'createMovie');
+    Route::post('/update-movie/{movie}', 'updateMovie');
+    Route::post('/delete-movie/{movie}', 'deleteMovie');
+    Route::get('/show-movies', 'showMovies');
+    Route::get('/get-movie/{parameter}', 'getMovie');
+    Route::get('/get-genres', 'getGenres');
+    Route::get('/get-movies-with-genres/{name}', 'getMovieWithGenres');
+    Route::get('/show-genres', 'showGenres');
+    Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
+});
 
 Route::prefix('/post')->controller(PostController::class)->group(function () {
     Route::post('/create-post', 'createPost');

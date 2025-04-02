@@ -8,6 +8,7 @@ const modeForm = ref();
 const isAuthentified = ref(false);
 
 onMounted(async () => {
+    /*
     const status = await axios.get("http://127.0.0.1:8000/api/user/check-user")
         .then((response) => {
             return response.data;
@@ -17,10 +18,14 @@ onMounted(async () => {
         });
         modeForm.value = status.code === 200 ? 'login' : 'register';
         isAuthentified.value = status.code === 200 ? true : false;
+        */
+        isAuthentified.value = true;
 });
 
 function authValidated() {
     isAuthentified.value = true;
+    axios.defaults.withCredentials = true;
+
 }
 
 async function onLogout() {
