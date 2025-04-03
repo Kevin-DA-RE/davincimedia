@@ -70,7 +70,7 @@ async function showGenres(){
               genresListLoaded.value = genres.data
             }
             catch (error) {
-                return error.response.data
+            return error.response.data
   }
 }
 
@@ -171,15 +171,20 @@ const sendToMovies = await axios
                       .catch((error) =>
                         console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
                       );
+
 if(sendToMovies === 200)
-if (formAddMoviesMobile.value === true) {
-    movieName.value = ""
-    formAddMoviesMobile.value = false
-} else {
-movieName.value = ""
-formAddMovies.value = false
-moviesList.value.length = 0
+{
+    if (formAddMoviesMobile.value === true) {
+        movieName.value = ""
+        moviesList.value.length = 0
+        formAddMoviesMobile.value = false
+    } else {
+        movieName.value = ""
+        formAddMovies.value = false
+        moviesList.value.length = 0
+    }
 }
+
 
 await showMovies()
 await showGenres()
@@ -291,7 +296,11 @@ function resetAddmovie(){
   movieName.value = ""
   moviesList.value.length = 0
   movieCreated.value = {}
-  formAddMovies.value = false
+  if (quasar.screen.lt.sm) {
+    formAddMoviesMobile.value = false
+  } else {
+    formAddMovies.value = false
+  }
 }
 
 function resetUpdateMovie () {
@@ -307,14 +316,20 @@ function resetDeleteMovie(){
 
 
 function onReset(){
-  moviesList.length = 0
-  movieCreated.value = {}
-  formAddMovies.value = false
+    if (formAddMoviesMobile.value === true) {
+        movieName.value = ""
+        movieCreated.value = {}
+        moviesList.value.length = 0
+        formAddMoviesMobile.value = false
+    } else {
+        movieName.value = ""
+        movieCreated.value = {}
+        moviesList.value.length = 0
+        formAddMovies.value = false
+    }
 }
 
 function showFormAddMoviesMobile(){
-    console.log("nous sommes en mobile");
-
   formAddMoviesMobile.value = true
   modeForm.value = "addMovies"
 }
@@ -329,11 +344,11 @@ const filteredMovies = computed(() => {
 
 
 <template>
-  <div v-if="quasar.screen.lt.sm" class="bg-dark">
-    <div class="flex justify-center">
+<div v-if="quasar.screen.lt.sm" class="bg-dark">
+    <div class="flex justify-center" >
         <div v-if="filteredMovies.length > 0">
             <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" style="width: 150px;"/>
-            <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
+            <q-btn color="secondary" icon="note_add" @click="showFormAddMoviesMobile()" />
             <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
             <q-btn color="secondary" icon="manage_search" >
                 <q-menu max-height="130px" >
@@ -353,33 +368,36 @@ const filteredMovies = computed(() => {
             <q-btn color="secondary" icon="note_add" @click="showFormAddMoviesMobile()" />
         </div>
     </div>
-        <div class="bg-dark row justify-start" style="height: 100vh;">
-            <div v-for="(movie, index) in filteredMovies" :key="movie.id">
+        <div class="bg-dark row justify-start" style="overflow:scroll; height: 80vh;">
+            <div v-for="(movie) in filteredMovies" :key="movie.id">
                 <Movie :movie="movie" />
             </div>
         </div>
     </div>
     <div v-if="modeForm === 'addMovies'" class="q-mb-md">
         <q-dialog  v-model="formAddMoviesMobile" persistent full-width full-height>
-            <div class="bg-white q-pa-md">
-                <div class="row justify-around">
+            <div class="bg-white">
+                <div class="row justify-start q-ma-sm q-gutter-sm" >
                     <q-input
                             v-model="movieName"
                             label="Saisir le nom du film"
                             autofocus
                             />
-                        <q-btn color="secondary" icon="search" @click="getMovieWithGenre(movieName)" />
+                        <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
                 </div>
                 <div v-if="movieCreated.id_movie">
                     <q-card-section>
                         <Movie :movie="movieCreated" />
                     </q-card-section>
                 </div>
-                    <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
+                <div class="row justify-start q-ma-sm q-gutter-sm">
                     <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
+                    <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
+                </div>
+
                     <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
                         <div v-if="moviesList.length > 0">
-                            <div class="row justify-start">
+                            <div class="row justify-start" style="overflow:scroll; height: 55vh">
                                 <div
                                 v-for="(movie) in moviesList" :key="movie.id"
                                 >
@@ -387,7 +405,7 @@ const filteredMovies = computed(() => {
                                 </div>
                             </div>
                         </div>
-                        <div v-else>
+                        <div v-else class="text-center">
                             <p>Aucun film n'est ajouté</p>
                         </div>
 
@@ -396,14 +414,14 @@ const filteredMovies = computed(() => {
         </q-dialog>
 
         </div>
-        <div v-else-if="modeForm === 'login'">
+        <div v-if="modeForm === 'login'">
             <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
                 <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email" />
                 <q-input filled type="password" v-model="formUserPassword" class="q-pa-md" label="Votre mot de passe" />
                 <p class="forgotPassword q-pl-md" @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
             </FormUser>
         </div>
-        <div v-else>
+        <div v-else-if="modeForm === 'register'">
 
             <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
                 <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email"
@@ -422,7 +440,7 @@ const filteredMovies = computed(() => {
             </FormUser>
         </div>
 
-  <div v-else>
+<div v-else-if="!quasar.screen.lt.sm">
     <q-splitter
       v-model="splitterModel"
       style="height: 100vh"
@@ -436,14 +454,15 @@ const filteredMovies = computed(() => {
           class="bg-dark text-teal"
         >
         <div class="flex justify-center">
-            <!-- Barre de recherche à droite -->
-            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" />
+            <div v-if="filteredMovies.length > 0">
+            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" style="width: 150px;"/>
             <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
             <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
-        </div>
-            <div v-for="genre in genresListLoaded" key="genre.id">
-              <q-tab :name="genre.name" icon="movie" :label="genre.name" @click="showMoviesWithGenres(genre)"/>
             </div>
+            <div v-else>
+                <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
+            </div>
+        </div>
         </q-tabs>
 
       </template>

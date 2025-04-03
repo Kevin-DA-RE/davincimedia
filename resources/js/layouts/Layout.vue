@@ -55,7 +55,7 @@ async function onLogout() {
                     DaVinciMedia
                 </q-toolbar-title>
                 <!-- Tabs centrés -->
-                <q-tabs align="center" class="gt-xs">
+                <q-tabs align="center">
                     <q-route-tab :to="{ name: 'movies' }" label="Films" class="text-teal" icon="movie" />
                 </q-tabs>
 
