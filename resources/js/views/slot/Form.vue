@@ -56,8 +56,7 @@ function onResetForm(){
     <q-form
         @submit.prevent="onSubmitForm"
         @reset="onResetForm"
-        class="q-gutter-md bg-white"
-        dark
+        class=" bg-white"
         >
         <p class="text-h6 q-pl-md q-pt-md">{{title}}</p>
         <slot></slot>
