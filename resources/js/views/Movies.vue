@@ -266,11 +266,17 @@ async function deleteMovieToBackEnd(movie) {
 }
 
 function showFormUpdateMovie(movie, index){
+
+  if (quasar.screen.lt.sm) {
+    formUpdateMovieMobile.value = true
+  } else {
     movieIdOrigin.value =movie.id
     movieUpdated.value = {...movie}
     movieIndex.value = index
     movieName.value = movie.name
     formUpdateMovie.value = true
+  }
+
 }
 
 function showFormDeleteMovie(movie, index){
@@ -364,14 +370,18 @@ const filteredMovies = computed(() => {
             <q-btn color="secondary" icon="note_add" @click="formAddMoviesMobile = true" />
         </div>
     </div>
-        <div class="bg-dark row justify-start" style="overflow:scroll; height: 80vh;">
-            <div v-for="(movie) in filteredMovies" :key="movie.id">
+        <div
+        v-for="(movie) in filteredMovies" :key="movie.id"
+        class="bg-dark row justify-start" s
+        tyle="overflow:scroll; height: 80vh;">
+            <div class="flex justify-center" v-show="editMode">
+                <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+                <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+              </div>
                 <Movie :movie="movie" />
-            </div>
         </div>
     </div>
         <q-dialog  v-model="formAddMoviesMobile" persistent full-width full-height>
-
                 <div class="bg-white column q-gutter-sm" >
                     <div class="row justify-between q-ml-sm q-mr-sm">
                         <q-input
@@ -418,17 +428,16 @@ const filteredMovies = computed(() => {
                             </div>
                         </Form>
                 </div>
-        </q-dialog>
-        <div v-if="modeForm === 'login'">
-            <Form :mode="modeForm" @submit="onSubmit" @reset="onReset">
+    </q-dialog>
+    <q-dialog  v-model="formUpdateMovieMobile" persistent full-width full-height>
+            <Form :mode="'login'" @submit="onSubmit" @reset="onReset">
                 <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email" />
                 <q-input filled type="password" v-model="formUserPassword" class="q-pa-md" label="Votre mot de passe" />
                 <p class="forgotPassword q-pl-md" @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
             </Form>
-        </div>
-        <div v-else-if="modeForm === 'register'">
-
-            <Form :mode="modeForm" @submit="onSubmit" @reset="onReset">
+    </q-dialog>
+    <q-dialog  v-model="formDeleteMoviesMobile" persistent full-width full-height>
+            <Form :mode="'register'" @submit="onSubmit" @reset="onReset">
                 <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email"
                     @change="checkEmailLogin()" />
                 <div v-show="checkAccount">
@@ -443,8 +452,7 @@ const filteredMovies = computed(() => {
                             style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
                 </div>
             </Form>
-        </div>
-
+    </q-dialog>
 <div v-else-if="!quasar.screen.lt.sm">
     <q-splitter
       v-model="splitterModel"
