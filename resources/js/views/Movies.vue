@@ -4,9 +4,9 @@ import { onMounted, ref,computed } from "vue";
 import Movie from "./component/Movie.vue";
 import Form from "../views/slot/Form.vue";
 import { useQuasar } from 'quasar';
+import { fasBullseye } from "@quasar/extras/fontawesome-v5";
 
 const quasar = useQuasar();
-const modeForm = ref();
 const carouselSlide = ref(0)
 const moviesList = ref([])
 const moviesListLoaded = ref([])
@@ -20,6 +20,7 @@ const formDeleteMovie = ref(false)
 const formDeleteMovieMobile = ref(false)
 const search = ref("")
 const editMode = ref(false)
+const editModeMobile = ref(false)
 const movieName = ref("");
 const movieCreated = ref({})
 const movieUpdated = ref({})
@@ -125,21 +126,21 @@ async function getMovieWithGenre(name) {
       name: name,
     };
   } else {
-    if (quasar.screen.lt.sm) {
-      movieCreated.value = movie
-      formAddMoviesMobile.value = true
-    }  else {
-    if (formAddMovies.value === true) {
-        console.log("movie du formulaire de creation");
+    if(formAddMoviesMobile.value = true){
+        console.log("create mobile");
+        return movieCreated.value = movie
+    } else if (formUpdateMovieMobile.value = true){
+        console.log("update mobile");
+
+        return movieUpdated.value = movie
+    } else if (formAddMovies.value === true) {
         return movieCreated.value = movie
     } else {
-        console.log("movie du formulaire de modification");
         return movieUpdated.value = movie
     }
     }
 
   }
-}
 
 function AddMovie(movie) {
     moviesList.value.push(movie)
@@ -180,6 +181,9 @@ if(sendToMovies === 200)
         movieName.value = ""
         moviesList.value.length = 0
         formAddMoviesMobile.value = false
+    } else if(formUpdateMovieMobile.value === true) {
+         movieName.value = ""
+         formUpdateMovieMobile.value = false
     } else {
         movieName.value = ""
         formAddMovies.value = false
@@ -269,6 +273,10 @@ async function deleteMovieToBackEnd(movie) {
 function showFormUpdateMovie(movie, index){
 
   if (quasar.screen.lt.sm) {
+    movieIdOrigin.value =movie.id
+    movieUpdated.value = {...movie}
+    movieIndex.value = index
+    movieName.value = movie.name
     formUpdateMovieMobile.value = true
   } else {
     movieIdOrigin.value =movie.id
@@ -351,7 +359,7 @@ const filteredMovies = computed(() => {
     <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
         <q-input dense rounded filled bg-color="white" placeholder="Rechercher..."  v-model="search" style="width: 150px;"/>
         <q-btn color="secondary" icon="note_add" @click="formAddMoviesMobile = true" />
-        <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
+        <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editModeMobile = !editModeMobile" icon="edit_square"/>
         <q-btn color="secondary" icon="manage_search" >
             <q-menu max-height="130px" >
                 <div v-for="genre in genresListLoaded" key="genre.id">
@@ -372,7 +380,7 @@ const filteredMovies = computed(() => {
     <q-scroll-area style="width:100vw; height: 80vh;" class="bg-dark">
       <div class="flex justify-center  wrap" style="gap: 10px;">
         <div v-for="(movie) in filteredMovies" :key="movie.id" class="column items-center">
-          <div class="flex justify-center" v-show="editMode">
+          <div class="flex justify-center" v-show="editModeMobile">
             <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
             <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
           </div>
@@ -432,11 +440,19 @@ const filteredMovies = computed(() => {
         </div>
     </q-dialog>
     <q-dialog  v-model="formUpdateMovieMobile" persistent full-width full-height>
-            <Form :mode="'login'" @submit="onSubmit" @reset="onReset">
-                <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email" />
-                <q-input filled type="password" v-model="formUserPassword" class="q-pa-md" label="Votre mot de passe" />
-                <p class="forgotPassword q-pl-md" @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
-            </Form>
+        <Form :mode="'updateMovie'" @submit="onSubmit" @reset="onReset">
+            <div class="row justify-between q-ml-sm q-mr-sm">
+                <q-input
+                    v-model="movieName"
+                    autofocus
+                    />
+                <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
+            </div>
+            <div class="flex justify-center">
+                <Movie :movie="movieUpdated" />
+            </div>
+
+        </Form>
     </q-dialog>
     <q-dialog  v-model="formDeleteMovieMobile" persistent full-width full-height>
             <Form :mode="'register'" @submit="onSubmit" @reset="onReset">
