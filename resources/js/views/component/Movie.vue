@@ -1,6 +1,6 @@
 <template>
    <!--Card pour afficher les éléments-->
- <div class="q-mt-sm q-mb-sm q-mr-sm"> 
+ <div class="q-mt-sm q-mb-sm">
   <q-card class="text-dark " style="width: 150px; height: max-content;">
     <q-img :src="movie.url_img"/>
   </q-card>

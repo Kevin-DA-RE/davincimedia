@@ -49,6 +49,7 @@ async function showMovies(){
                         accept: "application/json",
                         },
               })
+
         moviesListLoaded.value = movies.data
             }
             catch (error) {
@@ -91,7 +92,6 @@ async function showMoviesWithGenres(genre) {
                                 .catch((error) => {
                                   return error.response.data;
                                 });
-
                                 moviesListFiltred.value = moviesWithGenres
   }
 
@@ -117,6 +117,7 @@ async function getMovieWithGenre(name) {
                       .catch((error) =>{
                         return error.response.data
                       });
+
   if (movie.code == 400) {
     return {
       code: 400,
@@ -347,87 +348,88 @@ const filteredMovies = computed(() => {
 
 <template>
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
-    <div class="flex justify-center" >
-        <div v-if="filteredMovies.length > 0">
-            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" style="width: 150px;"/>
-            <q-btn color="secondary" icon="note_add" @click="formAddMoviesMobile = true" />
-            <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
-            <q-btn color="secondary" icon="manage_search" >
-                <q-menu max-height="130px" >
-                    <div v-for="genre in genresListLoaded" key="genre.id">
-                    <q-list dense>
-                        <q-item clickable>
-                        <q-item-section>
-                            <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
-                        </q-item-section>
-                        </q-item>
-                    </q-list>
-                    </div>
-                </q-menu>
-            </q-btn>
-        </div>
-        <div v-else>
-            <q-btn color="secondary" icon="note_add" @click="formAddMoviesMobile = true" />
-        </div>
-    </div>
-        <div
-        v-for="(movie) in filteredMovies" :key="movie.id"
-        class="bg-dark row justify-start" s
-        tyle="overflow:scroll; height: 80vh;">
-            <div class="flex justify-center" v-show="editMode">
-                <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-                <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
-              </div>
-                <Movie :movie="movie" />
-        </div>
-    </div>
-        <q-dialog  v-model="formAddMoviesMobile" persistent full-width full-height>
-                <div class="bg-white column q-gutter-sm" >
-                    <div class="row justify-between q-ml-sm q-mr-sm">
-                        <q-input
-                            v-model="movieName"
-                            label="Saisir le nom du film"
-                            autofocus
-                            />
-                        <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
-
-                    </div>
-                    <div v-if="movieCreated.id_movie">
-                        <Movie :movie="movieCreated" />
-                    </div>
-                    <div class="row justify-start q-gutter-sm">
-                        <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
-                        <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
-                    </div>
-                        <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset" >
-                            <div v-if="moviesList.length > 0">
-                                <q-carousel
-                                    v-model="carouselSlide"
-                                    transition-prev="scale"
-                                    transition-next="scale"
-                                    swipeable
-                                    animated
-                                    control-color="white"
-                                    navigation
-                                    arrows
-                                    height="max-content"
-                                    class="shadow-1 rounded-borders"
-                                    >
-                                    <q-carousel-slide
-                                        v-for="(movie, index) in moviesList"
-                                        :key="movie.id"
-                                        :name="index"
-                                        class="column no-wrap flex-center"
-                                    >
-                                        <Movie :movie="movie" />
-                                    </q-carousel-slide>
-                                    </q-carousel>
-                            </div>
-                            <div v-else class="text-center">
-                                <p>Aucun film n'est ajouté</p>
-                            </div>
-                        </Form>
+    <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
+        <q-input dense rounded filled bg-color="white" placeholder="Rechercher..."  v-model="search" style="width: 150px;"/>
+        <q-btn color="secondary" icon="note_add" @click="formAddMoviesMobile = true" />
+        <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
+        <q-btn color="secondary" icon="manage_search" >
+            <q-menu max-height="130px" >
+                <div v-for="genre in genresListLoaded" key="genre.id">
+                <q-list dense>
+                    <q-item clickable>
+                    <q-item-section>
+                        <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
+                    </q-item-section>
+                    </q-item>
+                </q-list>
                 </div>
+            </q-menu>
+        </q-btn>
+    </div>
+    <div v-else>
+        <q-btn color="secondary" icon="note_add" @click="formAddMoviesMobile = true" />
+    </div>
+    <q-scroll-area style="width:100vw; height: 80vh;" class="bg-dark">
+      <div class="flex justify-center  wrap" style="gap: 10px;">
+        <div v-for="(movie) in filteredMovies" :key="movie.id" class="column items-center">
+          <div class="flex justify-center" v-show="editMode">
+            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+          </div>
+          <Movie :movie="movie" />
+        </div>
+      </div>
+    </q-scroll-area>
+
+
+</div>
+    <q-dialog  v-model="formAddMoviesMobile" persistent full-width full-height>
+        <div class="bg-white column q-gutter-sm" >
+            <div class="row justify-between q-ml-sm q-mr-sm">
+                <q-input
+                    v-model="movieName"
+                    label="Saisir le nom du film"
+                    autofocus
+                    />
+                <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
+
+            </div>
+            <div v-if="movieCreated.id_movie">
+                <Movie :movie="movieCreated" />
+            </div>
+            <div class="row justify-start q-gutter-sm">
+                <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
+                <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
+            </div>
+                <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset" >
+                    <div v-if="moviesList.length > 0">
+                        <q-carousel
+                            v-model="carouselSlide"
+                            transition-prev="scale"
+                            transition-next="scale"
+                            swipeable
+                            animated
+                            control-color="white"
+                            navigation
+                            arrows
+                            height="max-content"
+                            class="shadow-1 rounded-borders"
+                            >
+                            <q-carousel-slide
+                                v-for="(movie, index) in moviesList"
+                                :key="movie.id"
+                                :name="index"
+                                class="column no-wrap flex-center"
+                            >
+                                <Movie :movie="movie" />
+                            </q-carousel-slide>
+                            </q-carousel>
+                    </div>
+                    <div v-else class="text-center">
+                        <p>Aucun film n'est ajouté</p>
+                    </div>
+                </Form>
+        </div>
     </q-dialog>
     <q-dialog  v-model="formUpdateMovieMobile" persistent full-width full-height>
             <Form :mode="'login'" @submit="onSubmit" @reset="onReset">
@@ -436,7 +438,7 @@ const filteredMovies = computed(() => {
                 <p class="forgotPassword q-pl-md" @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
             </Form>
     </q-dialog>
-    <q-dialog  v-model="formDeleteMoviesMobile" persistent full-width full-height>
+    <q-dialog  v-model="formDeleteMovieMobile" persistent full-width full-height>
             <Form :mode="'register'" @submit="onSubmit" @reset="onReset">
                 <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email"
                     @change="checkEmailLogin()" />
@@ -453,7 +455,7 @@ const filteredMovies = computed(() => {
                 </div>
             </Form>
     </q-dialog>
-<div v-else-if="!quasar.screen.lt.sm">
+<div v-if="!quasar.screen.lt.sm">
     <q-splitter
       v-model="splitterModel"
       style="height: 100vh"
