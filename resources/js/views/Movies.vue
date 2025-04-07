@@ -126,10 +126,10 @@ async function getMovieWithGenre(name) {
       name: name,
     };
   } else {
-    if(formAddMoviesMobile.value = true){
+    if(formAddMoviesMobile.value === true){
         console.log("create mobile");
         return movieCreated.value = movie
-    } else if (formUpdateMovieMobile.value = true){
+    } else if (formUpdateMovieMobile.value === true){
         console.log("update mobile");
 
         return movieUpdated.value = movie
@@ -440,18 +440,15 @@ const filteredMovies = computed(() => {
         </div>
     </q-dialog>
     <q-dialog  v-model="formUpdateMovieMobile" persistent full-width full-height>
+        <div class="bg-white row justify-between q-ml-sm q-mr-sm">
+          <q-input
+                  v-model="movieName"
+                  autofocus
+                  />
+              <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
+        </div>
         <Form :mode="'updateMovie'" @submit="onSubmit" @reset="onReset">
-            <div class="row justify-between q-ml-sm q-mr-sm">
-                <q-input
-                    v-model="movieName"
-                    autofocus
-                    />
-                <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
-            </div>
-            <div class="flex justify-center">
                 <Movie :movie="movieUpdated" />
-            </div>
-
         </Form>
     </q-dialog>
     <q-dialog  v-model="formDeleteMovieMobile" persistent full-width full-height>
