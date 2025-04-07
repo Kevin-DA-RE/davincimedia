@@ -150,9 +150,14 @@ function AddMovie(movie) {
 
 async function onSubmit() {
 
-// Init FormDatato pour envoyer les datas
+await showMovies()
+await showGenres()
+}
+
+async function createMoviesToBackEnd(movies){
+// Init FormDatata pour envoyer les datas
 const formData = new FormData()
-moviesList.value.forEach((movie, index) => {
+movies.value.forEach((movie, index) => {
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id_movie))
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
@@ -174,26 +179,6 @@ const sendToMovies = await axios
                       .catch((error) =>
                         console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
                       );
-
-if(sendToMovies === 200)
-{
-    if (formAddMoviesMobile.value === true) {
-        movieName.value = ""
-        moviesList.value.length = 0
-        formAddMoviesMobile.value = false
-    } else if(formUpdateMovieMobile.value === true) {
-         movieName.value = ""
-         formUpdateMovieMobile.value = false
-    } else {
-        movieName.value = ""
-        formAddMovies.value = false
-        moviesList.value.length = 0
-    }
-}
-
-
-await showMovies()
-await showGenres()
 }
 
 async function updateMovieToBackEnd(movie) {
