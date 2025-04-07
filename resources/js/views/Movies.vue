@@ -427,31 +427,25 @@ const filteredMovies = computed(() => {
     <q-dialog  v-model="formUpdateMovieMobile" persistent full-width full-height>
         <div class="bg-white row justify-between q-ml-sm q-mr-sm">
           <q-input
-                  v-model="movieName"
-                  autofocus
-                  />
-              <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
+            v-model="movieName"
+            autofocus
+            />
+            <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
         </div>
         <Form :mode="'updateMovie'" @submit="onSubmit" @reset="onReset">
                 <Movie :movie="movieUpdated" />
         </Form>
     </q-dialog>
     <q-dialog  v-model="formDeleteMovieMobile" persistent full-width full-height>
-            <Form :mode="'register'" @submit="onSubmit" @reset="onReset">
-                <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md" label="Votre adresse Email"
-                    @change="checkEmailLogin()" />
-                <div v-show="checkAccount">
-                    <q-input filled type="password" v-model="formForgotPassword" class="q-pa-md"
-                        label="Votre nouveau mot de passe" />
-                    <q-input filled type="password" v-model="confirmFormForgotPassword" class="q-pa-md"
-                        label="Confirmer votre mot de passe" />
-                </div>
-                <div v-show="checkErrorMail" class="q-pl-md">
-                    <p style="color: red;">{{ messageError }}</p>
-                    <p style="color: red;" class="q-pl-sm">Revenir à l'écran d'inscription ? <br> veuillez cliquez <strong
-                            style="cursor: pointer;" @click="redirectRegister()">ici </strong></p>
-                </div>
-            </Form>
+        <div class="bg-white row justify-between q-ml-sm q-mr-sm">
+                <q-input
+                v-model="movieName"
+                autofocus
+                />
+            </div>
+        <Form :mode="'deleteMovie'" @submit="onSubmit" @reset="onReset">
+            <Movie :movie="movieDeleted" />
+        </Form>
     </q-dialog>
 <div v-if="!quasar.screen.lt.sm">
     <q-splitter
