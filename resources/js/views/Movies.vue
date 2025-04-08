@@ -554,20 +554,9 @@ const filteredMovies = computed(() => {
             </div>
         </q-dialog>
         <q-dialog v-model="formDeleteMovie">
-              <q-card style="min-width: 350px">
-                  <q-card-section>
-                      <h6 class="text-h6">Voulez-vous supprimer ce film</h6>
-                  </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                      <Movie :movie="movieDeleted" />
-              </q-card-section>
-
-              <q-card-actions align="right" class="text-primary">
-                  <q-btn flat label="Annuler" @click="resetDeleteMovie()" />
-                  <q-btn flat label="Supprimer le Film" @click="deleteMovie()" />
-              </q-card-actions>
-              </q-card>
+            <Form :mode="'deleteMovie'" @submit="onSubmit" @reset="onReset">
+                <Movie :movie="movieDeleted" />
+            </Form>
           </q-dialog>
           <q-dialog v-model="formUpdateMovie">
               <q-card style="min-width: 350px">
