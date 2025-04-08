@@ -558,32 +558,17 @@ const filteredMovies = computed(() => {
                 <Movie :movie="movieDeleted" />
             </Form>
           </q-dialog>
-          <q-dialog v-model="formUpdateMovie">
-              <q-card style="min-width: 350px">
-                  <q-card-section>
-                      <h6 class="text-h6">Modifier le film</h6>
-                  </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                  <q-input
-                      v-model="movieName"
-                      @change="getMovieWithGenre(movieName)"
-                      autofocus
-                      />
-                      <q-card-section>
-                      <Movie :movie="movieUpdated" />
-                  </q-card-section>
-              </q-card-section>
-
-              <q-card-actions align="right" class="text-primary">
-                  <q-btn flat label="Annuler" @click="resetUpdateMovie()" />
-                  <q-btn flat label="Modifier Film" @click="updateMovie()" />
-              </q-card-actions>
-              </q-card>
-          </q-dialog>
-
-
-
+        <q-dialog v-model="formUpdateMovie">
+            <div class="bg-white row justify-between q-ml-sm q-mr-sm">
+                <q-input
+                v-model="movieName"
+                autofocus
+                />
+            </div>
+            <Form :mode="'updateMovie'" @submit="onSubmit" @reset="onReset">
+                <Movie :movie="movieUpdated" />
+            </Form>
+        </q-dialog>
 </template>
 
 <style>
