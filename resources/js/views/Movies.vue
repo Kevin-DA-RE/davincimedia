@@ -15,7 +15,6 @@ const genresListLoaded =ref([])
 const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
 const formDeleteMovie = ref(false)
-const formDeleteMovieMobile = ref(false)
 const search = ref("")
 const editMode = ref(false)
 const editModeMobile = ref(false)
@@ -303,6 +302,7 @@ function onReset(){
     moviesList.value.length = 0
     formAddMovies.value = false
     formUpdateMovie.value = false
+    formDeleteMovie.value = false
 }
 
 const filteredMovies = computed(() => {
@@ -511,7 +511,7 @@ const filteredMovies = computed(() => {
 </div>
 
 <!-- Formulaire de mise à jour d'un film -->
-<q-dialog  v-model="formUpdateMovie" persistent >
+<q-dialog  v-model="formUpdateMovie" persistent>
     <div class="column">
         <div class="bg-white row justify-between q-pa-sm">
             <q-input
@@ -526,26 +526,14 @@ const filteredMovies = computed(() => {
     </div>
 </q-dialog>
 
-    <q-dialog  v-model="formDeleteMovieMobile" persistent full-width full-height>
-        <div class="bg-white row justify-between q-ml-sm q-mr-sm">
-                <q-input
-                v-model="movieName"
-                autofocus
-                />
-            </div>
+<!-- Formulaire de suppression d'un film -->
+<q-dialog  v-model="formDeleteMovie" persistent>
+    <div class="column">
         <Form :mode="'deleteMovie'" @submit="onSubmit" @reset="onReset">
             <Movie :movie="movieDeleted" />
         </Form>
-    </q-dialog>
-
-
-
-        <q-dialog v-model="formDeleteMovie">
-            <Form :mode="'deleteMovie'" @submit="onSubmit" @reset="onReset">
-                <Movie :movie="movieDeleted" />
-            </Form>
-          </q-dialog>
-
+    </div>
+</q-dialog>
 </template>
 
 <style>
