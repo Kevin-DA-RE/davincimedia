@@ -14,7 +14,6 @@ const moviesListFiltred = ref([])
 const genresListLoaded =ref([])
 const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
-const formUpdateMovieMobile = ref(false)
 const formDeleteMovie = ref(false)
 const formDeleteMovieMobile = ref(false)
 const search = ref("")
@@ -126,11 +125,8 @@ async function getMovieWithGenre(name) {
     };
   } else {
     if(formAddMovies.value === true){
-        console.log("create mobile");
         return movieCreated.value = movie
-    } else if (formUpdateMovieMobile.value === true){
-        console.log("update mobile");
-
+    } else if (formUpdateMovie.value === true){
         return movieUpdated.value = movie
     } else if (formAddMovies.value === true) {
         return movieCreated.value = movie
@@ -255,22 +251,12 @@ async function deleteMovieToBackEnd(movie) {
 }
 
 function showFormUpdateMovie(movie, index){
-
-  if (quasar.screen.lt.sm) {
-    movieIdOrigin.value =movie.id
-    movieUpdated.value = {...movie}
-    movieIndex.value = index
-    movieName.value = movie.name
-    formUpdateMovieMobile.value = true
-  } else {
     movieIdOrigin.value =movie.id
     movieUpdated.value = {...movie}
     movieIndex.value = index
     movieName.value = movie.name
     formUpdateMovie.value = true
   }
-
-}
 
 function showFormDeleteMovie(movie, index){
     movieIdOrigin.value =movie.id
@@ -316,6 +302,7 @@ function onReset(){
     movieCreated.value = {}
     moviesList.value.length = 0
     formAddMovies.value = false
+    formUpdateMovie.value = false
 }
 
 const filteredMovies = computed(() => {
@@ -433,6 +420,7 @@ const filteredMovies = computed(() => {
         </template>
     </q-splitter>
 </div>
+
 <!-- Formulaire d'ajout de film -->
 <div v-if="quasar.screen.lt.sm">
     <q-dialog  v-model="formAddMovies" persistent full-width full-height>
@@ -521,18 +509,23 @@ const filteredMovies = computed(() => {
         </div>
     </q-dialog>
 </div>
-    <q-dialog  v-model="formUpdateMovieMobile" persistent full-width full-height>
-        <div class="bg-white row justify-between q-ml-sm q-mr-sm">
-          <q-input
+
+<!-- Formulaire de mise à jour d'un film -->
+<q-dialog  v-model="formUpdateMovie" persistent >
+    <div class="column">
+        <div class="bg-white row justify-between q-pa-sm">
+            <q-input
             v-model="movieName"
             autofocus
             />
             <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
         </div>
         <Form :mode="'updateMovie'" @submit="onSubmit" @reset="onReset">
-                <Movie :movie="movieUpdated" />
+            <Movie :movie="movieUpdated" />
         </Form>
-    </q-dialog>
+    </div>
+</q-dialog>
+
     <q-dialog  v-model="formDeleteMovieMobile" persistent full-width full-height>
         <div class="bg-white row justify-between q-ml-sm q-mr-sm">
                 <q-input
@@ -552,17 +545,7 @@ const filteredMovies = computed(() => {
                 <Movie :movie="movieDeleted" />
             </Form>
           </q-dialog>
-        <q-dialog v-model="formUpdateMovie">
-            <div class="bg-white row justify-between q-ml-sm q-mr-sm">
-                <q-input
-                v-model="movieName"
-                autofocus
-                />
-            </div>
-            <Form :mode="'updateMovie'" @submit="onSubmit" @reset="onReset">
-                <Movie :movie="movieUpdated" />
-            </Form>
-        </q-dialog>
+
 </template>
 
 <style>
