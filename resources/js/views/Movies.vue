@@ -13,7 +13,6 @@ const moviesListLoaded = ref([])
 const moviesListFiltred = ref([])
 const genresListLoaded =ref([])
 const formAddMovies = ref(false)
-const formAddMoviesMobile = ref(false)
 const formUpdateMovie = ref(false)
 const formUpdateMovieMobile = ref(false)
 const formDeleteMovie = ref(false)
@@ -126,7 +125,7 @@ async function getMovieWithGenre(name) {
       name: name,
     };
   } else {
-    if(formAddMoviesMobile.value === true){
+    if(formAddMovies.value === true){
         console.log("create mobile");
         return movieCreated.value = movie
     } else if (formUpdateMovieMobile.value === true){
@@ -297,11 +296,7 @@ function resetAddmovie(){
   movieName.value = ""
   moviesList.value.length = 0
   movieCreated.value = {}
-  if (quasar.screen.lt.sm) {
-    formAddMoviesMobile.value = false
-  } else {
-    formAddMovies.value = false
-  }
+  formAddMovies.value = false
 }
 
 function resetUpdateMovie () {
@@ -317,17 +312,10 @@ function resetDeleteMovie(){
 
 
 function onReset(){
-    if (formAddMoviesMobile.value === true) {
-        movieName.value = ""
-        movieCreated.value = {}
-        moviesList.value.length = 0
-        formAddMoviesMobile.value = false
-    } else {
-        movieName.value = ""
-        movieCreated.value = {}
-        moviesList.value.length = 0
-        formAddMovies.value = false
-    }
+    movieName.value = ""
+    movieCreated.value = {}
+    moviesList.value.length = 0
+    formAddMovies.value = false
 }
 
 const filteredMovies = computed(() => {
@@ -340,10 +328,11 @@ const filteredMovies = computed(() => {
 
 
 <template>
+    <!-- Menu Affichage Ecran Petit -->
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
     <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
         <q-input dense rounded filled bg-color="white" placeholder="Rechercher..."  v-model="search" style="width: 150px;"/>
-        <q-btn color="secondary" icon="note_add" @click="formAddMoviesMobile = true" />
+        <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
         <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editModeMobile = !editModeMobile" icon="edit_square"/>
         <q-btn color="secondary" icon="manage_search" >
             <q-menu max-height="130px" >
@@ -374,7 +363,7 @@ const filteredMovies = computed(() => {
       </div>
     </q-scroll-area>
 </div>
-
+<!-- Menu Affichage Ecran Large -->
 <div v-if="!quasar.screen.lt.sm">
     <q-splitter
       v-model="splitterModel"
@@ -444,16 +433,17 @@ const filteredMovies = computed(() => {
         </template>
     </q-splitter>
 </div>
-
-    <q-dialog  v-model="formAddMoviesMobile" persistent full-width full-height>
-        <div class="bg-white column q-gutter-sm" >
+<!-- Formulaire d'ajout de film -->
+<div v-if="quasar.screen.lt.sm">
+    <q-dialog  v-model="formAddMovies" persistent full-width full-height>
+        <div class="bg-white column q-gutter-sm">
             <div class="row justify-between q-ml-sm q-mr-sm">
-                <q-input
-                    v-model="movieName"
-                    label="Saisir le nom du film"
-                    autofocus
-                    />
-                <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
+            <q-input
+                v-model="movieName"
+                label="Saisir le nom du film"
+                autofocus
+                />
+            <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
 
             </div>
             <div v-if="movieCreated.id_movie">
@@ -463,36 +453,74 @@ const filteredMovies = computed(() => {
                 <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
                 <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
             </div>
-                <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset" >
-                    <div v-if="moviesList.length > 0">
-                        <q-carousel
-                            v-model="carouselSlide"
-                            transition-prev="scale"
-                            transition-next="scale"
-                            swipeable
-                            animated
-                            control-color="white"
-                            navigation
-                            arrows
-                            height="max-content"
-                            class="shadow-1 rounded-borders"
-                            >
-                            <q-carousel-slide
-                                v-for="(movie, index) in moviesList"
-                                :key="movie.id"
-                                :name="index"
-                                class="column no-wrap flex-center"
-                            >
-                                <Movie :movie="movie" />
-                            </q-carousel-slide>
-                            </q-carousel>
+            <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset" >
+                <div v-if="moviesList.length > 0">
+                    <q-carousel
+                        v-model="carouselSlide"
+                        transition-prev="scale"
+                        transition-next="scale"
+                        swipeable
+                        animated
+                        control-color="white"
+                        navigation
+                        arrows
+                        height="max-content"
+                        class="shadow-1 rounded-borders"
+                        >
+                        <q-carousel-slide
+                            v-for="(movie, index) in moviesList"
+                            :key="movie.id"
+                            :name="index"
+                            class="column no-wrap flex-center"
+                        >
+                            <Movie :movie="movie" />
+                        </q-carousel-slide>
+                        </q-carousel>
+                </div>
+                <div v-else class="text-center">
+                    <p>Aucun film n'est ajouté</p>
+                </div>
+            </Form>
+        </div>
+    </q-dialog>
+</div>
+<div v-if="!quasar.screen.lt.sm">
+    <q-dialog  v-model="formAddMovies" persistent full-width full-height>
+        <div class="row bg-white q-pa-md">
+            <div class="col-4">
+                <h6 class="text-h6">Saisir le nom du film</h6>
+                <q-input
+                        v-model="movieName"
+                        @change="getMovieWithGenre(movieName)"
+                        autofocus
+                        />
+                    <div v-if="movieCreated.id_movie">
+                        <q-card-section>
+                        <Movie :movie="movieCreated" />
+                    </q-card-section>
                     </div>
-                    <div v-else class="text-center">
+                <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
+                <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
+            </div>
+            <div class="col-8">
+                <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset">
+                    <div v-if="moviesList.length > 0">
+                        <div class="row justify-start">
+                            <div
+                            v-for="(movie, index) in moviesList" :key="movie.id"
+                            >
+                            <Movie :movie="movie" />
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
                         <p>Aucun film n'est ajouté</p>
                     </div>
                 </Form>
+            </div>
         </div>
     </q-dialog>
+</div>
     <q-dialog  v-model="formUpdateMovieMobile" persistent full-width full-height>
         <div class="bg-white row justify-between q-ml-sm q-mr-sm">
           <q-input
@@ -518,41 +546,7 @@ const filteredMovies = computed(() => {
     </q-dialog>
 
 
-        <q-dialog  v-model="formAddMovies" persistent full-width full-height>
-            <div class="row bg-white q-pa-md">
-                <div class="col-4">
-                    <h6 class="text-h6">Saisir le nom du film</h6>
-                    <q-input
-                            v-model="movieName"
-                            @change="getMovieWithGenre(movieName)"
-                            autofocus
-                            />
-                        <div v-if="movieCreated.id_movie">
-                            <q-card-section>
-                            <Movie :movie="movieCreated" />
-                        </q-card-section>
-                        </div>
-                    <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieCreated)"/>
-                    <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
-                </div>
-                <div class="col-8">
-                    <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset">
-                        <div v-if="moviesList.length > 0">
-                            <div class="row justify-start">
-                                <div
-                                v-for="(movie, index) in moviesList" :key="movie.id"
-                                >
-                                <Movie :movie="movie" />
-                                </div>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <p>Aucun film n'est ajouté</p>
-                        </div>
-                    </Form>
-                </div>
-            </div>
-        </q-dialog>
+
         <q-dialog v-model="formDeleteMovie">
             <Form :mode="'deleteMovie'" @submit="onSubmit" @reset="onReset">
                 <Movie :movie="movieDeleted" />
