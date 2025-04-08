@@ -373,9 +373,78 @@ const filteredMovies = computed(() => {
         </div>
       </div>
     </q-scroll-area>
-
-
 </div>
+
+<div v-if="!quasar.screen.lt.sm">
+    <q-splitter
+      v-model="splitterModel"
+      style="height: 100vh"
+      dark
+    >
+
+      <template v-slot:before>
+        <q-tabs
+          v-model="tab"
+          vertical
+          class="bg-dark text-teal"
+        >
+        <div class="flex justify-center">
+            <div v-if="filteredMovies.length > 0">
+            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" style="width: 150px;"/>
+            <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
+            <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
+            </div>
+            <div v-else>
+                <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
+            </div>
+        </div>
+        </q-tabs>
+
+      </template>
+
+      <template v-slot:after>
+        <q-tab-panels
+          v-model="tab"
+          animated
+          swipeable
+          vertical
+          transition-prev="jump-up"
+          transition-next="jump-up"
+          dark
+        >
+
+            <q-tab-panel name="all" style="height: 100vh">
+            <div class="row justify-start">
+                <div
+                v-for="(movie, index) in filteredMovies" :key="movie.id"
+                >
+                <div class="flex justify-center" v-show="editMode">
+                    <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+                    <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+                </div>
+                    <Movie :movie="movie" />
+                </div>
+            </div>
+            </q-tab-panel>
+
+            <q-tab-panel :name="panelGenre" style="height: 100vh">
+                <div class="row justify-start">
+                    <div
+                    v-for="(movie, index) in moviesListFiltred" :key="movie.id"
+                    >
+                        <div class="flex justify-center">
+                            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
+                            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+                        </div>
+                        <Movie :movie="movie" />
+                    </div>
+                </div>
+            </q-tab-panel>
+        </q-tab-panels>
+        </template>
+    </q-splitter>
+</div>
+
     <q-dialog  v-model="formAddMoviesMobile" persistent full-width full-height>
         <div class="bg-white column q-gutter-sm" >
             <div class="row justify-between q-ml-sm q-mr-sm">
@@ -447,56 +516,8 @@ const filteredMovies = computed(() => {
             <Movie :movie="movieDeleted" />
         </Form>
     </q-dialog>
-<div v-if="!quasar.screen.lt.sm">
-    <q-splitter
-      v-model="splitterModel"
-      style="height: 100vh"
-      dark
-    >
 
-      <template v-slot:before>
-        <q-tabs
-          v-model="tab"
-          vertical
-          class="bg-dark text-teal"
-        >
-        <div class="flex justify-center">
-            <div v-if="filteredMovies.length > 0">
-            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" style="width: 150px;"/>
-            <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
-            <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
-            </div>
-            <div v-else>
-                <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
-            </div>
-        </div>
-        </q-tabs>
 
-      </template>
-
-      <template v-slot:after>
-        <q-tab-panels
-          v-model="tab"
-          animated
-          swipeable
-          vertical
-          transition-prev="jump-up"
-          transition-next="jump-up"
-          dark
-        >
-
-        <q-tab-panel name="all" style="height: 100vh">
-          <div class="row justify-start">
-              <div
-              v-for="(movie, index) in filteredMovies" :key="movie.id"
-              >
-              <div class="flex justify-center" v-show="editMode">
-                <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-                <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
-              </div>
-                  <Movie :movie="movie" />
-              </div>
-          </div>
         <q-dialog  v-model="formAddMovies" persistent full-width full-height>
             <div class="row bg-white q-pa-md">
                 <div class="col-4">
@@ -580,26 +601,8 @@ const filteredMovies = computed(() => {
               </q-card>
           </q-dialog>
 
-        </q-tab-panel>
 
-        <q-tab-panel :name="panelGenre" style="height: 100vh">
-            <div class="row justify-start">
-              <div
-              v-for="(movie, index) in moviesListFiltred" :key="movie.id"
-              >
-                <div class="flex justify-center">
-                  <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-                  <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
-                </div>
-                <Movie :movie="movie" />
-              </div>
-          </div>
-        </q-tab-panel>
-      </q-tab-panels>
-      </template>
 
-    </q-splitter>
-  </div>
 </template>
 
 <style>
