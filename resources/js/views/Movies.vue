@@ -536,28 +536,20 @@ const filteredMovies = computed(() => {
                     <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
                 </div>
                 <div class="col-8">
-                    <q-form
-                    @submit.prevent="onSubmit"
-                    @reset="onReset"
-                    class="q-gutter-md"
-                    >
-                        <h6>Liste des films a enregistrer</h6>
+                    <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset">
                         <div v-if="moviesList.length > 0">
-                        <div class="row justify-start">
-                            <div
-                            v-for="(movie, index) in moviesList" :key="movie.id"
-                            >
-                            <Movie :movie="movie" />
+                            <div class="row justify-start">
+                                <div
+                                v-for="(movie, index) in moviesList" :key="movie.id"
+                                >
+                                <Movie :movie="movie" />
+                                </div>
                             </div>
-                        </div>
-                        <q-btn label="Enregistrer les films" type="submit" color="primary"/>
-                        <q-btn label="Annuler" type="reset" />
                         </div>
                         <div v-else>
                             <p>Aucun film n'est ajouté</p>
                         </div>
-
-                    </q-form>
+                    </Form>
                 </div>
             </div>
         </q-dialog>
