@@ -4,7 +4,6 @@ import { onMounted, ref,computed } from "vue";
 import Movie from "./component/Movie.vue";
 import Form from "../views/slot/Form.vue";
 import { useQuasar } from 'quasar';
-import { fasBullseye } from "@quasar/extras/fontawesome-v5";
 
 const quasar = useQuasar();
 const carouselSlide = ref(0)
@@ -20,6 +19,7 @@ const editMode = ref(false)
 const movieName = ref("");
 const movie = ref({})
 const movieSearched = ref({})
+const movieSelected = ref({})
 const movieIdOrigin = ref()
 const movieIndex = ref()
 const tab = ref('all')
@@ -36,6 +36,21 @@ const api = {
   url_backend_show_movies_genres: "http://127.0.0.1:8000/api/movie/show-movies-genres",
   url_backend_get_movies_genres: "http://127.0.0.1:8000/api/movie/get-movies-with-genres"
 };
+
+onMounted( async() => {
+      try {
+        await loadMoviesWithGenres()
+      } catch (error) {
+        console.log("error onMounted"+error);
+      }
+})
+
+
+async function loadMoviesWithGenres(){
+  await showMovies()
+  await showGenres()
+}
+
 
 async function showMovies(){
   try {
@@ -93,28 +108,24 @@ async function showMoviesWithGenres(genre) {
 
 }
 
-
-onMounted( async() => {
-      try {
-        await showMovies()
-        await showGenres()
-      } catch (error) {
-        console.log("error onMounted"+error);
-      }
-})
-
-
-
 // Recherche du film et de son/ses genre(s)
 async function getMovieWithGenre(name) {
   const url = `${api.url_backend_get_movies_genres}/${name}`
-  return movieSearched.value = await axios.get(url)
+  if (formAddMovies.value) {
+    return movieSearched.value = await axios.get(url)
+                      .then((movie) => movie.data)
+                      .catch((error) =>{
+                        return error.response.data
+                      });
+  }else {
+    return movieSelected.value = await axios.get(url)
                       .then((movie) => movie.data)
                       .catch((error) =>{
                         return error.response.data
                       });
 
   }
+}
 
 function AddMovie(movie) {
     moviesList.value.push(movie)
@@ -122,23 +133,37 @@ function AddMovie(movie) {
     movieName.value = ""
 }
 
-async function onSubmit() {
-if (formAddMovies.value) {
-    await createMoviesToBackEnd(moviesList)
-    moviesList.value.length = 0
+async function onSubmit(form) {
+    switch (form) {
+        case 'addMovies':
+            await createMoviesToBackEnd(moviesList.value)
+            moviesList.value.length = 0
+            formAddMovies.value = false
+            break;
+        case 'updateMovie':
+            moviesListLoaded.value[movieIndex.value] =  movieSelected.value
+            await updateMovieToBackEnd(movieSelected.value)
+            formUpdateMovie.value = false
+            break;
+        case 'deleteMovie':
+            moviesListLoaded.value[movieIndex.value] =  movieSelected.value
+            await deleteMovieToBackEnd(movieSelected.value)
+            formDeleteMovie.value = false
+            break;
+        default:
+            console.log("le formulaire n'est pas détectée");
+            break;
+    }
     movie.value = {}
     movieName.value = ""
-    formAddMovies.value = false
-}
 
-await showMovies()
-await showGenres()
+    await loadMoviesWithGenres()
 }
 
 async function createMoviesToBackEnd(movies){
 // Init FormDatata pour envoyer les datas
 const formData = new FormData()
-movies.value.forEach((movie, index) => {
+movies.forEach((movie, index) => {
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id_movie))
     formData.append(`moviesList[${index}][name]`, movie.name)
     formData.append(`moviesList[${index}][synopsis]`, movie.synopsis)
@@ -163,6 +188,7 @@ return await axios.post(api.url_backend_create_movie, formData, {
 
 async function updateMovieToBackEnd(movie) {
 const url = `${api.url_backend_update_movie}/${movieIdOrigin.value}`
+
 // Init FormData pour envoyer les datas
 const formData = new FormData()
     formData.append(`id_movie`, parseInt(movie.id_movie))
@@ -197,15 +223,12 @@ async function deleteMovieToBackEnd(movie) {
     }
     jsonData["genres"]= []
 
-        movie.genres.forEach((genre) => {
-            jsonData["genres"].push({
-                "id_genre":parseInt(genre.id_genre),
-                "name" : genre.name
-            })
+    movie.genres.forEach((genre) => {
+        jsonData["genres"].push({
+            "id_genre":parseInt(genre.id_genre),
+            "name" : genre.name
         })
-
-        console.log(jsonData);
-
+    })
 
     await axios.post(url, jsonData, {
                             headers: {
@@ -217,65 +240,48 @@ async function deleteMovieToBackEnd(movie) {
                             console.log(`Erreur lors de la suppression des datas sur le film \n ${error}`)
                         );
 
-  formDeleteMovie.value = false
-  await showMovies()
-  await showGenres()
 }
 
-function showFormUpdateMovie(movie, index){
+function showFormulary(movie, index, icon){
     movieIdOrigin.value =movie.id
-    movie.value = {...movie}
+    movieSelected.value = {...movie}
     movieIndex.value = index
     movieName.value = movie.name
-    formUpdateMovie.value = true
-  }
 
-function showFormDeleteMovie(movie, index){
-    movieIdOrigin.value =movie.id
-    movie.value = movie
-    movieIndex.value = index
-    formDeleteMovie.value = true
+    if (icon === 'edit') {
+        formUpdateMovie.value = true
+    } else {
+        formDeleteMovie.value = true
+    }
+
 }
 
-async function updateMovie(){
-    moviesListLoaded.value[movieIndex.value] =  movie.value
-    await updateMovieToBackEnd(movie.value)
-    formUpdateMovie.value = false
-}
-
-async function deleteMovie(){
-    moviesListLoaded.value[movieIndex.value] =  movie.value
-    await deleteMovieToBackEnd(movie.value)
-    formDeleteMovie.value = false
-}
-
-
-function resetAddmovie(){
+function reset(){
   movieName.value = ""
   moviesList.value.length = 0
   movie.value = {}
   formAddMovies.value = false
-}
-
-function resetUpdateMovie () {
-  movieName.value = ""
-  movie.value = {}
   formUpdateMovie.value = false
-}
-
-function resetDeleteMovie(){
-  movie.value = {}
   formDeleteMovie.value = false
 }
 
 
-function onReset(){
+function onReset(mode){
     movieName.value = ""
     movie.value = {}
-    moviesList.value.length = 0
-    formAddMovies.value = false
-    formUpdateMovie.value = false
-    formDeleteMovie.value = false
+    switch (mode) {
+        case 'addMovies':
+        moviesList.value.length = 0
+        formAddMovies.value = false
+            break;
+        case 'updateMovie':
+        formUpdateMovie.value = false
+            break;
+
+        default:
+        formDeleteMovie.value = false
+            break;
+    }
 }
 
 const filteredMovies = computed(() => {
@@ -315,8 +321,8 @@ const filteredMovies = computed(() => {
       <div class="flex justify-center  wrap" style="gap: 10px;">
         <div v-for="(movie) in filteredMovies" :key="movie.id" class="column items-center">
           <div class="flex justify-center" v-show="editMode">
-            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
+            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
           </div>
           <Movie :movie="movie" />
         </div>
@@ -368,8 +374,8 @@ const filteredMovies = computed(() => {
                 v-for="(movie, index) in filteredMovies" :key="movie.id"
                 >
                 <div class="flex justify-center" v-show="editMode">
-                    <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-                    <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+                    <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
+                    <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
                 </div>
                     <Movie :movie="movie" />
                 </div>
@@ -382,8 +388,8 @@ const filteredMovies = computed(() => {
                     v-for="(movie, index) in moviesListFiltred" :key="movie.id"
                     >
                         <div class="flex justify-center">
-                            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormUpdateMovie(movie, index)" icon="edit"/>
-                            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormDeleteMovie(movie, index)" icon="delete"/>
+                            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
+                            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
                         </div>
                         <Movie :movie="movie" />
                     </div>
@@ -411,10 +417,10 @@ const filteredMovies = computed(() => {
                 <Movie :movie="movieSearched" />
             </div>
             <div class="row justify-start q-gutter-sm">
-                <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
+                <q-btn label="Annuler" class="text-dark" @click="reset()"/>
                 <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieSearched)"/>
             </div>
-            <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset" >
+            <Form :mode="'addMovies'" @submit="onSubmit('addMovies')" @reset="onReset('addMovies')" >
                 <div v-if="moviesList.length > 0">
                     <q-carousel
                         v-model="carouselSlide"
@@ -436,7 +442,7 @@ const filteredMovies = computed(() => {
                         >
                             <Movie :movie="movie" />
                         </q-carousel-slide>
-                        </q-carousel>
+                    </q-carousel>
                 </div>
                 <div v-else class="text-center">
                     <p>Aucun film n'est ajouté</p>
@@ -460,11 +466,11 @@ const filteredMovies = computed(() => {
                         <Movie :movie="movieSearched" />
                     </q-card-section>
                     </div>
-                <q-btn label="Annuler" class="text-dark" @click="resetAddmovie()"/>
+                <q-btn label="Annuler" class="text-dark" @click="reset()"/>
                 <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddMovie(movieSearched)"/>
             </div>
             <div class="col-8">
-                <Form :mode="'addMovies'" @submit="onSubmit" @reset="onReset">
+                <Form :mode="'addMovies'" @submit="onSubmit('addMovies')" @reset="onReset('addMovies')">
                     <div v-if="moviesList.length > 0">
                         <div class="row justify-start">
                             <div
@@ -493,8 +499,8 @@ const filteredMovies = computed(() => {
             />
             <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
         </div>
-        <Form :mode="'updateMovie'" @submit="onSubmit" @reset="onReset">
-            <Movie :movie="movie" />
+        <Form :mode="'updateMovie'" @submit="onSubmit('updateMovie')" @reset="onReset('updateMovie')">
+            <Movie :movie="movieSelected" />
         </Form>
     </div>
 </q-dialog>
@@ -502,8 +508,8 @@ const filteredMovies = computed(() => {
 <!-- Formulaire de suppression d'un film -->
 <q-dialog  v-model="formDeleteMovie" persistent>
     <div class="column">
-        <Form :mode="'deleteMovie'" @submit="onSubmit" @reset="onReset">
-            <Movie :movie="movie" />
+        <Form :mode="'deleteMovie'" @submit="onSubmit('deleteMovie')" @reset="onReset('deleteMovie')">
+            <Movie :movie="movieSelected" />
         </Form>
     </div>
 </q-dialog>
