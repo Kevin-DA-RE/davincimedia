@@ -26,15 +26,15 @@ const tab = ref('all')
 const splitterModel = ref(20)
 const panelGenre = ref("")
 
-
+const url_base = "http://127.0.0.1:8000"
 const api = {
-  url_backend_create_movie: "http://127.0.0.1:8000/api/movie/create-movie",
-  url_backend_update_movie: "http://127.0.0.1:8000/api/movie/update-movie",
-  url_backend_delete_movie: "http://127.0.0.1:8000/api/movie/delete-movie",
-  url_backend_show_movies: "http://127.0.0.1:8000/api/movie/show-movies",
-  url_backend_show_genres: "http://127.0.0.1:8000/api/movie/show-genres",
-  url_backend_show_movies_genres: "http://127.0.0.1:8000/api/movie/show-movies-genres",
-  url_backend_get_movies_genres: "http://127.0.0.1:8000/api/movie/get-movies-with-genres"
+  url_backend_create_movie: `${url_base}/api/movie/create-movie`,
+  url_backend_update_movie: `${url_base}/api/movie/update-movie`,
+  url_backend_delete_movie: `${url_base}/api/movie/delete-movie`,
+  url_backend_show_movies: `${url_base}/api/movie/show-movies`,
+  url_backend_show_genres: `${url_base}/api/movie/show-genres`,
+  url_backend_show_movies_genres: `${url_base}/api/movie/show-movies-genres`,
+  url_backend_get_movies_genres: `${url_base}/api/movie/get-movies-with-genres`
 };
 
 onMounted( async() => {
