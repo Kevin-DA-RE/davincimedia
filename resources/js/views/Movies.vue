@@ -332,72 +332,126 @@ const filteredMovies = computed(() => {
 <!-- Menu Affichage Ecran Large -->
 <div v-if="!quasar.screen.lt.sm">
     <q-splitter
-      v-model="splitterModel"
-      style="height: 100vh"
+  v-model="splitterModel"
+  style="height: 100vh"
+  dark
+>
+  <template v-slot:before>
+    <q-tabs
+      v-model="tab"
+      vertical
+      class="bg-dark text-teal"
+    >
+      <div class="flex justify-center items-center q-pa-sm">
+        <div v-if="filteredMovies.length > 0">
+          <q-input
+            dense
+            rounded
+            filled
+            bg-color="white"
+            placeholder="Rechercher..."
+            class="q-mr-md"
+            v-model="search"
+            style="width: 150px;"
+          />
+          <q-btn
+            color="secondary"
+            icon="note_add"
+            @click="formAddMovies = true"
+          />
+          <q-btn
+            class="q-ml-sm q-mr-sm"
+            color="green-9"
+            @click="editMode = !editMode"
+            icon="edit_square"
+          />
+        </div>
+        <div v-else>
+          <q-btn
+            color="secondary"
+            icon="note_add"
+            @click="formAddMovies = true"
+          />
+        </div>
+      </div>
+
+      <!-- Réintégration des genres -->
+      <div v-for="genre in genresListLoaded" :key="genre.id">
+        <q-tab
+          :name="genre.name"
+          icon="movie"
+          :label="genre.name"
+          @click="showMoviesWithGenres(genre)"
+        />
+      </div>
+    </q-tabs>
+  </template>
+
+  <template v-slot:after>
+    <q-tab-panels
+      v-model="tab"
+      animated
+      swipeable
+      vertical
+      transition-prev="jump-up"
+      transition-next="jump-up"
       dark
     >
-
-      <template v-slot:before>
-        <q-tabs
-          v-model="tab"
-          vertical
-          class="bg-dark text-teal"
-        >
-        <div class="flex justify-center">
-            <div v-if="filteredMovies.length > 0">
-            <q-input dense rounded filled bg-color="white" placeholder="Rechercher..." class="q-mr-md" v-model="search" style="width: 150px;"/>
-            <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
-            <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
+      <!-- Panel "all" -->
+      <q-tab-panel name="all" style="height: 100vh">
+        <div class="row justify-start">
+          <div
+            v-for="(movie, index) in filteredMovies"
+            :key="movie.id"
+          >
+            <div class="flex justify-center" v-show="editMode">
+              <q-btn
+                class="q-ml-sm q-mr-sm"
+                color="deep-purple-8"
+                @click="showFormulary(movie, index, 'edit')"
+                icon="edit"
+              />
+              <q-btn
+                class="q-mtlsm q-mr-sm"
+                color="deep-orange-7"
+                @click="showFormulary(movie, index, 'delete')"
+                icon="delete"
+              />
             </div>
-            <div v-else>
-                <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
-            </div>
+            <Movie :movie="movie" />
+          </div>
         </div>
-        </q-tabs>
+      </q-tab-panel>
 
-      </template>
-
-      <template v-slot:after>
-        <q-tab-panels
-          v-model="tab"
-          animated
-          swipeable
-          vertical
-          transition-prev="jump-up"
-          transition-next="jump-up"
-          dark
-        >
-        <!-- Panel de recherche -->
-            <q-tab-panel name="all" style="height: 100vh">
-            <div class="row justify-start">
-                <div
-                v-for="(movie, index) in filteredMovies" :key="movie.id"
-                >
-                <div class="flex justify-center" v-show="editMode">
-                    <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
-                    <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
-                </div>
-                    <Movie :movie="movie" />
-                </div>
+      <!-- Panel de genre dynamique -->
+      <q-tab-panel :name="panelGenre" style="height: 100vh">
+        <div class="row justify-start">
+          <div
+            v-for="(movie, index) in moviesListFiltred"
+            :key="movie.id"
+          >
+            <div class="flex justify-center" v-show="editMode">
+              <q-btn
+                class="q-ml-sm q-mr-sm"
+                color="deep-purple-8"
+                @click="showFormulary(movie, index, 'edit')"
+                icon="edit"
+              />
+              <q-btn
+                class="q-mtlsm q-mr-sm"
+                color="deep-orange-7"
+                @click="showFormulary(movie, index, 'delete')"
+                icon="delete"
+              />
             </div>
-            </q-tab-panel>
-                <!-- Panel dynamique-->
-            <q-tab-panel :name="panelGenre" style="height: 100vh">
-                <div class="row justify-start">
-                    <div
-                    v-for="(movie, index) in moviesListFiltred" :key="movie.id"
-                    >
-                        <div class="flex justify-center">
-                            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
-                            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
-                        </div>
-                        <Movie :movie="movie" />
-                    </div>
-                </div>
-            </q-tab-panel>
-        </q-tab-panels>
-        </template>
-    </q-splitter>
+            <Movie :movie="movie" />
+          </div>
+        </div>
+      </q-tab-panel>
+    </q-tab-panels>
+  </template>
+</q-splitter>
+
 </div>
 
 <!-- Formulaire d'ajout de film -->
