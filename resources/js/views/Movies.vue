@@ -367,7 +367,7 @@ const filteredMovies = computed(() => {
           transition-next="jump-up"
           dark
         >
-
+        <!-- Panel de recherche -->
             <q-tab-panel name="all" style="height: 100vh">
             <div class="row justify-start">
                 <div
@@ -381,7 +381,7 @@ const filteredMovies = computed(() => {
                 </div>
             </div>
             </q-tab-panel>
-
+                <!-- Panel dynamique-->
             <q-tab-panel :name="panelGenre" style="height: 100vh">
                 <div class="row justify-start">
                     <div
