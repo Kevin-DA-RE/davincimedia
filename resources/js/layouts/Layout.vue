@@ -3,8 +3,10 @@
 import { onMounted, ref } from "vue";
 import Auth from "./Auth.vue";
 import axios from "axios";
+import { useQuasar } from 'quasar';
 
 const modeForm = ref();
+const quasar = useQuasar();
 const isAuthentified = ref(false);
 
 onMounted(async () => {
@@ -50,10 +52,19 @@ async function onLogout() {
     <div v-else>
         <q-header>
             <q-toolbar class="bg-dark text-white shadow-2 rounded-borders">
-                <!-- Titre aligné à gauche -->
                 <q-toolbar-title class="q-mr-md">
-                    DaVinciMedia
+                <!-- Affichage sur petits écrans -->
+                <div v-if="quasar.screen.lt.sm" class="flex items-center justify-center">
+                    <img src="../../assets/cine_hightech_3.png" alt="cine_hight_tech" style="width: 100px; height: 100px;">
+                </div>
+
+                <!-- Affichage sur écrans moyens et grands -->
+                <div v-else class="flex items-center">
+                    <img src="../../assets/cine_hightech_3.png" alt="cine_hight_tech" style="width: 100px; height: 100px;">
+                    <p class="text-h5 m-0">DaVinciMedia</p>
+                </div>
                 </q-toolbar-title>
+
                 <!-- Tabs centrés -->
                 <q-tabs align="center">
                     <q-route-tab :to="{ name: 'movies' }" label="Films" class="text-teal" icon="movie" />
