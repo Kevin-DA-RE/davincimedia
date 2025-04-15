@@ -9,7 +9,6 @@ const quasar = useQuasar();
 const carouselSlide = ref(0)
 const moviesList = ref([])
 const moviesListLoaded = ref([])
-const moviesListFiltred = ref([])
 const genresListLoaded =ref([])
 const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
@@ -103,7 +102,7 @@ async function showMoviesWithGenres(genre) {
                                 .catch((error) => {
                                   return error.response.data;
                                 });
-                                moviesListFiltred.value = moviesWithGenres
+                                moviesListLoaded.value = moviesWithGenres
   }
 
 }
@@ -298,9 +297,9 @@ const filteredMovies = computed(() => {
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
     <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
         <q-input dense rounded filled bg-color="white" placeholder="Rechercher..."  v-model="search" style="width: 150px;"/>
-        <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" />
-        <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square"/>
-        <q-btn color="secondary" icon="manage_search" >
+        <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" title="Ajouter un film"/>
+        <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square" title="Mode edition"/>
+        <q-btn color="secondary" icon="manage_search" title="Sélection par genres">
             <q-menu max-height="130px" >
                 <div v-for="genre in genresListLoaded" key="genre.id">
                 <q-list dense>
@@ -317,6 +316,7 @@ const filteredMovies = computed(() => {
     <div v-else>
         <q-btn color="secondary" icon="note_add" @click="formAddMovies= true" />
     </div>
+
     <q-scroll-area style="width:100vw; height: 80vh;" class="bg-dark">
       <div class="flex justify-center  wrap" style="gap: 10px;">
         <div v-for="(movie) in filteredMovies" :key="movie.id" class="column items-center">
@@ -324,7 +324,7 @@ const filteredMovies = computed(() => {
             <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
             <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
           </div>
-          <Movie :movie="movie" />
+            <Movie :movie="movie" />
         </div>
       </div>
     </q-scroll-area>
@@ -427,7 +427,7 @@ const filteredMovies = computed(() => {
       <q-tab-panel :name="panelGenre" style="height: 100vh">
         <div class="row justify-start">
           <div
-            v-for="(movie, index) in moviesListFiltred"
+            v-for="(movie, index) in moviesListLoaded"
             :key="movie.id"
           >
             <div class="flex justify-center" v-show="editMode">
