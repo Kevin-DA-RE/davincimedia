@@ -118,7 +118,7 @@ async function getMovieWithGenre(name) {
                       });
   }else {
     return movieSelected.value = await axios.get(url)
-                      .then((movie) => console.log(movie.data)
+                      .then((movie) =>  movie.data
                       )
                       .catch((error) =>{
                         return error.response.data
