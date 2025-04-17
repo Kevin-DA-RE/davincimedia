@@ -344,6 +344,7 @@ const filteredMovies = computed(() => {
       v-model="tab"
       vertical
       class="bg-dark text-teal"
+      style="overflow: auto;"
     >
       <div class="flex justify-center items-center q-pa-sm">
         <div v-if="filteredMovies.length > 0">
@@ -357,7 +358,8 @@ const filteredMovies = computed(() => {
             v-model="search"
             style="width: 150px;"
           />
-          <q-btn
+          <div class="flex justify-around q-mt-sm">
+            <q-btn
             color="secondary"
             icon="note_add"
             @click="formAddMovies = true"
@@ -368,6 +370,8 @@ const filteredMovies = computed(() => {
             @click="editMode = !editMode"
             icon="edit_square"
           />
+          </div>
+
         </div>
         <div v-else>
           <q-btn
