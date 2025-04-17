@@ -20,7 +20,7 @@ const messageError = ref()
 const quasar = useQuasar();
 
 const emit = defineEmits(['authValidated'])
-
+const url_backend = "http://127.0.0.1:8000"
 
 async function onRegister() {
     // Init FormData pour envoyer les datas
@@ -30,7 +30,7 @@ async function onRegister() {
     formData.append('password', formUserPassword.value);
 
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/register", formData, {
+        .post(`${url_backend}/api/user/register`, formData, {
             headers: {
                 accept: "multipart/form-data"
             }
@@ -42,7 +42,7 @@ async function onRegister() {
             return error.response.data;
         });
 
-    modeForm.value = response === 200 ? 'login':'register';
+    modeForm.value = response === 204 ? 'login':'register';
 }
 
 async function onLogin() {
@@ -52,10 +52,11 @@ async function onLogin() {
     formData.append('password', formUserPassword.value);
 
     await axios
-        .post("http://127.0.0.1:8000/api/user/login", formData, {
+        .post(`${url_backend}/api/user/login`, formData, {
             headers: {
                 accept: "multipart/form-data"
             }
+            ,withCredentials: true
         })
         .then((response) => {
             return {
@@ -72,7 +73,7 @@ async function onLogin() {
 
 async function onResetPassword() {
     await axios
-        .post("http://127.0.0.1:8000/api/user/forgot-password", {
+        .post(`${url_backend}/api/user/forgot-password`, {
             email: formUserEmail.value,
             password: formForgotPassword.value,
         })
@@ -90,7 +91,7 @@ async function checkEmailLogin() {
     formData.append('email', formUserEmail.value);
 
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/check-email", formData)
+        .post(`${url_backend}/api/user/check-email`, formData)
         .then((response) => {
             return response.data;
         })
@@ -109,7 +110,7 @@ async function checkEmailRegister() {
     formData.append('email', formUserEmail.value);
 
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/check-email", formData)
+        .post(`${url_backend}/api/user/check-email`, formData)
         .then((response) => {
             return response.data;
         })
@@ -273,7 +274,7 @@ function Login() {
                         <p class="forgotPassword q-pl-md" @click="dialogFormForgotPassword()">Mot de passe oublié ?</p>
                     </FormUser>
                 </div>
-                <div v-else>
+                <div v-else-if="modeForm === 'forgotPassword'">
                     <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
                         <q-input filled type="mail" v-model="formUserEmail" class="q-pa-md"
                             label="Votre adresse Email" @change="checkEmailLogin()" />

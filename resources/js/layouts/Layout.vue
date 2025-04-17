@@ -7,11 +7,11 @@ import { useQuasar } from 'quasar';
 
 const modeForm = ref();
 const quasar = useQuasar();
-const isAuthentified = ref(false);
+const isAuthentified = ref();
+const url_backend = "http://127.0.0.1:8000"
 
 onMounted(async () => {
-    /*
-    const status = await axios.get("http://127.0.0.1:8000/api/user/check-user")
+    const status = await axios.get(`${url_backend}/api/user/check-user`)
         .then((response) => {
             return response.data;
         })
@@ -20,8 +20,6 @@ onMounted(async () => {
         });
         modeForm.value = status.code === 200 ? 'login' : 'register';
         isAuthentified.value = status.code === 200 ? true : false;
-        */
-        isAuthentified.value = true;
 });
 
 function authValidated() {
@@ -32,7 +30,7 @@ function authValidated() {
 
 async function onLogout() {
     const response = await axios
-        .post("http://127.0.0.1:8000/api/user/logout",{}, { withCredentials: true })
+        .post(`${url_backend}/api/user/logout`,{}, { withCredentials: true })
         .then((response) => {
             return response.status;
         })
@@ -40,7 +38,7 @@ async function onLogout() {
             return error.response.data;
         });
 
-        isAuthentified.value = response === 200 ? false : true;
+        isAuthentified.value = response === 204 ? false : true;
 }
 </script>
 

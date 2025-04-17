@@ -10,46 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function createUser(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required', 'string',
-            'email' => 'required', 'string',
-            'password' => 'required', 'string',
-        ]);
-        $user = User::where('email', $validated['email'])->first();
-
-        if (!$user) {
-            $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-            ]);
-            return response()->json(['message' => "l'utilisateur ".$validated['name']." a bien été crée"],200);
-        } else {
-            return response()->json(['message' => "l'adresse e-mail est déja utilisé"],400);
-        }
-    }
-
-
-    public function loginUser(Request $request){
-        $validated = $request->validate([
-            'email' => 'required', 'string',
-            'password' => 'required', 'string',
-        ]);
-        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
-            $request->session()->regenerate(); // Sécurise la session
-
-            return response()->json(['message' => "l'utilisateur est connecté"],200);
-        } else {
-            return response()->json(['message' => "l'adresse e-mail ou le mot de passe est incorrect"],400);
-        }
-    }
-
-    public function logoutUser(Request $request){
-        Auth::guard('web')->logout(); // Déconnecte l'utilisateur
-        return response()->json(['message' => "vous avez bien été déconnecté"],200);
-    }
 
     public function checkEmail(Request $request)
     {

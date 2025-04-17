@@ -4,12 +4,22 @@ meta {
   seq: 9
 }
 
-get {
-  url: {{DEV}}/api/movie/test/
-  body: json
+post {
+  url: {{DEV}}/api/login?withCredentials=true
+  body: multipartForm
   auth: none
 }
 
+params:query {
+  withCredentials: true
+}
+
 headers {
-  Accept: application/json
+  Accept: multipart/form-data
+}
+
+body:multipart-form {
+  email: kevin@gmail.com
+  name: kevin
+  password: kevin
 }

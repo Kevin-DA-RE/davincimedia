@@ -118,7 +118,8 @@ async function getMovieWithGenre(name) {
                       });
   }else {
     return movieSelected.value = await axios.get(url)
-                      .then((movie) => movie.data)
+                      .then((movie) => console.log(movie.data)
+                      )
                       .catch((error) =>{
                         return error.response.data
                       });
@@ -162,6 +163,8 @@ async function onSubmit(form) {
 async function createMoviesToBackEnd(movies){
 // Init FormDatata pour envoyer les datas
 const formData = new FormData()
+console.log(movies);
+
 movies.forEach((movie, index) => {
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id_movie))
     formData.append(`moviesList[${index}][name]`, movie.name)

@@ -1,0 +1,32 @@
+meta {
+  name: test_movies
+  type: http
+  seq: 20
+}
+
+get {
+  url: http://127.0.0.1:8000/api/movie/get-movies-with-genres/Iron%20Man3?XSRF-TOKEN=eyJpdiI6InBNcGpnMVhMUmkyMG5NTUZOc0RKQ2c9PSIsInZhbHVlIjoiMTVBa1IxM1JEZlhndEhmejhJN1VLRHZRK25ZUHluZjdZRy9iZGxhVU44VjhsZzZ4SnN5ampqNDk1SzRuREhrc2hPd2tUL0FHVEdIcGNnYlVrZnAzajdRaVhRT0V6ZXV4WTNtaFdvTDFVZ3Jva0J2cHNPeGl0SlZtNk4wYlBBRVYiLCJtYWMiOiI2ZGM0MmY0YzU5YzRiNGYyYTRhMzAyMDEyZjZkNmMwMjJkYzc0MjJlMjUyYjUyYzM5ZjhkMjI2MjJmYmM3MTdhIiwidGFnIjoiIn0%3D&laravel_session=eyJpdiI6IkY4UDY4MTZyU1JyRldjODNiYkl2ZUE9PSIsInZhbHVlIjoiaFdaTjZuSTlCbitrdHM2bTk4eG41NGQwUnBNYVlxdFkzUzlDN05yZFFjbVZQNHNHTFlteng2ZDFhV2t2Ymc1dGVUOCsrZEJ0anc2U01EVDRMTGEydW1Xejh6Q0U3Y0dCZ0VsQVJsNXZlbURMVkdENmtvRmVTZzBBR1JIQ2JJWHIiLCJtYWMiOiJkODdmYTFlZDMzM2M1MGU0NDE4YmEyNDc5YTI0NTkxZDM5N2I0NjM0YTFhYzkzN2VhOGZmOWFmZmVkYjFlMmRhIiwidGFnIjoiIn0
+  body: none
+  auth: inherit
+}
+
+params:query {
+  XSRF-TOKEN: eyJpdiI6InBNcGpnMVhMUmkyMG5NTUZOc0RKQ2c9PSIsInZhbHVlIjoiMTVBa1IxM1JEZlhndEhmejhJN1VLRHZRK25ZUHluZjdZRy9iZGxhVU44VjhsZzZ4SnN5ampqNDk1SzRuREhrc2hPd2tUL0FHVEdIcGNnYlVrZnAzajdRaVhRT0V6ZXV4WTNtaFdvTDFVZ3Jva0J2cHNPeGl0SlZtNk4wYlBBRVYiLCJtYWMiOiI2ZGM0MmY0YzU5YzRiNGYyYTRhMzAyMDEyZjZkNmMwMjJkYzc0MjJlMjUyYjUyYzM5ZjhkMjI2MjJmYmM3MTdhIiwidGFnIjoiIn0%3D
+  laravel_session: eyJpdiI6IkY4UDY4MTZyU1JyRldjODNiYkl2ZUE9PSIsInZhbHVlIjoiaFdaTjZuSTlCbitrdHM2bTk4eG41NGQwUnBNYVlxdFkzUzlDN05yZFFjbVZQNHNHTFlteng2ZDFhV2t2Ymc1dGVUOCsrZEJ0anc2U01EVDRMTGEydW1Xejh6Q0U3Y0dCZ0VsQVJsNXZlbURMVkdENmtvRmVTZzBBR1JIQ2JJWHIiLCJtYWMiOiJkODdmYTFlZDMzM2M1MGU0NDE4YmEyNDc5YTI0NTkxZDM5N2I0NjM0YTFhYzkzN2VhOGZmOWFmZmVkYjFlMmRhIiwidGFnIjoiIn0
+}
+
+headers {
+  Accept: application/json, text/plain, */*
+  Accept-Language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
+  Connection: keep-alive
+  DNT: 1
+  Referer: http://127.0.0.1:8000/
+  Sec-Fetch-Dest: empty
+  Sec-Fetch-Mode: cors
+  Sec-Fetch-Site: same-origin
+  User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+  X-XSRF-TOKEN: eyJpdiI6IlpKNExyRVB1SW5EV01vVnU3WWxRNnc9PSIsInZhbHVlIjoiS0FxTGhaL3dlY0xmRFlCSENiYUZMbFpKM05jQ2JWcFJFWldVYTV3aDdCL2krQ3l1RmlrcEl0bXNYUlF5VXFSeStMSGlBV09ETC9DZVQ2RktFUEdoeHN5MHJxYkc2VGdrSFAwc1VOZ1BLNWpEWkQwRlBuT21KVnZjcDhMVVE2SEYiLCJtYWMiOiJhMzM5YmMxM2NkZmJhNDE0YjEwYzBlYTk1Mzc5NDhkYTUyNWI5YWQ4MGMzMzE5YTIwZmNjZWRkNGUzNjFmYTM5IiwidGFnIjoiIn0=
+  sec-ch-ua: "Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"
+  sec-ch-ua-mobile: ?0
+  sec-ch-ua-platform: "Linux"
+}
