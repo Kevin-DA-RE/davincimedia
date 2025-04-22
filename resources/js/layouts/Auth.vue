@@ -199,7 +199,7 @@ function Login() {
     <q-dialog v-model="initAuthDialog" persistent>
         <q-card>
             <q-card-section>
-                    <div class="text-h4">Bonjour et bienvenue <br>dans l'application Da vinci Media</div>
+                    <div class="text-h4 text-center">Bienvenue <br>dans votre application <br>Da Vinci Media</div>
             </q-card-section>
             <q-card-actions class="flex-row justify-around">
                 <q-btn color="primary" label="S'inscrire'" @click="Register()" />
