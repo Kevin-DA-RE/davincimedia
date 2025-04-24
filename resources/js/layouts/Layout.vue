@@ -49,8 +49,8 @@ async function onLogout() {
         <Auth @authValidated="authValidated"/>
     </div>
     <div v-else>
-        <q-header>
-            <q-toolbar class="bg-dark text-white shadow-2 rounded-borders">
+        <q-header >
+            <q-toolbar class="bg-dark text-white shadow-2 rounded-borders" >
                 <q-toolbar-title class="q-mr-md">
                 <!-- Affichage sur petits écrans -->
                 <div v-if="quasar.screen.lt.sm" class="flex items-center justify-center">
@@ -70,12 +70,14 @@ async function onLogout() {
                 </q-tabs>
 
                 <q-space />
-                <q-input class="q-mr-sm"
-                outlined
-                dark
-                placeholder="Rechercher..."
-                v-model="search"
-                style="width: 150px;"/>
+                <q-input
+                    class="q-mr-sm"
+                    outlined
+                    dark
+                    placeholder="Rechercher..."
+                    v-model="search"
+                    style="width: 150px;"
+                />
                 <q-btn round flat icon="person">
                     <q-menu>
                         <q-list style="min-width: 150px">

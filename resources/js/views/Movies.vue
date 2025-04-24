@@ -19,7 +19,6 @@ const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
 const formDeleteMovie = ref(false)
 const editMode = ref(false)
-const search = ref("")
 const movieName = ref("");
 const movie = ref({})
 const movieSearched = ref({})
@@ -342,7 +341,6 @@ const filteredMovies = computed(() => {
 
     <q-splitter
     v-model="splitterModel"
-    style="height: 100vh"
     dark
     >
   <template v-slot:before>
@@ -350,7 +348,7 @@ const filteredMovies = computed(() => {
       v-model="tab"
       vertical
       class="bg-dark text-teal"
-      style="overflow: auto;"
+      style="overflow: auto; height: 88vh;"
     >
       <div class="flex justify-center items-center q-pa-sm">
         <div v-if="filteredMovies.length > 0">
@@ -393,6 +391,7 @@ const filteredMovies = computed(() => {
   <template v-slot:after>
     <q-tab-panels
       v-model="tab"
+      style="overflow: auto; height: 88vh;"
       animated
       swipeable
       vertical
