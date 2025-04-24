@@ -5,6 +5,11 @@ import Movie from "./component/Movie.vue";
 import Form from "../views/slot/Form.vue";
 import { useQuasar } from 'quasar';
 
+const props = defineProps({
+    search: {
+    type: String
+  },
+});
 const quasar = useQuasar();
 const carouselSlide = ref(0)
 const moviesList = ref([])
@@ -13,8 +18,8 @@ const genresListLoaded =ref([])
 const formAddMovies = ref(false)
 const formUpdateMovie = ref(false)
 const formDeleteMovie = ref(false)
-const search = ref("")
 const editMode = ref(false)
+const search = ref("")
 const movieName = ref("");
 const movie = ref({})
 const movieSearched = ref({})
@@ -24,6 +29,7 @@ const movieIndex = ref()
 const tab = ref('all')
 const splitterModel = ref(20)
 const panelGenre = ref("")
+
 
 const url_base = "http://127.0.0.1:8000"
 const api = {
@@ -288,7 +294,7 @@ function onReset(mode){
 
 const filteredMovies = computed(() => {
   return moviesListLoaded.value.filter(movie =>
-    movie.name.toLowerCase().includes(search.value.toLowerCase())
+    movie.name.toLowerCase().includes(props.search.toLowerCase())
   );
 });
 
@@ -299,7 +305,6 @@ const filteredMovies = computed(() => {
     <!-- Menu Affichage Ecran Petit -->
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
     <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
-        <q-input dense rounded filled bg-color="white" placeholder="Rechercher..."  v-model="search" style="width: 150px;"/>
         <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" title="Ajouter un film"/>
         <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square" title="Mode edition"/>
         <q-btn color="secondary" icon="manage_search" title="Sélection par genres">
@@ -334,11 +339,12 @@ const filteredMovies = computed(() => {
 </div>
 <!-- Menu Affichage Ecran Large -->
 <div v-if="!quasar.screen.lt.sm">
+
     <q-splitter
-  v-model="splitterModel"
-  style="height: 100vh"
-  dark
->
+    v-model="splitterModel"
+    style="height: 100vh"
+    dark
+    >
   <template v-slot:before>
     <q-tabs
       v-model="tab"
@@ -348,16 +354,6 @@ const filteredMovies = computed(() => {
     >
       <div class="flex justify-center items-center q-pa-sm">
         <div v-if="filteredMovies.length > 0">
-          <q-input
-            dense
-            rounded
-            filled
-            bg-color="white"
-            placeholder="Rechercher..."
-            class="q-mr-md"
-            v-model="search"
-            style="width: 150px;"
-          />
           <div class="flex justify-around q-mt-sm">
             <q-btn
             color="secondary"

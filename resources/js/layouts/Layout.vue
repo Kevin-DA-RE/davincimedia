@@ -9,6 +9,7 @@ const modeForm = ref();
 const quasar = useQuasar();
 const isAuthentified = ref();
 const url_backend = "http://127.0.0.1:8000"
+const search = ref("")
 
 onMounted(async () => {
     const status = await axios.get(`${url_backend}/api/user/check-user`)
@@ -69,7 +70,12 @@ async function onLogout() {
                 </q-tabs>
 
                 <q-space />
-
+                <q-input class="q-mr-sm"
+                outlined
+                dark
+                placeholder="Rechercher..."
+                v-model="search"
+                style="width: 150px;"/>
                 <q-btn round flat icon="person">
                     <q-menu>
                         <q-list style="min-width: 150px">
@@ -83,7 +89,7 @@ async function onLogout() {
         </q-header>
 
         <q-page-container>
-            <router-view></router-view>
+            <router-view :search="search"></router-view>
         </q-page-container>
     </div>
 
