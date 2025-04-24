@@ -7,9 +7,15 @@ import { useQuasar } from 'quasar';
 
 const props = defineProps({
     search: {
-    type: String
-  },
+        type: String
+    },
+    checkMovies: {
+        type: Boolean
+    }
 });
+
+const emit = defineEmits(['moviesAdded'])
+
 const quasar = useQuasar();
 const carouselSlide = ref(0)
 const moviesList = ref([])
@@ -143,6 +149,7 @@ async function onSubmit(form) {
         case 'addMovies':
             await createMoviesToBackEnd(moviesList.value)
             moviesList.value.length = 0
+            emit('moviesAdded')
             formAddMovies.value = false
             break;
         case 'updateMovie':
@@ -303,157 +310,180 @@ const filteredMovies = computed(() => {
 <template>
     <!-- Menu Affichage Ecran Petit -->
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
-    <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
-        <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" title="Ajouter un film"/>
-        <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square" title="Mode edition"/>
-        <q-btn color="secondary" icon="manage_search" title="Sélection par genres">
-            <q-menu max-height="130px" >
-                <div v-for="genre in genresListLoaded" key="genre.id">
-                <q-list dense>
-                    <q-item clickable>
-                    <q-item-section>
-                        <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
-                    </q-item-section>
-                    </q-item>
-                </q-list>
-                </div>
-            </q-menu>
-        </q-btn>
+    <div v-if="props.checkMovies===true">
+        <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
+            <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" title="Ajouter un film"/>
+            <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square" title="Mode edition"/>
+            <q-btn color="secondary" icon="manage_search" title="Sélection par genres">
+                <q-menu max-height="130px" >
+                    <div v-for="genre in genresListLoaded" key="genre.id">
+                    <q-list dense>
+                        <q-item clickable>
+                        <q-item-section>
+                            <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
+                        </q-item-section>
+                        </q-item>
+                    </q-list>
+                    </div>
+                </q-menu>
+            </q-btn>
+        </div>
+        <div v-else>
+            <q-btn color="secondary" icon="note_add" @click="formAddMovies= true" />
+        </div>
+
+        <q-scroll-area style="width:100vw; height: 80vh;" class="bg-dark">
+        <div class="flex justify-center  wrap" style="gap: 10px;">
+            <div v-for="(movie) in filteredMovies" :key="movie.id" class="column items-center">
+            <div class="flex justify-center" v-show="editMode">
+                <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
+                <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
+            </div>
+                <Movie :movie="movie" />
+            </div>
+        </div>
+        </q-scroll-area>
     </div>
     <div v-else>
         <q-btn color="secondary" icon="note_add" @click="formAddMovies= true" />
     </div>
-
-    <q-scroll-area style="width:100vw; height: 80vh;" class="bg-dark">
-      <div class="flex justify-center  wrap" style="gap: 10px;">
-        <div v-for="(movie) in filteredMovies" :key="movie.id" class="column items-center">
-          <div class="flex justify-center" v-show="editMode">
-            <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
-            <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
-          </div>
-            <Movie :movie="movie" />
-        </div>
-      </div>
-    </q-scroll-area>
 </div>
 <!-- Menu Affichage Ecran Large -->
 <div v-if="!quasar.screen.lt.sm">
+    <div v-if="props.checkMovies === true">
+        <q-splitter
+            v-model="splitterModel"
+            dark
+            >
+        <template v-slot:before>
+            <q-tabs
+            v-model="tab"
+            vertical
+            class="bg-dark text-teal"
+            style="overflow: auto; height: 88vh;"
+            >
+            <div class="flex justify-center items-center q-pa-sm">
+                <div v-if="filteredMovies.length > 0">
+                <div class="flex justify-around q-mt-sm">
+                    <q-btn
+                    color="secondary"
+                    icon="note_add"
+                    @click="formAddMovies = true"
+                />
+                <q-btn
+                    class="q-ml-sm q-mr-sm"
+                    color="green-9"
+                    @click="editMode = !editMode"
+                    icon="edit_square"
+                />
+                </div>
 
-    <q-splitter
-    v-model="splitterModel"
-    dark
-    >
-  <template v-slot:before>
-    <q-tabs
-      v-model="tab"
-      vertical
-      class="bg-dark text-teal"
-      style="overflow: auto; height: 88vh;"
-    >
-      <div class="flex justify-center items-center q-pa-sm">
-        <div v-if="filteredMovies.length > 0">
-          <div class="flex justify-around q-mt-sm">
-            <q-btn
-            color="secondary"
-            icon="note_add"
-            @click="formAddMovies = true"
-          />
-          <q-btn
-            class="q-ml-sm q-mr-sm"
-            color="green-9"
-            @click="editMode = !editMode"
-            icon="edit_square"
-          />
-          </div>
-
-        </div>
-        <div v-else>
-          <q-btn
-            color="secondary"
-            icon="note_add"
-            @click="formAddMovies = true"
-          />
-        </div>
-      </div>
-
-      <!-- Réintégration des genres -->
-      <div v-for="genre in genresListLoaded" :key="genre.id">
-        <q-tab
-          :name="genre.name"
-          icon="movie"
-          :label="genre.name"
-          @click="showMoviesWithGenres(genre)"
-        />
-      </div>
-    </q-tabs>
-  </template>
-
-  <template v-slot:after>
-    <q-tab-panels
-      v-model="tab"
-      style="overflow: auto; height: 88vh;"
-      animated
-      swipeable
-      vertical
-      transition-prev="jump-up"
-      transition-next="jump-up"
-      dark
-    >
-      <!-- Panel "all" -->
-      <q-tab-panel name="all" style="height: 100vh">
-        <div class="row justify-start">
-          <div
-            v-for="(movie, index) in filteredMovies"
-            :key="movie.id"
-          >
-            <div class="flex justify-center" v-show="editMode">
-              <q-btn
-                class="q-ml-sm q-mr-sm"
-                color="deep-purple-8"
-                @click="showFormulary(movie, index, 'edit')"
-                icon="edit"
-              />
-              <q-btn
-                class="q-mtlsm q-mr-sm"
-                color="deep-orange-7"
-                @click="showFormulary(movie, index, 'delete')"
-                icon="delete"
-              />
+                </div>
+                <div v-else>
+                <q-btn
+                    color="secondary"
+                    icon="note_add"
+                    @click="formAddMovies = true"
+                />
+                </div>
             </div>
-            <Movie :movie="movie" />
-          </div>
-        </div>
-      </q-tab-panel>
 
-      <!-- Panel de genre dynamique -->
-      <q-tab-panel :name="panelGenre" style="height: 100vh">
-        <div class="row justify-start">
-          <div
-            v-for="(movie, index) in moviesListLoaded"
-            :key="movie.id"
-          >
-            <div class="flex justify-center" v-show="editMode">
-              <q-btn
-                class="q-ml-sm q-mr-sm"
-                color="deep-purple-8"
-                @click="showFormulary(movie, index, 'edit')"
-                icon="edit"
-              />
-              <q-btn
-                class="q-mtlsm q-mr-sm"
-                color="deep-orange-7"
-                @click="showFormulary(movie, index, 'delete')"
-                icon="delete"
-              />
+            <!-- Réintégration des genres -->
+            <div v-for="genre in genresListLoaded" :key="genre.id">
+                <q-tab
+                :name="genre.name"
+                icon="movie"
+                :label="genre.name"
+                @click="showMoviesWithGenres(genre)"
+                />
             </div>
-            <Movie :movie="movie" />
-          </div>
-        </div>
-      </q-tab-panel>
-    </q-tab-panels>
-  </template>
-</q-splitter>
+            </q-tabs>
+        </template>
 
+        <template v-slot:after>
+            <q-tab-panels
+            v-model="tab"
+            style="overflow: auto; height: 88vh;"
+            animated
+            swipeable
+            vertical
+            transition-prev="jump-up"
+            transition-next="jump-up"
+            dark
+            >
+            <!-- Panel "all" -->
+            <q-tab-panel name="all" style="height: 100vh">
+                <div class="row justify-start">
+                <div
+                    v-for="(movie, index) in filteredMovies"
+                    :key="movie.id"
+                >
+                    <div class="flex justify-center" v-show="editMode">
+                    <q-btn
+                        class="q-ml-sm q-mr-sm"
+                        color="deep-purple-8"
+                        @click="showFormulary(movie, index, 'edit')"
+                        icon="edit"
+                    />
+                    <q-btn
+                        class="q-mtlsm q-mr-sm"
+                        color="deep-orange-7"
+                        @click="showFormulary(movie, index, 'delete')"
+                        icon="delete"
+                    />
+                    </div>
+                    <Movie :movie="movie" />
+                </div>
+                </div>
+            </q-tab-panel>
+
+            <!-- Panel de genre dynamique -->
+            <q-tab-panel :name="panelGenre" style="height: 100vh">
+                <div class="row justify-start">
+                <div
+                    v-for="(movie, index) in moviesListLoaded"
+                    :key="movie.id"
+                >
+                    <div class="flex justify-center" v-show="editMode">
+                    <q-btn
+                        class="q-ml-sm q-mr-sm"
+                        color="deep-purple-8"
+                        @click="showFormulary(movie, index, 'edit')"
+                        icon="edit"
+                    />
+                    <q-btn
+                        class="q-mtlsm q-mr-sm"
+                        color="deep-orange-7"
+                        @click="showFormulary(movie, index, 'delete')"
+                        icon="delete"
+                    />
+                    </div>
+                    <Movie :movie="movie" />
+                </div>
+                </div>
+            </q-tab-panel>
+            </q-tab-panels>
+        </template>
+        </q-splitter>
+    </div>
+    <div v-else>
+        <div class="bg-dark text-white" style="width: 100vw; height: 100vh;">
+            <div class="flex justify-center items-center q-pa-sm">
+                <h3>Pour commencer, cliquez sur le bouton</h3>
+            </div>
+            <div class="flex justify-center items-center q-pa-sm">
+                <q-btn
+                    class="q-pa-sm align-center text-h5"
+                    color="secondary"
+                    icon="note_add"
+                    @click="formAddMovies= true"
+                    title="Ajouter un film"
+                >Ajouter un film
+                </q-btn>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 <!-- Formulaire d'ajout de film -->

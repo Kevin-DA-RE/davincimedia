@@ -95,7 +95,6 @@ class MoviesController extends Controller
 
     public function createMovie (MovieListRequest $request)
     {
-        //return response()->json(["code"=> 200, "message"=> "on entre dans le controlleur"]);
         $item = $request->validated();
             foreach ($item["moviesList"] as $request_movie) {
                 $genre_ids =[];

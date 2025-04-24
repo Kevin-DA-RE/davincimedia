@@ -24,6 +24,8 @@ Route::get('/', function () {
 
 Route::prefix('user')->controller(AuthController::class)->group(function () {
     Route::get('/check-user', 'checkUser');
+    Route::get('/check-movies', 'checkMovies');
+    Route::get('/check-series', 'checkSeries');
     Route::post('/check-email', 'checkEmail');
 });
 
