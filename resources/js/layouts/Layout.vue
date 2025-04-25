@@ -12,24 +12,29 @@ const search = ref("")
 const checkMovies = ref()
 
 onMounted(async () => {
-    const status = await axios.get(`${url_backend}/api/user/check-user`)
+    isAuthentified.value = await axios.get(`${url_backend}/api/user/check-user`)
         .then((response) => {
-            return response.data;
+            if (response.data.code === 200) {
+                return true
+            } else {
+                return false
+            }
         })
         .catch((error) => {
             return error.response.status;
         });
-     await axios.get(`${url_backend}/api/user/check-movies`)
+    checkMovies.value = await axios.get(`${url_backend}/api/user/check-movies`)
         .then((response) => {
-            checkMovies.value = response.data.code === 200 ? true:false
-
-            return checkMovies.value;
+           if (response.data.code === 200) {
+            return true
+           } else {
+            return false
+           }
         })
         .catch((error) => {
             return error.response.status;
         });
 
-    isAuthentified.value = status.code === 200 ? true : false;
 });
 
 function authValidated() {
@@ -108,7 +113,7 @@ function moviesAdded() {
         </q-header>
 
         <q-page-container>
-            <router-view :search="search" @moviesAdded="moviesAdded"></router-view>
+            <router-view :search="search" :checkMovies="checkMovies" @moviesAdded="moviesAdded"></router-view>
         </q-page-container>
     </div>
 

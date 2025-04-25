@@ -175,8 +175,6 @@ async function onSubmit(form) {
 async function createMoviesToBackEnd(movies){
 // Init FormDatata pour envoyer les datas
 const formData = new FormData()
-console.log(movies);
-
 movies.forEach((movie, index) => {
     formData.append(`moviesList[${index}][id_movie]`, parseInt(movie.id_movie))
     formData.append(`moviesList[${index}][name]`, movie.name)
@@ -475,7 +473,6 @@ const filteredMovies = computed(() => {
                 <q-btn
                     class="q-pa-sm align-center text-h5"
                     color="secondary"
-                    icon="note_add"
                     @click="formAddMovies= true"
                     title="Ajouter un film"
                 >Ajouter un film
