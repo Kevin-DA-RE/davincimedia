@@ -34,10 +34,15 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController:
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');
     Route::get('/show-movies', 'showMovies');
-    Route::get('/get-movie/{parameter}', 'getMovie');
+    Route::get('/get-movie/{query}', 'getMovie');
     Route::get('/get-genres', 'getGenres');
     Route::get('/get-movies-with-genres/{name}', 'getMovieWithGenres');
     Route::get('/show-genres', 'showGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
     Route::get('/test', 'test');
+});
+
+Route::controller(MoviesController::class)->group(function () {
+    Route::get('/testSerie/{query}', 'getSeries');
+    Route::get('/testMovie/{query}', 'getMovie');
 });

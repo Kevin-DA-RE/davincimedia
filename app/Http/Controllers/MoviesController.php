@@ -17,19 +17,12 @@ class MoviesController extends Controller
 
     public function test()
     {
-        $movies = Movie::with('genre')->get();
-        $movies = MoviesResources::collection($movies);
-        return response()->json($movies);
+       return $this->getSeries("game");
     }
 
-    public function getMovie(string $parameter)
+    public function getMovie(string $query)
     {
-        $request = Http::withOptions(['verify' => false])->withQueryParameters([
-            "query" => $parameter,
-            "include_adult" => false,
-            "language" => "fr-FR",
-            "page" => 1
-            ])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/search/movie');
+        $request = $this->getUrlTMDB('movie',$query);
 
         $moviesList = $request['results'];
         if(array_key_exists(0, $moviesList)){
@@ -38,9 +31,45 @@ class MoviesController extends Controller
             $movie = new MoviesResources($moviesList[0]);
         return response()->json($movie->getMovie());
         } else{
-        return response()->json(["code"=> $request->status(), "message"=> "Aucun film trouvé"]);
+        $statusCode = $request ? $request->status() : 500;
+        return response()->json(["code" => $statusCode, "message" => "Aucun film trouvé"]);
         }
     }
+
+
+    public function getSeries(string $query)
+    {
+        $request = $this->getUrlTMDB('tv',$query);
+
+        $moviesList = $request['results'];
+        if(array_key_exists(0, $moviesList)){
+            $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
+            $moviesList[0]['poster_path'] = $urlPictureComplete;
+            $movie = new MoviesResources($moviesList[0]);
+        return response()->json($movie->getSeries());
+        } else{
+            $statusCode = $request ? $request->status() : 500;
+            return response()->json(["code" => $statusCode, "message" => "Aucun film trouvé"]);
+        }
+    }
+
+    private function getUrlTMDB(string $parameter, string $query)
+    {
+        $request = Http::withOptions(['verify' => false])->withQueryParameters([
+            "query" => $query,
+            "include_adult" => false,
+            "language" => "fr-FR",
+            "page" => 1
+            ])->withToken(config('services.tmdb.key'))->acceptJson();
+
+        if ($parameter === "movie") {
+           return $request = $request->get('https://api.themoviedb.org/3/search/movie');
+        } else {
+           return $request = $request->get('https://api.themoviedb.org/3/search/tv');
+        }
+
+    }
+
 
     public function getGenres()
     {
