@@ -538,12 +538,15 @@ const filteredMovies = computed(() => {
     <q-dialog  v-model="formAddMovies" persistent full-width full-height>
         <div class="row bg-white q-pa-md">
             <div class="col-4">
-                <h6 class="text-h6">Saisir le nom du film</h6>
-                <q-input
+                <div class="row justify-between q-ml-sm q-mr-sm">
+                    <q-input
                         v-model="movieName"
-                        @change="getMovieWithGenre(movieName)"
+                        label="Saisir le nom du film"
                         autofocus
                         />
+                    <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
+
+                </div>
                     <div v-if="movieSearched.id_movie">
                         <q-card-section>
                         <Movie :movie="movieSearched" />
