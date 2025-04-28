@@ -29,13 +29,13 @@ const detailCard = ref(false)
                 <q-btn icon="close" fix round dense v-close-popup />
             </q-card-section>
 
-                <q-card-section class="flex justify-between" >
+                <q-card-section class="flex justify-between"  style="max-width: 100%;">
                     <div v-for="genres in movie.genres" :key="genres.id">
                         <q-badge outline color="primary" :label="genres.name" class="text-h5" />
                     </div>
                 </q-card-section>
                 <q-card-section>
-                    <q-img :src="movie.url_img" style="max-width: 100%; height: 500px;"/>
+                    <q-img :src="movie.url_img" style="max-width: 100%; height: auto; background-size: contain;"/>
                 </q-card-section>
                 <!-- Section scrollable contenant le synopsis -->
                 <q-card-section class="q-px-sm q-pt-none scrollable-synopsis">
