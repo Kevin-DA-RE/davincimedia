@@ -8,21 +8,15 @@ use App\Http\Requests\MovieListRequest;
 use App\Http\Requests\MovieRequest;
 use App\Http\Resources\GenresResources;
 use App\Http\Resources\MoviesResources;
+use App\Services\TMDB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Validator;
 
 class MoviesController extends Controller
 {
 
-    public function test()
+    public function getMovie(string $query, TMDB $tmdb)
     {
-       return $this->getSerie("game");
-    }
-
-    public function getMovie(string $query)
-    {
-        $request = $this->getUrlTMDB('movie',$query);
+        $request = $tmdb->getUrlTMDB('movie',$query);
 
         $moviesList = $request['results'];
         if(array_key_exists(0, $moviesList)){
@@ -36,10 +30,9 @@ class MoviesController extends Controller
         }
     }
 
-
-    public function getSerie(string $query)
+    public function getSerie(string $query, TMDB $tmdb)
     {
-        $request = $this->getUrlTMDB('tv',$query);
+        $request = $tmdb->getUrlTMDB('tv', $query);
 
         $serieList = $request['results'];
         if(array_key_exists(0, $serieList)){
@@ -53,40 +46,10 @@ class MoviesController extends Controller
         }
     }
 
-    private function getUrlTMDB(string $parameter, string $query)
-    {
-        $request = Http::withOptions(['verify' => false])->withQueryParameters([
-            "query" => $query,
-            "include_adult" => false,
-            "language" => "fr-FR",
-            "page" => 1
-            ])->withToken(config('services.tmdb.key'))->acceptJson();
-
-        if ($parameter === "movie") {
-           return $request = $request->get(config('services.tmdb.url_movie'));
-        } else {
-           return $request = $request->get(config('services.tmdb.url_serie'));
-        }
-
-    }
-
-
-    public function getGenres(string $parameter)
-    {
-        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson();
-        if ($parameter === "movie") {
-            $request = $request->get(config('services.tmdb.url_genre_movie'));
-        } else {
-            $request = $request->get(config('services.tmdb.url_genre_serie'));
-        }
-        return response()->json(GenresResources::collection($request['genres']));
-    }
-
-    public function getMovieWithGenres(string $name)
-    {
-        $movie = $this->getMovie($name)->getData();
+    public function getMovieWithGenres(string $name, TMDB $tmdb)    {
+        $movie = $this->getMovie($name, $tmdb)->getData();
         if(property_exists($movie, "id")){
-            $genresList = $this->getGenres("movie")->getData();
+            $genresList = $tmdb->getGenres("movie")->getData();
             $genresMovie = $movie->genre_ids;
             foreach ($genresList as $valueOrigin) {
                 foreach ($genresMovie as $valueMovie) {
@@ -108,11 +71,11 @@ class MoviesController extends Controller
         }
     }
 
-    public function getSerieWithGenres(string $name)
+    public function getSerieWithGenres(string $name, TMDB $tmdb)
     {
-        $serie = $this->getSerie($name)->getData();
+        $serie = $this->getSerie($name, $tmdb)->getData();
         if(property_exists($serie, "id")){
-            $genresList = $this->getSerieGenres("serie")->getData();
+            $genresList = $tmdb->getGenres("serie")->getData();
             $genresSerie = $serie->genre_ids;
             foreach ($genresList as $valueOrigin) {
                 foreach ($genresSerie as $valueMovie) {
