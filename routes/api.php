@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MoviesController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SeriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +43,7 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController:
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
 });
 
-Route::controller(MoviesController::class)->group(function () {
+Route::controller(SeriesController::class)->group(function () {
     Route::get('/getSerie/{query}', 'getSerie');
     Route::get('/getMovie/{query}', 'getMovie');
     Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
