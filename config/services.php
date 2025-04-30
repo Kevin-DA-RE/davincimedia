@@ -32,6 +32,10 @@ return [
     ],
     "tmdb" => [
         "key" => env("TMDB_API_KEY"),
+        "url_movie" => env("TMDB_URL_MOVIE"),
+        "url_serie" => env("TMDB_URL_SERIE"),
+        "url_genre_movie" => env("TMDB_URL_GENRE_MOVIE"),
+        "url_genre_serie" => env("TMDB_URL_GENRE_SERIE"),
     ],
 
 ];

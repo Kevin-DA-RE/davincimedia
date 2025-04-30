@@ -63,9 +63,9 @@ class MoviesController extends Controller
             ])->withToken(config('services.tmdb.key'))->acceptJson();
 
         if ($parameter === "movie") {
-           return $request = $request->get('https://api.themoviedb.org/3/search/movie');
+           return $request = $request->get(config('services.tmdb.url_movie'));
         } else {
-           return $request = $request->get('https://api.themoviedb.org/3/search/tv');
+           return $request = $request->get(config('services.tmdb.url_serie'));
         }
 
     }
@@ -73,14 +73,14 @@ class MoviesController extends Controller
 
     public function getMovieGenres()
     {
-        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
+        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get(config('services.tmdb.url_genre_movie'));
 
         return response()->json(GenresResources::collection($request['genres']));
     }
 
     public function getSerieGenres()
     {
-        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/tv/list?language=fr');
+        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get(config('services.tmdb.url_genre_serie'));
 
         return response()->json(GenresResources::collection($request['genres']));
     }
