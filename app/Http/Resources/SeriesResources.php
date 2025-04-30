@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MoviesResources extends JsonResource
+class SeriesResources extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -30,18 +30,18 @@ class MoviesResources extends JsonResource
        ];
     }
 
-    public function getMovie()
+    public function getSerie()
     {
        return [
         'id' => $this['id'],
-        'name' => $this['title'],
+        'name' => $this['name'],
         'synopsis' => $this['overview'],
         'url_img' => $this['poster_path'],
         'genre_ids' => $this['genre_ids']
        ];
     }
 
-    public function getMovieWithGenres()
+    public function getSerieWithGenres()
     {
        return [
         'id_movie' => $this->id,
