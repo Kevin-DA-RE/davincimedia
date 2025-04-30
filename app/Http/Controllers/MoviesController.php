@@ -71,17 +71,14 @@ class MoviesController extends Controller
     }
 
 
-    public function getMovieGenres()
+    public function getGenres(string $parameter)
     {
-        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get(config('services.tmdb.url_genre_movie'));
-
-        return response()->json(GenresResources::collection($request['genres']));
-    }
-
-    public function getSerieGenres()
-    {
-        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get(config('services.tmdb.url_genre_serie'));
-
+        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson();
+        if ($parameter === "movie") {
+            $request = $request->get(config('services.tmdb.url_genre_movie'));
+        } else {
+            $request = $request->get(config('services.tmdb.url_genre_serie'));
+        }
         return response()->json(GenresResources::collection($request['genres']));
     }
 
@@ -89,7 +86,7 @@ class MoviesController extends Controller
     {
         $movie = $this->getMovie($name)->getData();
         if(property_exists($movie, "id")){
-            $genresList = $this->getMovieGenres()->getData();
+            $genresList = $this->getGenres("movie")->getData();
             $genresMovie = $movie->genre_ids;
             foreach ($genresList as $valueOrigin) {
                 foreach ($genresMovie as $valueMovie) {
@@ -115,7 +112,7 @@ class MoviesController extends Controller
     {
         $serie = $this->getSerie($name)->getData();
         if(property_exists($serie, "id")){
-            $genresList = $this->getSerieGenres()->getData();
+            $genresList = $this->getSerieGenres("serie")->getData();
             $genresSerie = $serie->genre_ids;
             foreach ($genresList as $valueOrigin) {
                 foreach ($genresSerie as $valueMovie) {
