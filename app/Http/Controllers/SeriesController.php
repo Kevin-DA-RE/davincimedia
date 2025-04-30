@@ -2,53 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Genre;
-use App\Models\Movie;
-use App\Http\Requests\MovieListRequest;
-use App\Http\Requests\MovieRequest;
-use App\Http\Resources\GenresResources;
-use App\Http\Resources\MoviesResources;
-use App\Services\TMDB;
 use Illuminate\Http\Request;
+use App\Services\TMDB;
 
-class MoviesController extends Controller
+class SeriesController extends Controller
 {
-
-    public function getMovie(string $query, TMDB $tmdb)
+    public function getSerie(string $query, TMDB $tmdb)
     {
-        $request = $tmdb->getUrlTMDB('movie',$query);
+        $request = $tmdb->getUrlTMDB('tv', $query);
 
-        $moviesList = $request['results'];
-        if(array_key_exists(0, $moviesList)){
-            $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
-            $moviesList[0]['poster_path'] = $urlPictureComplete;
-            $movie = new MoviesResources($moviesList[0]);
-        return response()->json($movie->getMovie());
+        $serieList = $request['results'];
+        if(array_key_exists(0, $serieList)){
+            $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$serieList[0]['poster_path'];
+            $serieList[0]['poster_path'] = $urlPictureComplete;
+            $movie = new MoviesResources($serieList[0]);
+        return response()->json($movie->getSeries());
         } else{
-        $statusCode = $request ? $request->status() : 500;
-        return response()->json(["code" => $statusCode, "message" => "Aucun film trouvé"]);
+            $statusCode = $request ? $request->status() : 500;
+            return response()->json(["code" => $statusCode, "message" => "Aucun film trouvé"]);
         }
     }
 
-
-
-    public function getMovieWithGenres(string $name, TMDB $tmdb)    {
-        $movie = $this->getMovie($name, $tmdb)->getData();
-        if(property_exists($movie, "id")){
-            $genresList = $tmdb->getGenres("movie")->getData();
-            $genresMovie = $movie->genre_ids;
+    public function getSerieWithGenres(string $name, TMDB $tmdb)
+    {
+        $serie = $this->getSerie($name, $tmdb)->getData();
+        if(property_exists($serie, "id")){
+            $genresList = $tmdb->getGenres("serie")->getData();
+            $genresSerie = $serie->genre_ids;
             foreach ($genresList as $valueOrigin) {
-                foreach ($genresMovie as $valueMovie) {
+                foreach ($genresSerie as $valueMovie) {
                     if ($valueOrigin->id === $valueMovie) {
-                        $movie->genres[] = [
+                        $serie->genres[] = [
                             "id_genre" => $valueOrigin->id,
                             "name" => $valueOrigin->name
                         ];
                     }
                 }
             }
-            $movie = new MoviesResources($movie);
-            return response()->json($movie->getMovieWithGenres());
+            $serie = new MoviesResources($serie);
+            return response()->json($serie->getMovieWithGenres());
         } else {
             return response()->json([
                 "code" => 400,
@@ -57,7 +49,8 @@ class MoviesController extends Controller
         }
     }
 
-    public function showMovies(){
+
+    public function showSeries(){
         $movies = Movie::with('genre')->get();
         $movies = MoviesResources::collection($movies);
         return response()->json($movies);
@@ -70,12 +63,12 @@ class MoviesController extends Controller
         return response()->json($genres);
     }
 
-    public function showMoviesWithGenres(Genre $genre){
+    public function showSeriesWithGenres(Genre $genre){
         $moviesWithGenres = MoviesResources::collection($genre->movie);
         return response()->json($moviesWithGenres);
     }
 
-    public function createMovie (MovieListRequest $request)
+    public function createSerie (MovieListRequest $request)
     {
         $item = $request->validated();
             foreach ($item["moviesList"] as $request_movie) {
@@ -107,7 +100,7 @@ class MoviesController extends Controller
             return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
       }
 
-    public function updateMovie (MovieRequest $request, Movie $movie)
+    public function updateSerie (MovieRequest $request, Movie $movie)
     {
         $item = $request->validated();
         $genre_ids =[];
@@ -132,7 +125,7 @@ class MoviesController extends Controller
         return response()->json(["code"=> 200, "message" => "le film a bien été modifié"]);
     }
 
-    public function deleteMovie (Request $request, Movie $movie)
+    public function deleteSerie (Request $request, Movie $movie)
     {
         $item = $request->validate([
             'id_movie' => ['required', 'integer'],
