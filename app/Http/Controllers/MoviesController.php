@@ -17,7 +17,7 @@ class MoviesController extends Controller
 
     public function test()
     {
-       return $this->getSeries("game");
+       return $this->getSerie("game");
     }
 
     public function getMovie(string $query)
@@ -37,15 +37,15 @@ class MoviesController extends Controller
     }
 
 
-    public function getSeries(string $query)
+    public function getSerie(string $query)
     {
         $request = $this->getUrlTMDB('tv',$query);
 
-        $moviesList = $request['results'];
-        if(array_key_exists(0, $moviesList)){
-            $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
-            $moviesList[0]['poster_path'] = $urlPictureComplete;
-            $movie = new MoviesResources($moviesList[0]);
+        $serieList = $request['results'];
+        if(array_key_exists(0, $serieList)){
+            $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$serieList[0]['poster_path'];
+            $serieList[0]['poster_path'] = $urlPictureComplete;
+            $movie = new MoviesResources($serieList[0]);
         return response()->json($movie->getSeries());
         } else{
             $statusCode = $request ? $request->status() : 500;
@@ -71,9 +71,16 @@ class MoviesController extends Controller
     }
 
 
-    public function getGenres()
+    public function getMovieGenres()
     {
         $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/movie/list?language=fr');
+
+        return response()->json(GenresResources::collection($request['genres']));
+    }
+
+    public function getSerieGenres()
+    {
+        $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson()->get('https://api.themoviedb.org/3/genre/tv/list?language=fr');
 
         return response()->json(GenresResources::collection($request['genres']));
     }
@@ -82,7 +89,7 @@ class MoviesController extends Controller
     {
         $movie = $this->getMovie($name)->getData();
         if(property_exists($movie, "id")){
-            $genresList = $this->getGenres()->getData();
+            $genresList = $this->getMovieGenres()->getData();
             $genresMovie = $movie->genre_ids;
             foreach ($genresList as $valueOrigin) {
                 foreach ($genresMovie as $valueMovie) {
@@ -96,6 +103,32 @@ class MoviesController extends Controller
             }
             $movie = new MoviesResources($movie);
             return response()->json($movie->getMovieWithGenres());
+        } else {
+            return response()->json([
+                "code" => 400,
+                "message" => "Aucun film trouvé"
+            ]);
+        }
+    }
+
+    public function getSerieWithGenres(string $name)
+    {
+        $serie = $this->getSerie($name)->getData();
+        if(property_exists($serie, "id")){
+            $genresList = $this->getSerieGenres()->getData();
+            $genresSerie = $serie->genre_ids;
+            foreach ($genresList as $valueOrigin) {
+                foreach ($genresSerie as $valueMovie) {
+                    if ($valueOrigin->id === $valueMovie) {
+                        $serie->genres[] = [
+                            "id_genre" => $valueOrigin->id,
+                            "name" => $valueOrigin->name
+                        ];
+                    }
+                }
+            }
+            $serie = new MoviesResources($serie);
+            return response()->json($serie->getMovieWithGenres());
         } else {
             return response()->json([
                 "code" => 400,

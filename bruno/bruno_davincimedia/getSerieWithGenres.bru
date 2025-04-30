@@ -1,0 +1,16 @@
+meta {
+  name: getSerieWithGenres
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{DEV}}/api/get-serie-with-genres/game%20of%20thrones
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
