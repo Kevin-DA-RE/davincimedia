@@ -30,7 +30,21 @@ class MoviesController extends Controller
         }
     }
 
+    public function getSerie(string $query, TMDB $tmdb)
+    {
+        $request = $tmdb->getUrlTMDB('tv', $query);
 
+        $serieList = $request['results'];
+        if(array_key_exists(0, $serieList)){
+            $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$serieList[0]['poster_path'];
+            $serieList[0]['poster_path'] = $urlPictureComplete;
+            $movie = new MoviesResources($serieList[0]);
+        return response()->json($movie->getSeries());
+        } else{
+            $statusCode = $request ? $request->status() : 500;
+            return response()->json(["code" => $statusCode, "message" => "Aucun film trouvé"]);
+        }
+    }
 
     public function getMovieWithGenres(string $name, TMDB $tmdb)    {
         $movie = $this->getMovie($name, $tmdb)->getData();
@@ -49,6 +63,32 @@ class MoviesController extends Controller
             }
             $movie = new MoviesResources($movie);
             return response()->json($movie->getMovieWithGenres());
+        } else {
+            return response()->json([
+                "code" => 400,
+                "message" => "Aucun film trouvé"
+            ]);
+        }
+    }
+
+    public function getSerieWithGenres(string $name, TMDB $tmdb)
+    {
+        $serie = $this->getSerie($name, $tmdb)->getData();
+        if(property_exists($serie, "id")){
+            $genresList = $tmdb->getGenres("serie")->getData();
+            $genresSerie = $serie->genre_ids;
+            foreach ($genresList as $valueOrigin) {
+                foreach ($genresSerie as $valueMovie) {
+                    if ($valueOrigin->id === $valueMovie) {
+                        $serie->genres[] = [
+                            "id_genre" => $valueOrigin->id,
+                            "name" => $valueOrigin->name
+                        ];
+                    }
+                }
+            }
+            $serie = new MoviesResources($serie);
+            return response()->json($serie->getMovieWithGenres());
         } else {
             return response()->json([
                 "code" => 400,
