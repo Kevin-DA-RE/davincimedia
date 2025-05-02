@@ -126,7 +126,7 @@ class MediasController extends Controller
                 }
             }
             $serie = new MediasResources($serie);
-            return response()->json($serie->getMovieWithGenres());
+            return response()->json($serie->getSerieWithGenres());
         } else {
             return response()->json([
                 "code" => 400,
