@@ -37,13 +37,12 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController:
     Route::get('/get-movie/{query}', 'getMovie');
     Route::get('/get-genres/{param}', 'getGenres');
     Route::get('/get-movies-with-genres/{name}', 'getMovieWithGenres');
-
+    Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
     Route::get('/show-genres', 'showGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
 });
 
 Route::controller(MoviesController::class)->group(function () {
-    Route::get('/getSerie/{query}', 'getSerie');
-    Route::get('/getMovie/{query}', 'getMovie');
-    Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
+    Route::get('/testSerie/{query}', 'getSerie');
+    Route::get('/testMovie/{query}', 'getMovie');
 });
