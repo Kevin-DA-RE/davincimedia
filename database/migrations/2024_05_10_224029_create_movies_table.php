@@ -21,9 +21,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('posts', function (Blueprint $table){
-            $table->foreignIdFor(Movie::class)->nullable()->constrained()->cascadeOnDelete();
-        });
     }
 
     /**
@@ -32,8 +29,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('movies');
-        Schema::table('posts', function (Blueprint $table){
-            $table->dropConstrainedForeignIdFor(Movie::class);
-        });
+
     }
 };
