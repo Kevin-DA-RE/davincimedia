@@ -20,8 +20,5 @@ class Movie extends Model
      return $this->belongsToMany(Genre::class, 'genre_movie');
     }
 
-    public function post(){
-        return $this->hasMany(Post::class);
-    }
 
 }
