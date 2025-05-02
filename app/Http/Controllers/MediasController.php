@@ -7,12 +7,13 @@ use App\Models\Movie;
 use App\Http\Requests\MovieListRequest;
 use App\Http\Requests\MovieRequest;
 use App\Http\Resources\GenresResources;
-use App\Http\Resources\MoviesResources;
+use App\Http\Resources\MediasResources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
-class MoviesController extends Controller
+
+class MediasController extends Controller
 {
 
     public function test()
@@ -28,7 +29,7 @@ class MoviesController extends Controller
         if(array_key_exists(0, $moviesList)){
             $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$moviesList[0]['poster_path'];
             $moviesList[0]['poster_path'] = $urlPictureComplete;
-            $movie = new MoviesResources($moviesList[0]);
+            $movie = new MediasResources($moviesList[0]);
         return response()->json($movie->getMovie());
         } else{
         $statusCode = $request ? $request->status() : 500;
@@ -45,7 +46,7 @@ class MoviesController extends Controller
         if(array_key_exists(0, $serieList)){
             $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$serieList[0]['poster_path'];
             $serieList[0]['poster_path'] = $urlPictureComplete;
-            $movie = new MoviesResources($serieList[0]);
+            $movie = new MediasResources($serieList[0]);
         return response()->json($movie->getSeries());
         } else{
             $statusCode = $request ? $request->status() : 500;
@@ -98,7 +99,7 @@ class MoviesController extends Controller
                     }
                 }
             }
-            $movie = new MoviesResources($movie);
+            $movie = new MediasResources($movie);
             return response()->json($movie->getMovieWithGenres());
         } else {
             return response()->json([
@@ -112,7 +113,7 @@ class MoviesController extends Controller
     {
         $serie = $this->getSerie($name)->getData();
         if(property_exists($serie, "id")){
-            $genresList = $this->getSerieGenres("serie")->getData();
+            $genresList = $this->getGenres("serie")->getData();
             $genresSerie = $serie->genre_ids;
             foreach ($genresList as $valueOrigin) {
                 foreach ($genresSerie as $valueMovie) {
@@ -124,7 +125,7 @@ class MoviesController extends Controller
                     }
                 }
             }
-            $serie = new MoviesResources($serie);
+            $serie = new MediasResources($serie);
             return response()->json($serie->getMovieWithGenres());
         } else {
             return response()->json([
@@ -136,7 +137,7 @@ class MoviesController extends Controller
 
     public function showMovies(){
         $movies = Movie::with('genre')->get();
-        $movies = MoviesResources::collection($movies);
+        $movies = MediasResources::collection($movies);
         return response()->json($movies);
     }
 
@@ -148,7 +149,7 @@ class MoviesController extends Controller
     }
 
     public function showMoviesWithGenres(Genre $genre){
-        $moviesWithGenres = MoviesResources::collection($genre->movie);
+        $moviesWithGenres = MediasResources::collection($genre->movie);
         return response()->json($moviesWithGenres);
     }
 

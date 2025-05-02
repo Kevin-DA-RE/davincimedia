@@ -3,8 +3,7 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MoviesController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\MediasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +28,7 @@ Route::prefix('user')->controller(AuthController::class)->group(function () {
     Route::post('/check-email', 'checkEmail');
 });
 
-Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController::class)->group(function () {
+Route::middleware('auth:sanctum')->prefix('movie')->controller(MediasController::class)->group(function () {
     Route::post('/create-movie', 'createMovie');
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');
@@ -43,7 +42,7 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController:
     Route::get('/test', 'test');
 });
 
-Route::controller(MoviesController::class)->group(function () {
-    Route::get('/testSerie/{query}', 'getSerie');
+Route::controller(MediasController::class)->group(function () {
+    Route::get('/testSerie/{query}', 'getSerieWithGenres');
     Route::get('/testMovie/{query}', 'getMovie');
 });

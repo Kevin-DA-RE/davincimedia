@@ -5,9 +5,9 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MoviesResources extends JsonResource
+class MediasResources extends JsonResource
 {
-    /**
+  /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
@@ -56,6 +56,17 @@ class MoviesResources extends JsonResource
     {
        return [
         'id_movie' => $this->id,
+        'name' => $this->name,
+        'synopsis' => $this->synopsis,
+        'url_img' => $this->url_img,
+        'genres' =>  $this->genres
+       ];
+    }
+
+    public function getSerieWithGenres()
+    {
+       return [
+        'id_serie' => $this->id,
         'name' => $this->name,
         'synopsis' => $this->synopsis,
         'url_img' => $this->url_img,
