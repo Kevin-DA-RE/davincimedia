@@ -2,6 +2,7 @@
 
 use App\Models\Genre;
 use App\Models\Movie;
+use App\Models\Serie;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -26,6 +27,12 @@ return new class extends Migration
             $table->primary(['movie_id', 'genre_id']);
         });
 
+        Schema::create('genre_serie', function(Blueprint $table) {
+            $table->foreignIdFor(Serie::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Genre::class)->constrained()->cascadeOnDelete();
+            $table->primary(['serie_id', 'genre_id']);
+        });
+
     }
 
     /**
@@ -35,6 +42,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('genres');
         Schema::dropIfExists('genre_movie');
+        Schema::dropIfExists('genre_serie');
 
     }
 };
