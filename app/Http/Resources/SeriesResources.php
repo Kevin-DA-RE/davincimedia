@@ -16,7 +16,7 @@ class SeriesResources extends JsonResource
     {
        return [
         'id' => $this->id,
-        'id_serie' => $this->id_serie,
+        'id_movie' => $this->id_movie,
         'name' => $this->name,
         'synopsis' => $this->synopsis,
         'url_img' => $this->url_img,
@@ -44,7 +44,7 @@ class SeriesResources extends JsonResource
     public function getSerieWithGenres()
     {
        return [
-        'id_serie' => $this->id,
+        'id_movie' => $this->id,
         'name' => $this->name,
         'synopsis' => $this->synopsis,
         'url_img' => $this->url_img,

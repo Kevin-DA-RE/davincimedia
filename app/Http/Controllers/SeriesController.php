@@ -8,14 +8,13 @@ use App\Http\Resources\SeriesResources;
 use App\Http\Resources\GenresResources;
 use App\Models\Serie;
 use App\Models\Genre;
-use App\Http\Requests\SerieListRequest;
-use App\Http\Requests\SerieRequest;
 
 class SeriesController extends Controller
 {
     public function getSerie(string $query, TMDB $tmdb)
     {
         $request = $tmdb->getUrlTMDB('tv', $query);
+
         $serieList = $request['results'];
         if(array_key_exists(0, $serieList)){
             $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$serieList[0]['poster_path'];
@@ -45,7 +44,7 @@ class SeriesController extends Controller
                 }
             }
             $serie = new SeriesResources($serie);
-            return response()->json($serie->getSerieWithGenres());
+            return response()->json($serie->getMovieWithGenres());
         } else {
             return response()->json([
                 "code" => 400,
