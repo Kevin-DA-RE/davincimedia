@@ -26,6 +26,12 @@ return new class extends Migration
             $table->primary(['movie_id', 'genre_id']);
         });
 
+        Schema::create('genre_serie', function(Blueprint $table) {
+            $table->foreignIdFor(Movie::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Genre::class)->constrained()->cascadeOnDelete();
+            $table->primary(['serie_id', 'genre_id']);
+        });
+
     }
 
     /**
@@ -35,6 +41,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('genres');
         Schema::dropIfExists('genre_movie');
-
+        Schema::dropIfExists('genre_serie');
     }
 };
