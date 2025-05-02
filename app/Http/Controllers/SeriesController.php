@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\TMDB;
-use App\Http\Resources\SeriesResources;
-use App\Http\Resources\GenresResources;
-use App\Models\Serie;
-use App\Models\Genre;
 
 class SeriesController extends Controller
 {
@@ -19,8 +15,8 @@ class SeriesController extends Controller
         if(array_key_exists(0, $serieList)){
             $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$serieList[0]['poster_path'];
             $serieList[0]['poster_path'] = $urlPictureComplete;
-            $movie = new SeriesResources($serieList[0]);
-        return response()->json($movie->getSerie());
+            $movie = new MoviesResources($serieList[0]);
+        return response()->json($movie->getSeries());
         } else{
             $statusCode = $request ? $request->status() : 500;
             return response()->json(["code" => $statusCode, "message" => "Aucun film trouvé"]);
@@ -43,7 +39,7 @@ class SeriesController extends Controller
                     }
                 }
             }
-            $serie = new SeriesResources($serie);
+            $serie = new MoviesResources($serie);
             return response()->json($serie->getMovieWithGenres());
         } else {
             return response()->json([
@@ -54,25 +50,25 @@ class SeriesController extends Controller
     }
 
 
-    public function showSerie(){
-        $movies = Serie::with('genre')->get();
-        $movies = SeriesResources::collection($movies);
+    public function showSeries(){
+        $movies = Movie::with('genre')->get();
+        $movies = MoviesResources::collection($movies);
         return response()->json($movies);
     }
 
 
     public function showGenres(){
-        $genres = Genre::whereHas('serie')->get();
+        $genres = Genre::whereHas('movie')->get();
         $genres = GenresResources::collection($genres);
         return response()->json($genres);
     }
 
-    public function showSerieWithGenres(Genre $genre){
-        $moviesWithGenres = SeriesResources::collection($genre->movie);
+    public function showSeriesWithGenres(Genre $genre){
+        $moviesWithGenres = MoviesResources::collection($genre->movie);
         return response()->json($moviesWithGenres);
     }
 
-    public function createSerie (SerieListRequest $request)
+    public function createSerie (MovieListRequest $request)
     {
         $item = $request->validated();
             foreach ($item["moviesList"] as $request_movie) {
@@ -89,7 +85,7 @@ class SeriesController extends Controller
 
                     array_push($genre_ids, $genre->id);
                 }
-                $movie = Serie::firstOrCreate(
+                $movie = Movie::firstOrCreate(
                             ["id_movie" => $request_movie["id_movie"]],
                             [
                                 "id_movie" => $request_movie["id_movie"],
@@ -104,7 +100,7 @@ class SeriesController extends Controller
             return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
       }
 
-    public function updateSerie (SerieRequest $request, Serie $movie)
+    public function updateSerie (MovieRequest $request, Movie $movie)
     {
         $item = $request->validated();
         $genre_ids =[];
@@ -129,7 +125,7 @@ class SeriesController extends Controller
         return response()->json(["code"=> 200, "message" => "le film a bien été modifié"]);
     }
 
-    public function deleteSerie (Request $request, Serie $movie)
+    public function deleteSerie (Request $request, Movie $movie)
     {
         $item = $request->validate([
             'id_movie' => ['required', 'integer'],
