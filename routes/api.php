@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MoviesController:
     Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
     Route::get('/show-genres', 'showGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
+    Route::get('/test', 'test');
 });
 
 Route::controller(MoviesController::class)->group(function () {
