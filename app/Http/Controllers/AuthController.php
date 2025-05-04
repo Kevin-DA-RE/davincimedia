@@ -16,7 +16,17 @@ class AuthController extends Controller
         if (count($moviesController->showMovies()->getData()) >0) {
            return response()->json(['code'=> 200,'message' => "Des films sont enregistres"]);
         } else {
-            return response()->json(['code'=> 400,'message' => "Aucun film n'est enregistres"]);
+            return response()->json(['code'=> 400,'message' => "Aucun film n'est enregistre"]);
+        }
+    }
+
+    public function checkSeries()
+    {
+        $seriesController = new MediasController();
+        if (count($seriesController->showSeries()->getData()) >0) {
+           return response()->json(['code'=> 200,'message' => "Des series sont enregistres"]);
+        } else {
+            return response()->json(['code'=> 400,'message' => "Aucune serie n'est enregistre"]);
         }
     }
 

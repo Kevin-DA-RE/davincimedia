@@ -10,6 +10,7 @@ const isAuthentified = ref();
 const url_backend = "http://127.0.0.1:8000"
 const search = ref("")
 const checkMovies = ref()
+const checkSeries = ref()
 
 onMounted(async () => {
     isAuthentified.value = await axios.get(`${url_backend}/api/user/check-user`)
@@ -24,6 +25,18 @@ onMounted(async () => {
             return error.response.status;
         });
     checkMovies.value = await axios.get(`${url_backend}/api/user/check-movies`)
+        .then((response) => {
+           if (response.data.code === 200) {
+            return true
+           } else {
+            return false
+           }
+        })
+        .catch((error) => {
+            return error.response.status;
+        });
+
+    checkSeries.value = await axios.get(`${url_backend}/api/user/check-series`)
         .then((response) => {
            if (response.data.code === 200) {
             return true
@@ -82,9 +95,12 @@ function moviesAdded() {
                 </q-toolbar-title>
 
                 <!-- Tabs centrés -->
-                <q-tabs align="center">
+                <q-tabs class="flex justify-center">
                     <div v-show="checkMovies">
                         <q-route-tab :to="{ name: 'movies' }" label="Films" class="text-teal" icon="movie" />
+                    </div>
+                    <div v-show="checkSeries">
+                        <q-route-tab :to="{ name: 'series' }" label="Series" class="text-teal" icon="movie" />
                     </div>
 
                 </q-tabs>
