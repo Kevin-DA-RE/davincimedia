@@ -34,9 +34,7 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MediasController:
     Route::post('/delete-movie/{movie}', 'deleteMovie');
     Route::get('/show-movies', 'showMovies');
     Route::get('/show-movies-genres', 'showMovieGenres');
-    Route::get('/get-movie/{query}', 'getMovie');
-    Route::get('/get-genres/{param}', 'getGenres');
-    Route::get('/get-movies-with-genres/{name}', 'getMovieWithGenres');
+    Route::get('/get-movie-with-genres/{name}', 'getMovieWithGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
 });
 
@@ -46,8 +44,6 @@ Route::middleware('auth:sanctum')->prefix('serie')->controller(MediasController:
     Route::post('/delete-serie/{serie}', 'deleteSerie');
     Route::get('/show-series', 'showSeries');
     Route::get('/show-series-genres', 'showSerieGenres');
-    Route::get('/get-serie/{query}', 'getSerie');
-    Route::get('/get-genres/{param}', 'getGenres');
     Route::get('/get-series-with-genres/{name}', 'getSerieWithGenres');
     Route::get('/show-series-genres/{genre}', 'showSeriesWithGenres');
 });
