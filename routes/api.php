@@ -29,21 +29,31 @@ Route::prefix('user')->controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('movie')->controller(MediasController::class)->group(function () {
-    Route::post('/create-movie', 'createMovie');
+    Route::post('/create-movies', 'createMovies');
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');
     Route::get('/show-movies', 'showMovies');
-    Route::get('/show-series', 'showSeries');
+    Route::get('/show-movies-genres', 'showMovieGenres');
     Route::get('/get-movie/{query}', 'getMovie');
     Route::get('/get-genres/{param}', 'getGenres');
     Route::get('/get-movies-with-genres/{name}', 'getMovieWithGenres');
-    Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
-    Route::get('/show-genres', 'showGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
-    Route::get('/test', 'test');
 });
 
+Route::middleware('auth:sanctum')->prefix('serie')->controller(MediasController::class)->group(function () {
+    Route::post('/create-series', 'createSeries');
+    Route::post('/update-serie/{serie}', 'updateSerie');
+    Route::post('/delete-serie/{serie}', 'deleteSerie');
+    Route::get('/show-series', 'showSeries');
+    Route::get('/show-series-genres', 'showSerieGenres');
+    Route::get('/get-serie/{query}', 'getSerie');
+    Route::get('/get-genres/{param}', 'getGenres');
+    Route::get('/get-series-with-genres/{name}', 'getSerieWithGenres');
+    Route::get('/show-series-genres/{genre}', 'showSeriesWithGenres');
+});
+
+
 Route::controller(MediasController::class)->group(function () {
-    Route::get('/testSerie/{query}', 'getSerieWithGenres');
+    Route::get('/testSerie', 'showMovieGenres');
     Route::get('/testMovie/{query}', 'getMovie');
 });
