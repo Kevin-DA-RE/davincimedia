@@ -15,12 +15,6 @@ use Illuminate\Support\Facades\Validator;
 
 class MediasController extends Controller
 {
-
-    public function test()
-    {
-       return $this->getSerie("game");
-    }
-
     public function getMovie(string $query)
     {
         $request = $this->getUrlTMDB('movie',$query);
