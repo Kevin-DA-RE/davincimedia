@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->prefix('movie')->controller(MediasController:
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');
     Route::get('/show-movies', 'showMovies');
+    Route::get('/show-series', 'showSeries');
     Route::get('/get-movie/{query}', 'getMovie');
     Route::get('/get-genres/{param}', 'getGenres');
     Route::get('/get-movies-with-genres/{name}', 'getMovieWithGenres');
