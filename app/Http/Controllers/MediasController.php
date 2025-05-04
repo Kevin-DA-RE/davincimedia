@@ -6,6 +6,7 @@ use App\Models\Genre;
 use App\Models\Movie;
 use App\Http\Requests\MovieListRequest;
 use App\Http\Requests\MovieRequest;
+use App\Http\Requests\SerieRequest;
 use App\Http\Requests\SerieListRequest;
 use App\Http\Resources\GenresResources;
 use App\Http\Resources\MediasResources;
@@ -244,6 +245,31 @@ class MediasController extends Controller
         }
         $movie->genre()->sync($genre_ids);
         return response()->json(["code"=> 200, "message" => "le film a bien été modifié"]);
+    }
+
+    public function updateSerie (SerieRequest $serieRequest, Serie $serie)
+    {
+        $item = $serieRequest->validated();
+        $genre_ids =[];
+        $serie->id_serie = $item["id_serie"];
+        $serie->name = $item["name"];
+        $serie->synopsis = $item["synopsis"];
+        $serie->url_img = $item["url_img"];
+        $serie->save();
+
+        foreach ($item["genres"] as $serie_genre) {
+            $genre = Genre::updateOrCreate(
+                ['id_genre' => $serie_genre['id_genre']],
+                [
+                    'id_genre' => $serie_genre['id_genre'],
+                    'name' => $serie_genre['name']
+                ]
+            );
+            array_push($genre_ids, $genre->id);
+
+        }
+        $serie->genre()->sync($genre_ids);
+        return response()->json(["code"=> 200, "message" => "la serie a bien été modifié"]);
     }
 
     public function deleteMovie (Request $request, Movie $movie)
