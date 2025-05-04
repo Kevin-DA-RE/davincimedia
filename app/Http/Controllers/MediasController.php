@@ -138,7 +138,7 @@ class MediasController extends Controller
     }
 
     public function showSeries(){
-        $movies = MediasResources::collection(Movie::with('genre')->get());
+        $movies = MediasResources::collection(Serie::with('genre')->get());
         return response()->json($movies);
     }
 
