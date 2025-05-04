@@ -36,15 +36,15 @@ const splitterModel = ref(20)
 const panelGenre = ref("")
 
 
-const url_base = "http://127.0.0.1:8000"
+const url_base = "http://127.0.0.1:8000/api/movie"
 const api = {
-  url_backend_create_movie: `${url_base}/api/movie/create-movie`,
-  url_backend_update_movie: `${url_base}/api/movie/update-movie`,
-  url_backend_delete_movie: `${url_base}/api/movie/delete-movie`,
-  url_backend_show_movies: `${url_base}/api/movie/show-movies`,
-  url_backend_show_genres: `${url_base}/api/movie/show-genres`,
-  url_backend_show_movies_genres: `${url_base}/api/movie/show-movies-genres`,
-  url_backend_get_movies_genres: `${url_base}/api/movie/get-movies-with-genres`
+  url_backend_create_movie: `${url_base}/create-movies`,
+  url_backend_update_movie: `${url_base}/update-movie`,
+  url_backend_delete_movie: `${url_base}/delete-movie`,
+  url_backend_show_movies: `${url_base}/show-movies`,
+  url_backend_show_genres: `${url_base}/show-movies-genres`,
+  url_backend_show_movies_genres: `${url_base}/show-movies-genres`,
+  url_backend_get_movie_genres: `${url_base}/get-movie-with-genres`
 };
 
 onMounted( async() => {
@@ -120,7 +120,7 @@ async function showMoviesWithGenres(genre) {
 
 // Recherche du film et de son/ses genre(s)
 async function getMovieWithGenre(name) {
-  const url = `${api.url_backend_get_movies_genres}/${name}`
+  const url = `${api.url_backend_get_movie_genres}/${name}`
   if (formAddMovies.value) {
     return movieSearched.value = await axios.get(url)
                       .then((movie) => movie.data)
