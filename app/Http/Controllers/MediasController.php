@@ -289,4 +289,21 @@ class MediasController extends Controller
         return response()->json(["code"=> 200, "message" => "le film a bien été supprimé"]);
     }
 
+    public function deleteSerie (Request $request, Serie $serie)
+    {
+        $item = $request->validate([
+            'id_serie' => ['required', 'integer'],
+            "genres.*.id_genre" =>  ['required', 'integer'],
+            "genres.*.name" => ['required', 'string']
+        ]);
+        $genre_ids=[];
+
+        foreach ($item["genres"] as $movie_genre) {
+            array_push($genre_ids, $movie_genre['id_genre']);
+        }
+        $serie->genre()->detach($genre_ids);
+        $serie->delete();
+        return response()->json(["code"=> 200, "message" => "la serie a bien été supprimé"]);
+    }
+
 }
