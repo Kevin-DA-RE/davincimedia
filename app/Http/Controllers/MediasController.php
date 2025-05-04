@@ -6,8 +6,10 @@ use App\Models\Genre;
 use App\Models\Movie;
 use App\Http\Requests\MovieListRequest;
 use App\Http\Requests\MovieRequest;
+use App\Http\Requests\SerieListRequest;
 use App\Http\Resources\GenresResources;
 use App\Http\Resources\MediasResources;
+use App\Models\Serie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -155,7 +157,7 @@ class MediasController extends Controller
         return response()->json($seriesWithGenres);
     }
 
-    public function createMovie (MovieListRequest $request)
+    public function createMovies (MovieListRequest $request)
     {
         $item = $request->validated();
             foreach ($item["moviesList"] as $request_movie) {
@@ -186,6 +188,38 @@ class MediasController extends Controller
             }
             return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
       }
+
+      public function createSeries (SerieListRequest $request)
+      {
+          $item = $request->validated();
+              foreach ($item["seriesList"] as $request_serie) {
+                  $genre_ids =[];
+
+                  foreach ($request_serie["genres"] as $request_genre) {
+                      $genre = Genre::firstOrCreate(
+                          ["id_genre" => $request_genre["id_genre"]],
+                          [
+                              "id_genre" => $request_genre["id_genre"],
+                              "name" => $request_genre["name"],
+                          ]
+                      );
+
+                      array_push($genre_ids, $genre->id);
+                  }
+                  $serie = Serie::firstOrCreate(
+                              ["id_serie" => $request_serie["id_serie"]],
+                              [
+                                  "id_serie" => $request_serie["id_serie"],
+                                  "name" => $request_serie["name"],
+                                  "synopsis" => $request_serie["synopsis"],
+                                  "url_img" => $request_serie["url_img"]
+                      ]
+                  );
+                  $serie->genre()->attach($genre_ids);
+
+              }
+              return response()->json(["code"=> 200, "message" => "toutes les series ont bien ete enregistrés"]);
+        }
 
     public function updateMovie (MovieRequest $request, Movie $movie)
     {
