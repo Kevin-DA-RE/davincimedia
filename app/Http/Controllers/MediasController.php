@@ -142,9 +142,13 @@ class MediasController extends Controller
         return response()->json($movies);
     }
 
-    public function showGenres(){
-        $genres = Genre::whereHas('movie')->get();
-        $genres = GenresResources::collection($genres);
+    public function showMovieGenres(){
+        $genres = GenresResources::collection(Genre::whereHas('movies')->get());
+        return response()->json($genres);
+    }
+    
+    public function showSerieGenres(){
+        $genres = GenresResources::collection(Genre::whereHas('series')->get());
         return response()->json($genres);
     }
 
