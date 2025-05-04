@@ -7,14 +7,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Resources\MoviesResources;
-use App\Models\Movie;
 
 class AuthController extends Controller
 {
     public function checkMovies()
     {
-        $moviesController = new MoviesController();
+        $moviesController = new MediasController();
         if (count($moviesController->showMovies()->getData()) >0) {
            return response()->json(['code'=> 200,'message' => "Des films sont enregistres"]);
         } else {
