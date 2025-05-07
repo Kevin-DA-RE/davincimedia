@@ -1,7 +1,7 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref,computed } from "vue";
-import Movie from "./component/Movie.vue";
+import Media from "./component/Media.vue";
 import Form from "../views/slot/Form.vue";
 import { useQuasar } from 'quasar';
 
@@ -36,7 +36,7 @@ const splitterModel = ref(20)
 const panelGenre = ref("")
 
 
-const url_base = "http://127.0.0.1:8000/api/movie"
+const url_base = "http://127.0.0.1:8000/api/media/movie"
 const api = {
   url_backend_create_movie: `${url_base}/create-movies`,
   url_backend_update_movie: `${url_base}/update-movie`,
@@ -337,7 +337,7 @@ const filteredMovies = computed(() => {
                 <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(movie, index, 'edit')" icon="edit"/>
                 <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(movie, index, 'delete')" icon="delete"/>
             </div>
-                <Movie :movie="movie" />
+                <Media :media="movie" />
             </div>
         </div>
         </q-scroll-area>
@@ -430,7 +430,7 @@ const filteredMovies = computed(() => {
                         icon="delete"
                     />
                     </div>
-                    <Movie :movie="movie" />
+                    <Media :media="movie" />
                 </div>
                 </div>
             </q-tab-panel>
@@ -456,7 +456,7 @@ const filteredMovies = computed(() => {
                         icon="delete"
                     />
                     </div>
-                    <Movie :movie="movie" />
+                    <Media :media="movie" />
                 </div>
                 </div>
             </q-tab-panel>
@@ -497,7 +497,7 @@ const filteredMovies = computed(() => {
 
             </div>
             <div v-if="movieSearched.id_movie">
-                <Movie :movie="movieSearched" />
+                <Media :media="movieSearched" />
             </div>
             <div class="row justify-start q-gutter-sm">
                 <q-btn label="Annuler" class="text-dark" @click="reset()"/>
@@ -523,7 +523,7 @@ const filteredMovies = computed(() => {
                             :name="index"
                             class="column no-wrap flex-center"
                         >
-                            <Movie :movie="movie" />
+                            <Media :media="movie" />
                         </q-carousel-slide>
                     </q-carousel>
                 </div>
@@ -549,7 +549,7 @@ const filteredMovies = computed(() => {
                 </div>
                     <div v-if="movieSearched.id_movie">
                         <q-card-section>
-                        <Movie :movie="movieSearched" />
+                        <Media :media="movieSearched" />
                     </q-card-section>
                     </div>
                 <q-btn label="Annuler" class="text-dark" @click="reset()"/>
@@ -562,7 +562,7 @@ const filteredMovies = computed(() => {
                             <div
                             v-for="(movie, index) in moviesList" :key="movie.id"
                             >
-                            <Movie :movie="movie" />
+                            <Media :media="movie" />
                             </div>
                         </div>
                     </div>
@@ -586,7 +586,7 @@ const filteredMovies = computed(() => {
             <q-btn color="secondary q-mt-sm"  icon="search" @click="getMovieWithGenre(movieName)" />
         </div>
         <Form :mode="'updateMovie'" @submit="onSubmit('updateMovie')" @reset="onReset('updateMovie')">
-            <Movie :movie="movieSelected" />
+            <Media :media="movieSelected" />
         </Form>
     </div>
 </q-dialog>
@@ -595,7 +595,7 @@ const filteredMovies = computed(() => {
 <q-dialog  v-model="formDeleteMovie" persistent>
     <div class="column">
         <Form :mode="'deleteMovie'" @submit="onSubmit('deleteMovie')" @reset="onReset('deleteMovie')">
-            <Movie :movie="movieSelected" />
+            <Media :media="movieSelected" />
         </Form>
     </div>
 </q-dialog>

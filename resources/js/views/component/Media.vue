@@ -5,7 +5,7 @@ import { ref } from "vue";
 const quasar = useQuasar();
 
 defineProps({
-  movie: {
+  media: {
     type: Object,
     required: true,
   },
@@ -19,7 +19,7 @@ const detailCard = ref(false)
 <template>
    <!--Card pour afficher les éléments-->
  <div class="q-mt-sm q-mb-sm q-pa-sm flex justify-center">
-    <q-img :src="movie.url_img" style="width: 150px; height: max-content; cursor: pointer;" @click="detailCard = true" />
+    <q-img :src="media.url_img" style="width: 150px; height: max-content; cursor: pointer;" @click="detailCard = true" />
 </div>
 <div v-if="quasar.screen.lt.sm">
     <q-dialog v-model="detailCard">
@@ -30,18 +30,18 @@ const detailCard = ref(false)
             </q-card-section>
 
                 <q-card-section class="flex justify-between"  style="max-width: 100%;">
-                    <div v-for="genres in movie.genres" :key="genres.id">
+                    <div v-for="genres in media.genres" :key="genres.id">
                         <q-badge outline color="primary" :label="genres.name" class="text-h5" />
                     </div>
                 </q-card-section>
                 <q-card-section>
-                    <q-img :src="movie.url_img" style="max-width: 100%; height: auto; background-size: contain;"/>
+                    <q-img :src="media.url_img" style="max-width: 100%; height: auto; background-size: contain;"/>
                 </q-card-section>
                 <!-- Section scrollable contenant le synopsis -->
                 <q-card-section class="q-px-sm q-pt-none scrollable-synopsis">
                     <h4>Résumé</h4>
                     <div class="text-h6">
-                        {{ movie.synopsis }}
+                        {{ media.synopsis }}
                     </div>
                 </q-card-section>
 
@@ -60,19 +60,19 @@ const detailCard = ref(false)
                 <div class="row">
                     <div class="col">
                         <q-card-section class="flex justify-around" >
-                            <div v-for="genres in movie.genres" :key="genres.id">
+                            <div v-for="genres in media.genres" :key="genres.id">
                                 <q-badge outline color="primary" :label="genres.name" class="text-h5" />
                             </div>
                         </q-card-section>
                         <q-card-section>
-                            <q-img :src="movie.url_img" style="max-width: 100%; height: 500px; background-size: contain;"/>
+                            <q-img :src="media.url_img" style="max-width: 100%; height: 500px; background-size: contain;"/>
                         </q-card-section>
                     </div>
                     <div class="col">
                         <q-card-section class="q-px-sm q-pt-none scrollable-synopsis">
                             <h4>Résumé</h4>
                             <div class="text-h6">
-                                {{ movie.synopsis }}
+                                {{ media.synopsis }}
                             </div>
                         </q-card-section>
                     </div>

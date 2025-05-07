@@ -28,7 +28,7 @@ Route::prefix('user')->controller(AuthController::class)->group(function () {
     Route::post('/check-email', 'checkEmail');
 });
 
-Route::middleware('auth:sanctum')->prefix('movie')->controller(MediasController::class)->group(function () {
+Route::middleware('auth:sanctum')->prefix('media/movie')->controller(MediasController::class)->group(function () {
     Route::post('/create-movies', 'createMovies');
     Route::post('/update-movie/{movie}', 'updateMovie');
     Route::post('/delete-movie/{movie}', 'deleteMovie');

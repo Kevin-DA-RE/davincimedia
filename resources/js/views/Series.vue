@@ -1,7 +1,7 @@
 <script setup>
 import axios from "axios";
 import { onMounted, ref,computed } from "vue";
-import Movie from "./component/Movie.vue";
+import Movie from "./component/Media.vue";
 import Form from "../views/slot/Form.vue";
 import { useQuasar } from 'quasar';
 
