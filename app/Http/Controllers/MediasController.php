@@ -38,13 +38,12 @@ class MediasController extends Controller
     public function getSerie(string $query)
     {
         $request = $this->getUrlTMDB('tv',$query);
-
         $serieList = $request['results'];
         if(array_key_exists(0, $serieList)){
             $urlPictureComplete = "https://image.tmdb.org/t/p/w500".$serieList[0]['poster_path'];
             $serieList[0]['poster_path'] = $urlPictureComplete;
-            $movie = new MediasResources($serieList[0]);
-        return response()->json($movie->getSeries());
+            $serie = new MediasResources($serieList[0]);
+        return response()->json($serie->getSeries());
         } else{
             $statusCode = $request ? $request->status() : 500;
             return response()->json(["code" => $statusCode, "message" => "Aucun film trouvé"]);
@@ -146,8 +145,8 @@ class MediasController extends Controller
         $genres = GenresResources::collection(Genre::whereHas('movies')->get());
         return response()->json($genres);
     }
-    
-    public function showSerieGenres(){
+
+    public function showGenresSeries(){
         $genres = GenresResources::collection(Genre::whereHas('series')->get());
         return response()->json($genres);
     }
@@ -196,7 +195,9 @@ class MediasController extends Controller
 
       public function createSeries (SerieListRequest $request)
       {
+        dd("youyou");
           $item = $request->validated();
+
               foreach ($item["seriesList"] as $request_serie) {
                   $genre_ids =[];
 

@@ -7,10 +7,9 @@ import { useQuasar } from 'quasar';
 
 const quasar = useQuasar();
 const isAuthentified = ref();
-const url_backend = "http://127.0.0.1:8000"
+
 const search = ref("")
-const checkMovies = ref()
-const checkSeries = ref()
+const url_backend = "http://127.0.0.1:8000"
 
 onMounted(async () => {
     isAuthentified.value = await axios.get(`${url_backend}/api/user/check-user`)
@@ -24,29 +23,7 @@ onMounted(async () => {
         .catch((error) => {
             return error.response.status;
         });
-    checkMovies.value = await axios.get(`${url_backend}/api/user/check-movies`)
-        .then((response) => {
-           if (response.data.code === 200) {
-            return true
-           } else {
-            return false
-           }
-        })
-        .catch((error) => {
-            return error.response.status;
-        });
 
-    checkSeries.value = await axios.get(`${url_backend}/api/user/check-series`)
-        .then((response) => {
-           if (response.data.code === 200) {
-            return true
-           } else {
-            return false
-           }
-        })
-        .catch((error) => {
-            return error.response.status;
-        });
 
 });
 
@@ -67,9 +44,6 @@ async function onLogout() {
         });
 
         isAuthentified.value = response === 204 ? false : true;
-}
-function moviesAdded() {
-    checkMovies.value = true;
 }
 </script>
 
@@ -96,26 +70,19 @@ function moviesAdded() {
 
                 <!-- Tabs centrés -->
                 <q-tabs class="flex justify-center">
-                    <div v-show="checkMovies">
                         <q-route-tab :to="{ name: 'movies' }" label="Films" class="text-teal" icon="movie" />
-                    </div>
-                    <div v-show="checkSeries">
                         <q-route-tab :to="{ name: 'series' }" label="Series" class="text-teal" icon="movie" />
-                    </div>
-
                 </q-tabs>
 
                 <q-space />
-                <div v-show="checkMovies">
-                    <q-input
-                        class="q-mr-sm"
-                        outlined
-                        dark
-                        placeholder="Rechercher..."
-                        v-model="search"
-                        style="width: 150px;"
-                    />
-                </div>
+                <q-input
+                    class="q-mr-sm"
+                    outlined
+                    dark
+                    placeholder="Rechercher..."
+                    v-model="search"
+                    style="width: 150px;"
+                />
                 <q-btn round flat icon="person">
                     <q-menu>
                         <q-list style="min-width: 150px">
@@ -129,7 +96,7 @@ function moviesAdded() {
         </q-header>
 
         <q-page-container>
-            <router-view :search="search" :checkMovies="checkMovies" @moviesAdded="moviesAdded"></router-view>
+            <router-view :search="search"></router-view>
         </q-page-container>
     </div>
 

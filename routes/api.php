@@ -34,18 +34,18 @@ Route::middleware('auth:sanctum')->prefix('media/movie')->controller(MediasContr
     Route::post('/delete-movie/{movie}', 'deleteMovie');
     Route::get('/show-movies', 'showMovies');
     Route::get('/show-movies-genres', 'showMovieGenres');
-    Route::get('/get-movie-with-genres/{name}', 'getMovieWithGenres');
     Route::get('/show-movies-genres/{genre}', 'showMoviesWithGenres');
+    Route::get('/get-movie-with-genres/{name}', 'getMovieWithGenres');
 });
 
-Route::middleware('auth:sanctum')->prefix('serie')->controller(MediasController::class)->group(function () {
+Route::middleware('auth:sanctum')->prefix('media/serie')->controller(MediasController::class)->group(function () {
     Route::post('/create-series', 'createSeries');
     Route::post('/update-serie/{serie}', 'updateSerie');
     Route::post('/delete-serie/{serie}', 'deleteSerie');
     Route::get('/show-series', 'showSeries');
-    Route::get('/show-series-genres', 'showSerieGenres');
-    Route::get('/get-series-with-genres/{name}', 'getSerieWithGenres');
+    Route::get('/show-genres-series', 'showGenresSeries');
     Route::get('/show-series-genres/{genre}', 'showSeriesWithGenres');
+    Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
 });
 
 

@@ -8,14 +8,11 @@ import { useQuasar } from 'quasar';
 const props = defineProps({
     search: {
         type: String
-    },
-    checkMovies: {
-        type: Boolean
     }
 });
 
-const emit = defineEmits(['moviesAdded'])
 
+const checkMovies = ref()
 const quasar = useQuasar();
 const carouselSlide = ref(0)
 const moviesList = ref([])
@@ -35,7 +32,7 @@ const tab = ref('all')
 const splitterModel = ref(20)
 const panelGenre = ref("")
 
-
+const url_backend = "http://127.0.0.1:8000"
 const url_base = "http://127.0.0.1:8000/api/media/movie"
 const api = {
   url_backend_create_movie: `${url_base}/create-movies`,
@@ -49,6 +46,17 @@ const api = {
 
 onMounted( async() => {
       try {
+        checkMovies.value = await axios.get(`${url_backend}/api/user/check-movies`)
+        .then((response) => {
+           if (response.data.code === 200) {
+            return true
+           } else {
+            return false
+           }
+        })
+        .catch((error) => {
+            return error.response.status;
+        });
         await loadMoviesWithGenres()
       } catch (error) {
         console.log("error onMounted"+error);
@@ -149,7 +157,8 @@ async function onSubmit(form) {
         case 'addMovies':
             await createMoviesToBackEnd(moviesList.value)
             moviesList.value.length = 0
-            emit('moviesAdded')
+            await loadMoviesWithGenres()
+            checkMovies.value = true
             formAddMovies.value = false
             break;
         case 'updateMovie':
@@ -308,7 +317,6 @@ const filteredMovies = computed(() => {
 <template>
     <!-- Menu Affichage Ecran Petit -->
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
-    <div v-if="props.checkMovies===true">
         <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
             <q-btn color="secondary" icon="note_add" @click="formAddMovies = true" title="Ajouter un film"/>
             <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square" title="Mode edition"/>
@@ -341,14 +349,10 @@ const filteredMovies = computed(() => {
             </div>
         </div>
         </q-scroll-area>
-    </div>
-    <div v-else>
-        <q-btn color="secondary" icon="note_add" @click="formAddMovies= true" />
-    </div>
 </div>
 <!-- Menu Affichage Ecran Large -->
 <div v-if="!quasar.screen.lt.sm">
-    <div v-if="props.checkMovies === true">
+    <div v-if="checkMovies === true">
         <q-splitter
             v-model="splitterModel"
             dark
@@ -362,20 +366,19 @@ const filteredMovies = computed(() => {
             >
             <div class="flex justify-center items-center q-pa-sm">
                 <div v-if="filteredMovies.length > 0">
-                <div class="flex justify-around q-mt-sm">
+                    <div class="flex justify-around q-mt-sm">
+                        <q-btn
+                        color="secondary"
+                        icon="note_add"
+                        @click="formAddMovies = true"
+                    />
                     <q-btn
-                    color="secondary"
-                    icon="note_add"
-                    @click="formAddMovies = true"
-                />
-                <q-btn
-                    class="q-ml-sm q-mr-sm"
-                    color="green-9"
-                    @click="editMode = !editMode"
-                    icon="edit_square"
-                />
-                </div>
-
+                        class="q-ml-sm q-mr-sm"
+                        color="green-9"
+                        @click="editMode = !editMode"
+                        icon="edit_square"
+                    />
+                    </div>
                 </div>
                 <div v-else>
                 <q-btn
@@ -485,7 +488,7 @@ const filteredMovies = computed(() => {
 
 <!-- Formulaire d'ajout de film -->
 <div v-if="quasar.screen.lt.sm">
-    <q-dialog  v-model="formAddMovies" persistent full-width full-height>
+    <q-dialog  :v-model="formAddMovies" persistent full-width full-height>
         <div class="bg-white column q-gutter-sm">
             <div class="row justify-between q-ml-sm q-mr-sm">
             <q-input
