@@ -22,7 +22,7 @@ class SerieListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'seriesList.*.id_movie' => ['required', 'integer'],
+            'seriesList.*.id_serie' => ['required', 'integer'],
             'seriesList.*.name' => ['required', 'string'],
             'seriesList.*.synopsis' => ['required', 'string'],
             'seriesList.*.url_img' => ['required', 'string'],

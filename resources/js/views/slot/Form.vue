@@ -19,10 +19,14 @@ const title = computed(() => {
             return "Ajouter une ou plusieurs serie(s)"
         case 'updateMovie':
             return "Modifier un film"
+        case 'updateSerie':
+            return "Modifier une serie"
         case 'deleteMovie':
             return "Supprimer un film"
+        case 'deleteSerie':
+            return "Supprimer une serie"
         default:
-            return "Mot de passe oublié ?"
+            return "title par default"
     }
 })
 
@@ -39,13 +43,13 @@ const labelSubmit = computed(() => {
         case 'updateMovie':
             return "Modifier"
         case 'updateSerie':
-            return "Ajouter"
+            return "Modifier"
         case 'deleteMovie':
             return "Supprimer"
         case 'deleteSerie':
             return "Supprimer"
         default:
-            return "Réinitialiser mot de passe"
+            return "submit par default"
     }
 })
 

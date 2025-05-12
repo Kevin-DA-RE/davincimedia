@@ -11,6 +11,7 @@ const props = defineProps({
     }
 });
 
+axios.defaults.withCredentials = true;
 
 const checkMovies = ref()
 const quasar = useQuasar();

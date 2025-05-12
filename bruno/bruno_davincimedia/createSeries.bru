@@ -1,0 +1,28 @@
+meta {
+  name: createSeries
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{DEV}}/api/media/serie/create-series
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: multipart/form-data
+}
+
+body:multipart-form {
+  seriesList[0][id_serie]: 1399
+  seriesList[0][name]: Game of Thrones
+  seriesList[0][synopsis]: Il y a très longtemps, à une époque oubliée, une force a détruit l'équilibre des saisons. Dans un pays où l'été peut durer plusieurs années et l'hiver toute une vie, des forces sinistres et surnaturelles se pressent aux portes du Royaume des Sept Couronnes. La confrérie de la Garde de Nuit, protégeant le Royaume de toute créature pouvant provenir d'au-delà du Mur protecteur, n'a plus les ressources nécessaires pour assurer la sécurité de tous. Après un été de dix années, un hiver rigoureux s'abat sur le Royaume avec la promesse d'un avenir des plus sombres. Pendant ce temps, complots et rivalités se jouent sur le continent pour s'emparer du Trône de fer, le symbole du pouvoir absolu.
+  seriesList[0][url_img]: https://image.tmdb.org/t/p/w500/3YSdxdhhdCDlMs88RhvjhDLX4CA.jpg
+  seriesList[0][genres][0][id_genre]: 10759
+  seriesList[0][genres][0][name]: Action & Adventure
+  seriesList[0][genres][1][id_genre]: 18
+  seriesList[0][genres][1][name]: Drame
+  seriesList[0][genres][2][id_genre]: 10765
+  seriesList[0][genres][2][name]: Science-Fiction & Fantastique
+}

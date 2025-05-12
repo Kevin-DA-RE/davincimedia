@@ -10,7 +10,7 @@ const props = defineProps({
         type: String
     }
 });
-
+axios.defaults.withCredentials = true;
 
 const checkSeries = ref()
 const quasar = useQuasar();
@@ -182,11 +182,11 @@ async function onSubmit(form) {
     await loadSeriesWithGenres()
 }
 
-async function createSeriesToBackEnd(movies){
+async function createSeriesToBackEnd(series){
 // Init FormDatata pour envoyer les datas
 const formData = new FormData()
-movies.forEach((serie, index) => {
-    formData.append(`seriesList[${index}][id_movie]`, parseInt(serie.id_movie))
+series.forEach((serie, index) => {
+    formData.append(`seriesList[${index}][id_serie]`, parseInt(serie.id_serie))
     formData.append(`seriesList[${index}][name]`, serie.name)
     formData.append(`seriesList[${index}][synopsis]`, serie.synopsis)
     formData.append(`seriesList[${index}][url_img]`, serie.url_img)
@@ -201,8 +201,7 @@ return await axios.post(api.url_backend_create_series, formData, {
                           headers: {
                           accept: "multipart/form-data"
                         }})
-                      .then((response) => {console.log(response.data)
-                      }
+                      .then((response) => {return response.data.code}
                       )
                       .catch((error) =>
                         console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
@@ -214,7 +213,7 @@ const url = `${api.url_backend_update_serie}/${serieIdOrigin.value}`
 
 // Init FormData pour envoyer les datas
 const formData = new FormData()
-    formData.append(`id_movie`, parseInt(serie.id_movie))
+    formData.append(`id_serie`, parseInt(serie.id_serie))
     formData.append(`name`, serie.name)
     formData.append(`synopsis`, serie.synopsis)
     formData.append(`url_img`, serie.url_img)
@@ -242,7 +241,7 @@ async function deleteSerieToBackEnd(serie) {
 
     // Init FormDatato pour envoyer les datas
     const jsonData = {
-        "id_movie": parseInt(serie.id)
+        "id_serie": parseInt(serie.id)
     }
     jsonData["genres"]= []
 

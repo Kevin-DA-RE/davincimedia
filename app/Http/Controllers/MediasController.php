@@ -195,9 +195,7 @@ class MediasController extends Controller
 
       public function createSeries (SerieListRequest $request)
       {
-        dd("youyou");
           $item = $request->validated();
-
               foreach ($item["seriesList"] as $request_serie) {
                   $genre_ids =[];
 

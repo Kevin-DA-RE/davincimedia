@@ -29,8 +29,6 @@ onMounted(async () => {
 
 function authValidated() {
     isAuthentified.value = true;
-    axios.defaults.withCredentials = true;
-
 }
 
 async function onLogout() {
