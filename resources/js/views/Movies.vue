@@ -325,10 +325,10 @@ const filteredMovies = computed(() => {
                 <q-menu max-height="130px" >
                     <div v-for="genre in genresListLoaded" key="genre.id">
                     <q-list dense>
-                        <q-item clickable>
-                        <q-item-section>
-                            <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
-                        </q-item-section>
+                        <q-item clickable v-close-popup>
+                            <q-item-section>
+                                <q-item-label @click="showMoviesWithGenres(genre)">{{ genre.name }}</q-item-label>
+                            </q-item-section>
                         </q-item>
                     </q-list>
                     </div>
