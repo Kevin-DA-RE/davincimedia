@@ -319,7 +319,7 @@ const filteredMovies = computed(() => {
     <!-- Menu Affichage Ecran Petit -->
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
         <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
-            <q-btn color="secondary" icon="note_add" @click="formAddSeries = true" title="Ajouter un film"/>
+            <q-btn color="secondary" icon="note_add" @click="formAddSeries = true" title="Ajouter une serie"/>
             <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square" title="Mode edition"/>
             <q-btn color="secondary" icon="manage_search" title="Sélection par genres">
                 <q-menu max-height="130px" >
@@ -490,7 +490,7 @@ const filteredMovies = computed(() => {
 
 <!-- Formulaire d'ajout de film -->
 <div v-if="quasar.screen.lt.sm">
-    <q-dialog  :v-model="formAddSeries" persistent full-width full-height>
+    <q-dialog  v-model="formAddSeries" persistent >
         <div class="bg-white column q-gutter-sm">
             <div class="row justify-between q-ml-sm q-mr-sm">
             <q-input
@@ -506,7 +506,7 @@ const filteredMovies = computed(() => {
             </div>
             <div class="row justify-start q-gutter-sm">
                 <q-btn label="Annuler" class="text-dark" @click="reset()"/>
-                <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddSerie(serieSearched)"/>
+                <q-btn label="Ajouter Serie" class="bg-primary text-white" @click="AddSerie(serieSearched)"/>
             </div>
             <Form :mode="'addSeries'" @submit="onSubmit('addSeries')" @reset="onReset('addSeries')" >
                 <div v-if="seriesList.length > 0">
@@ -558,7 +558,7 @@ const filteredMovies = computed(() => {
                     </q-card-section>
                     </div>
                 <q-btn label="Annuler" class="text-dark" @click="reset()"/>
-                <q-btn label="Ajouter Film" class="bg-primary text-white" @click="AddSerie(serieSearched)"/>
+                <q-btn label="Ajouter Serie" class="bg-primary text-white" @click="AddSerie(serieSearched)"/>
             </div>
             <div class="col-8">
                 <Form :mode="'addSeries'" @submit="onSubmit('addSeries')" @reset="onReset('addSeries')">
