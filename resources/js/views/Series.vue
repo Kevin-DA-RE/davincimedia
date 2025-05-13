@@ -395,7 +395,7 @@ const filteredSeries = computed(() => {
             <div v-for="genre in genresListLoaded" :key="genre.id">
                 <q-tab
                 :name="genre.name"
-                icon="serie"
+                icon="tv"
                 :label="genre.name"
                 @click="showSeriesWithGenres(genre)"
                 />

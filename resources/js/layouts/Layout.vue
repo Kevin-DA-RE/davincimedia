@@ -69,7 +69,7 @@ async function onLogout() {
                 <!-- Tabs centrés -->
                 <q-tabs class="flex justify-center">
                         <q-route-tab :to="{ name: 'movies' }" label="Films" class="text-teal" icon="movie" />
-                        <q-route-tab :to="{ name: 'series' }" label="Series" class="text-teal" icon="movie" />
+                        <q-route-tab :to="{ name: 'series' }" label="Series" class="text-teal" icon="tv" />
                 </q-tabs>
 
                 <q-space />
