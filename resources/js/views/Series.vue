@@ -306,7 +306,7 @@ function onReset(mode){
     }
 }
 
-const filteredMovies = computed(() => {
+const filteredSeries = computed(() => {
   return seriesListLoaded.value.filter(serie =>
     serie.name.toLowerCase().includes(props.search.toLowerCase())
   );
@@ -318,7 +318,7 @@ const filteredMovies = computed(() => {
 <template>
     <!-- Menu Affichage Ecran Petit -->
 <div v-if="quasar.screen.lt.sm" class="bg-dark">
-        <div v-if="filteredMovies.length > 0" class="flex justify-around q-mb-sm">
+        <div v-if="filteredSeries.length > 0" class="flex justify-around q-mb-sm">
             <q-btn color="secondary" icon="note_add" @click="formAddSeries = true" title="Ajouter une serie"/>
             <q-btn class="q-ml-sm q-mr-sm" color="green-9" @click="editMode = !editMode" icon="edit_square" title="Mode edition"/>
             <q-btn color="secondary" icon="manage_search" title="Sélection par genres">
@@ -341,7 +341,7 @@ const filteredMovies = computed(() => {
 
         <q-scroll-area style="width:100vw; height: 80vh;" class="bg-dark">
         <div class="flex justify-center  wrap" style="gap: 10px;">
-            <div v-for="(serie) in filteredMovies" :key="serie.id" class="column items-center">
+            <div v-for="(serie) in filteredSeries" :key="serie.id" class="column items-center">
             <div class="flex justify-center" v-show="editMode">
                 <q-btn class="q-ml-sm q-mr-sm" color="deep-purple-8" @click="showFormulary(serie, index, 'edit')" icon="edit"/>
                 <q-btn class="q-mtlsm q-mr-sm" color="deep-orange-7" @click="showFormulary(serie, index, 'delete')" icon="delete"/>
@@ -366,7 +366,7 @@ const filteredMovies = computed(() => {
             style="overflow: auto; height: 88vh;"
             >
             <div class="flex justify-center items-center q-pa-sm">
-                <div v-if="filteredMovies.length > 0">
+                <div v-if="filteredSeries.length > 0">
                 <div class="flex justify-around q-mt-sm">
                     <q-btn
                     color="secondary"
@@ -418,7 +418,7 @@ const filteredMovies = computed(() => {
             <q-tab-panel name="all" style="height: 100vh">
                 <div class="row justify-start">
                 <div
-                    v-for="(serie, index) in filteredMovies"
+                    v-for="(serie, index) in filteredSeries"
                     :key="serie.id"
                 >
                     <div class="flex justify-center" v-show="editMode">
