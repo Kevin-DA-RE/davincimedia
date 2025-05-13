@@ -48,10 +48,7 @@ Route::middleware('auth:sanctum')->prefix('media/serie')->controller(MediasContr
     Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
 });
 
-/*
-Route::prefix('media/serie')->controller(MediasController::class)->group(function () {
-    Route::get('/testSerie', 'showMovieGenres');
-    Route::get('/testMovie/{query}', 'getMovie');
-    //Route::post('/create-series', 'createSeries');
+
+Route::controller(MediasController::class)->group(function () {
+    Route::get('/user_movie', 'userMovies');
 });
-*/

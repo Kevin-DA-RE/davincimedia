@@ -11,6 +11,7 @@ use App\Http\Requests\SerieListRequest;
 use App\Http\Resources\GenresResources;
 use App\Http\Resources\MediasResources;
 use App\Models\Serie;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -18,6 +19,11 @@ use Illuminate\Support\Facades\Validator;
 
 class MediasController extends Controller
 {
+    public function userMovies()
+    {
+        $movies = MediasResources::collection(Movie::with(['genre','user'])->get());
+        return response()->json($movies);
+    }
     public function getMovie(string $query)
     {
         $request = $this->getUrlTMDB('movie',$query);
@@ -132,7 +138,10 @@ class MediasController extends Controller
     }
 
     public function showMovies(){
-        $movies = MediasResources::collection(Movie::with('genre')->get());
+        // Modifier la requete pour afficher les genres associés
+        $movies = MediasResources::collection(Movie::whereHas('users', function ($query) {
+            $query->where('user_id', auth()->id());
+        })->get());
         return response()->json($movies);
     }
 

@@ -16,9 +16,12 @@ class Movie extends Model
         "url_img"
     ];
 
-    public function genre(){
+    public function genres(){
      return $this->belongsToMany(Genre::class, 'genre_movie');
     }
 
+    public function users(){
+        return $this->belongsToMany(User::class, 'account_movies');
+    }
 
 }
