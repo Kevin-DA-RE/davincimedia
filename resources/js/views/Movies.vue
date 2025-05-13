@@ -489,7 +489,7 @@ const filteredMovies = computed(() => {
 
 <!-- Formulaire d'ajout de film -->
 <div v-if="quasar.screen.lt.sm">
-    <q-dialog  :v-model="formAddMovies" persistent full-width full-height>
+    <q-dialog  v-model="formAddMovies" persistent full-width full-height>
         <div class="bg-white column q-gutter-sm">
             <div class="row justify-between q-ml-sm q-mr-sm">
             <q-input
