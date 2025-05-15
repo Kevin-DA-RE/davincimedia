@@ -12,6 +12,7 @@ use App\Http\Resources\GenresResources;
 use App\Http\Resources\MediasResources;
 use App\Models\Serie;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -21,8 +22,13 @@ class MediasController extends Controller
 {
     public function userMovies()
     {
-        $movies = MediasResources::collection(Movie::with(['genre','user'])->get());
+        $movies = MediasResources::collection(Movie::with(['genres', 'users'])
+        ->whereHas('users', function (Builder $query) {
+            $query->where('users.id', 1);
+        })
+        ->get());
         return response()->json($movies);
+
     }
     public function getMovie(string $query)
     {
@@ -137,11 +143,12 @@ class MediasController extends Controller
         }
     }
 
-    public function showMovies(){
-        // Modifier la requete pour afficher les genres associés
-        $movies = MediasResources::collection(Movie::whereHas('users', function ($query) {
-            $query->where('user_id', auth()->id());
-        })->get());
+    public function showMoviesByUser(){
+        $movies = MediasResources::collection(Movie::with(['genres', 'users'])
+        ->whereHas('users', function (Builder $query) {
+            $query->where('users.id', auth()->id());
+        })
+        ->get());
         return response()->json($movies);
     }
 
