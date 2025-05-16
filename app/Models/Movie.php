@@ -21,7 +21,7 @@ class Movie extends Model
     }
 
     public function users(){
-        return $this->belongsToMany(User::class, 'account_movies');
+        return $this->belongsToMany(User::class, 'user_movie');
     }
 
 }

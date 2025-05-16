@@ -39,7 +39,7 @@ const api = {
   url_backend_create_movie: `${url_base}/create-movies`,
   url_backend_update_movie: `${url_base}/update-movie`,
   url_backend_delete_movie: `${url_base}/delete-movie`,
-  url_backend_show_movies: `${url_base}/show-movies`,
+  url_backend_show_movies_by_user: `${url_base}/show-movies-by-user`,
   url_backend_show_genres: `${url_base}/show-movies-genres`,
   url_backend_show_movies_genres: `${url_base}/show-movies-genres`,
   url_backend_get_movie_genres: `${url_base}/get-movie-with-genres`
@@ -66,15 +66,15 @@ onMounted( async() => {
 
 
 async function loadMoviesWithGenres(){
-  await showMovies()
+  await showMoviesByUser()
   await showGenres()
 }
 
 
-async function showMovies(){
+async function showMoviesByUser(){
   try {
         const movies = await axios
-                  .get(api.url_backend_show_movies, {
+                  .get(api.url_backend_show_movies_by_user, {
                         headers: {
                         accept: "application/json",
                         },
@@ -108,7 +108,7 @@ async function showGenres(){
 
 async function showMoviesWithGenres(genre) {
   if (genre.id ===0) {
-    await showMovies()
+    await showMoviesByUser()
   } else {
     const url = `${api.url_backend_show_movies_genres}/${genre.id}`
     panelGenre.value = genre.name

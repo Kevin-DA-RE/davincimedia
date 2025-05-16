@@ -22,11 +22,7 @@ class MediasController extends Controller
 {
     public function userMovies()
     {
-        $movies = MediasResources::collection(Movie::with(['genres', 'users'])
-        ->whereHas('users', function (Builder $query) {
-            $query->where('users.id', 1);
-        })
-        ->get());
+        $movies = Movie::with(['genres', 'users'])->get();
         return response()->json($movies);
 
     }

@@ -13,7 +13,7 @@ class AuthController extends Controller
     public function checkMovies()
     {
         $moviesController = new MediasController();
-        if (count($moviesController->showMovies()->getData()) >0) {
+        if (count($moviesController->showMoviesByUser()->getData()) >0) {
            return response()->json(['code'=> 200,'message' => "Des films sont enregistres"]);
         } else {
             return response()->json(['code'=> 400,'message' => "Aucun film n'est enregistre"]);
