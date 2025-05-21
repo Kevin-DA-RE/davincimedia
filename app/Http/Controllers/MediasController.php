@@ -140,7 +140,7 @@ class MediasController extends Controller
     }
 
     public function showMoviesByUser(){
-        $movies = MediasResources::collection(Movie::with(['genres', 'users'])
+        $movies = MediasResources::collection(Movie::with('genres')
         ->whereHas('users', function (Builder $query) {
             $query->where('users.id', auth()->id());
         })
@@ -176,33 +176,35 @@ class MediasController extends Controller
     public function createMovies (MovieListRequest $request)
     {
         $item = $request->validated();
-            foreach ($item["moviesList"] as $request_movie) {
-                $genre_ids =[];
 
-                foreach ($request_movie["genres"] as $request_genre) {
-                    $genre = Genre::firstOrCreate(
-                        ["id_genre" => $request_genre["id_genre"]],
-                        [
-                            "id_genre" => $request_genre["id_genre"],
-                            "name" => $request_genre["name"],
-                        ]
-                    );
-
-                    array_push($genre_ids, $genre->id);
-                }
-                $movie = Movie::firstOrCreate(
-                            ["id_movie" => $request_movie["id_movie"]],
-                            [
-                                "id_movie" => $request_movie["id_movie"],
-                                "name" => $request_movie["name"],
-                                "synopsis" => $request_movie["synopsis"],
-                                "url_img" => $request_movie["url_img"]
+        foreach ($item["moviesList"] as $request_movie) {
+        $genre_ids =[];
+            foreach ($request_movie["genres"] as $request_genre) {
+                $genre = Genre::firstOrCreate(
+                    ["id_genre" => $request_genre["id_genre"]],
+                    [
+                        "id_genre" => $request_genre["id_genre"],
+                        "name" => $request_genre["name"],
                     ]
                 );
-                $movie->genre()->attach($genre_ids);
 
+                array_push($genre_ids, $genre->id);
             }
-            return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
+            $movie = Movie::firstOrCreate(
+                        ["id_movie" => $request_movie["id_movie"]],
+                        [
+                            "id_movie" => $request_movie["id_movie"],
+                            "name" => $request_movie["name"],
+                            "synopsis" => $request_movie["synopsis"],
+                            "url_img" => $request_movie["url_img"]
+                ]
+            );
+
+            $movie->users()->attach(auth()->id());
+            $movie->genres()->attach($genre_ids);
+
+        }
+        return response()->json(["code"=> 200, "message" => "tous les films ont bien ete enregistrés"]);
       }
 
       public function createSeries (SerieListRequest $request)
