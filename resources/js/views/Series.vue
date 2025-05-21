@@ -38,7 +38,7 @@ const api = {
   url_backend_create_series: `${url_base}/create-series`,
   url_backend_update_serie: `${url_base}/update-serie`,
   url_backend_delete_serie: `${url_base}/delete-serie`,
-  url_backend_show_series: `${url_base}/show-series`,
+  url_backend_show_series_by_user: `${url_base}/show-series-by-user`,
   url_backend_show_genres_series: `${url_base}/show-genres-series`,
   url_backend_show_series_genres: `${url_base}/show-series-genres`,
   url_backend_get_serie_genres: `${url_base}/get-serie-with-genres`
@@ -73,7 +73,7 @@ async function loadSeriesWithGenres(){
 async function showSeries(){
   try {
         const movies = await axios
-                  .get(api.url_backend_show_series, {
+                  .get(api.url_backend_show_series_by_user, {
                         headers: {
                         accept: "application/json",
                         },
