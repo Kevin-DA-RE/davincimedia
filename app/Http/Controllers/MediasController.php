@@ -237,7 +237,9 @@ class MediasController extends Controller
                                   "url_img" => $request_serie["url_img"]
                       ]
                   );
-                  $serie->genre()->attach($genre_ids);
+
+                $serie->users()->attach(auth()->id());
+                $serie->genre()->attach($genre_ids);
 
               }
               return response()->json(["code"=> 200, "message" => "toutes les series ont bien ete enregistrés"]);
