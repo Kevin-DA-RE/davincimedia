@@ -148,9 +148,13 @@ class MediasController extends Controller
         return response()->json($movies);
     }
 
-    public function showSeries(){
-        $movies = MediasResources::collection(Serie::with('genre')->get());
-        return response()->json($movies);
+    public function showSeriesByUser(){
+        $series = MediasResources::collection(Serie::with('genres')
+        ->whereHas('users', function (Builder $query) {
+            $query->where('users.id', auth()->id());
+        })
+        ->get());
+        return response()->json($series);
     }
 
     public function showMovieGenres(){

@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->prefix('media/serie')->controller(MediasContr
     Route::post('/create-series', 'createSeries');
     Route::post('/update-serie/{serie}', 'updateSerie');
     Route::post('/delete-serie/{serie}', 'deleteSerie');
-    Route::get('/show-series', 'showSeries');
+    Route::get('/show-series-by-user', 'showSeriesByUser');
     Route::get('/show-genres-series', 'showGenresSeries');
     Route::get('/show-series-genres/{genre}', 'showSeriesWithGenres');
     Route::get('/get-serie-with-genres/{name}', 'getSerieWithGenres');
