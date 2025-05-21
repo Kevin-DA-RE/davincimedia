@@ -47,4 +47,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Movie::class, 'user_movie');
     }
 
+    public function series(){
+        return $this->belongsToMany(Serie::class, 'user_serie');
+    }
+
 }

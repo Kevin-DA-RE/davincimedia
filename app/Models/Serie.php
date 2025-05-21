@@ -15,7 +15,11 @@ class Serie extends Model
         "url_img"
     ];
 
-    public function genre(){
+    public function genres(){
      return $this->belongsToMany(Genre::class, 'genre_serie');
+    }
+
+    public function users(){
+     return $this->belongsToMany(User::class, 'user_serie');
     }
 }
