@@ -81,9 +81,9 @@ async function showMoviesByUser(){
               })
 
         moviesListLoaded.value = movies.data
-            }
-            catch (error) {
-                return error.response.data
+    }
+    catch (error) {
+        return error.response.data
   }
 }
 
@@ -196,8 +196,8 @@ movies.forEach((movie, index) => {
 
     })
 });
-
-return await axios.post(api.url_backend_create_movie, formData, {
+try {
+ await axios.post(api.url_backend_create_movie, formData, {
                           headers: {
                           accept: "multipart/form-data"
                         }})
@@ -206,6 +206,9 @@ return await axios.post(api.url_backend_create_movie, formData, {
                       .catch((error) =>
                         console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
                       );
+} catch (error) {
+return error.message
+}
 }
 
 async function updateMovieToBackEnd(movie) {
