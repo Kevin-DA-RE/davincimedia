@@ -197,7 +197,8 @@ series.forEach((serie, index) => {
     })
 });
 
-return await axios.post(api.url_backend_create_series, formData, {
+try {
+await axios.post(api.url_backend_create_series, formData, {
                           headers: {
                           accept: "multipart/form-data"
                         }})
@@ -206,6 +207,9 @@ return await axios.post(api.url_backend_create_series, formData, {
                       .catch((error) =>
                         console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
                       );
+} catch (error) {
+    return error.message
+}
 }
 
 async function updateSerieToBackEnd(serie) {
