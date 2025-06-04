@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function checkMovies()
+    /**
+     * @return mixed
+     */
+    public function checkMovies(): mixed
     {
         $moviesController = new MediasController();
         if (count($moviesController->showMoviesByUser()->getData()) >0) {
@@ -20,7 +23,7 @@ class AuthController extends Controller
         }
     }
 
-    public function checkSeries()
+    public function checkSeries(): mixed
     {
         $seriesController = new MediasController();
         if (count($seriesController->showSeries()->getData()) >0) {
@@ -30,7 +33,7 @@ class AuthController extends Controller
         }
     }
 
-    public function checkEmail(Request $request)
+    public function checkEmail(Request $request): mixed
     {
         $validated = $request->validate([
             'email' => 'required', 'string',
@@ -43,14 +46,15 @@ class AuthController extends Controller
         }
     }
 
-    public function checkUser(){
+    public function checkUser(): mixed
+    {
         if (Auth::check()) {
             return response()->json(['code'=> 200,'message' => "L'utilisateur est authentifié"]);
         } else {
             return response()->json(['code'=> 400,'message' => "L'utilisateur n'est pas authentifié"]);
         }
     }
-    public function forgotPasswordUser(Request $request)
+    public function forgotPasswordUser(Request $request): mixed
     {
         $validated = $request->validate([
             'email' => 'required', 'string',
