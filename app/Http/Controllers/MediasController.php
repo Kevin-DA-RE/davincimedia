@@ -20,13 +20,21 @@ use Illuminate\Support\Facades\Validator;
 
 class MediasController extends Controller
 {
-    public function userMovies()
+    /**
+     * @return mixed
+     */
+    public function userMovies(): mixed
     {
         $movies = Movie::with(['genres', 'users'])->get();
         return response()->json($movies);
 
     }
-    public function getMovie(string $query)
+
+    /**
+     * @param string $query
+     * @return mixed
+     */
+    public function getMovie(string $query): mixed
     {
         $request = $this->getUrlTMDB('movie',$query);
 
@@ -43,7 +51,11 @@ class MediasController extends Controller
     }
 
 
-    public function getSerie(string $query)
+    /**
+     * @param string $query
+     * @return mixed
+     */
+    public function getSerie(string $query): mixed
     {
         $request = $this->getUrlTMDB('tv',$query);
         $serieList = $request['results'];
@@ -58,7 +70,12 @@ class MediasController extends Controller
         }
     }
 
-    private function getUrlTMDB(string $parameter, string $query)
+    /**
+     * @param string $parameter
+     * @param string $query
+     * @return mixed
+     */
+    private function getUrlTMDB(string $parameter, string $query): mixed
     {
         $request = Http::withOptions(['verify' => false])->withQueryParameters([
             "query" => $query,
@@ -76,7 +93,11 @@ class MediasController extends Controller
     }
 
 
-    public function getGenres(string $parameter)
+    /**
+     * @param string $parameter
+     * @return mixed
+     */
+    public function getGenres(string $parameter): mixed
     {
         $request = Http::withOptions(['verify' => false])->withToken(config('services.tmdb.key'))->acceptJson();
         if ($parameter === "movie") {
@@ -87,7 +108,11 @@ class MediasController extends Controller
         return response()->json(GenresResources::collection($request['genres']));
     }
 
-    public function getMovieWithGenres(string $name)
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function getMovieWithGenres(string $name): mixed
     {
         $movie = $this->getMovie($name)->getData();
         if(property_exists($movie, "id")){
@@ -113,7 +138,11 @@ class MediasController extends Controller
         }
     }
 
-    public function getSerieWithGenres(string $name)
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function getSerieWithGenres(string $name): mixed
     {
         $serie = $this->getSerie($name)->getData();
         if(property_exists($serie, "id")){
@@ -139,7 +168,11 @@ class MediasController extends Controller
         }
     }
 
-    public function showMoviesByUser(){
+    /**
+     * @return mixed
+     */
+    public function showMoviesByUser(): mixed
+    {
         $movies = MediasResources::collection(Movie::with('genres')
         ->whereHas('users', function (Builder $query) {
             $query->where('users.id', auth()->id());
