@@ -33,8 +33,9 @@ const tab = ref('all')
 const splitterModel = ref(20)
 const panelGenre = ref("")
 
-const url_backend = "http://127.0.0.1:8000"
-const url_base = "http://127.0.0.1:8000/api/media/movie"
+const url_backend = window.location.hostname == "127.0.0.1" ? "http://127.0.0.1:8000" : import.meta.env.VITE_API_URL
+const url_base = window.location.hostname == "127.0.0.1" ?  "http://127.0.0.1:8000" : import.meta.env.VITE_API_URL_MOVIE
+
 const api = {
   url_backend_create_movie: `${url_base}/create-movies`,
   url_backend_update_movie: `${url_base}/update-movie`,

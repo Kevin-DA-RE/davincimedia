@@ -9,7 +9,7 @@ const quasar = useQuasar();
 const isAuthentified = ref();
 
 const search = ref("")
-const url_backend = "http://127.0.0.1:8000"
+const url_backend = window.location.hostname == "127.0.0.1" ? "http://127.0.0.1:8000" : import.meta.env.VITE_API_URL
 
 onMounted(async () => {
     isAuthentified.value = await axios.get(`${url_backend}/api/user/check-user`)
