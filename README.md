@@ -16,6 +16,9 @@ DaVinciMedia est une application web qui permet de :
 - ⚡ **Utiliser une API REST** pour intégration avec d’autres services  
 - 🎨 **Profiter d’une UI moderne grâce à Quasar**  
 
+--- 🌍 Site Web  
+V1: http://thedavincimedia.alwaysdata.net/
+
 ---
 
 ## 🛠️ Stack technique  
