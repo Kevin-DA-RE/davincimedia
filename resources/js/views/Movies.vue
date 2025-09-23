@@ -37,31 +37,29 @@ const url_backend = window.location.hostname == "127.0.0.1" ? "http://127.0.0.1:
 const url_base = window.location.hostname == "127.0.0.1" ?  "http://127.0.0.1:8000" : import.meta.env.VITE_API_URL_MOVIE
 
 const api = {
-  url_backend_create_movie: `${url_base}/create-movies`,
-  url_backend_update_movie: `${url_base}/update-movie`,
-  url_backend_delete_movie: `${url_base}/delete-movie`,
-  url_backend_show_movies_by_user: `${url_base}/show-movies-by-user`,
-  url_backend_show_genres: `${url_base}/show-movies-genres`,
-  url_backend_show_movies_genres: `${url_base}/show-movies-genres`,
-  url_backend_get_movie_genres: `${url_base}/get-movie-with-genres`
+  url_backend_create_movie: `${url_base}api/media/movie/create-movies`,
+  url_backend_update_movie: `${url_base}api/media/movie/update-movie`,
+  url_backend_delete_movie: `${url_base}api/media/movie/delete-movie`,
+  url_backend_show_movies_by_user: `${url_base}api/media/movie/show-movies-by-user`,
+  url_backend_show_genres: `${url_base}api/media/movie/show-movies-genres`,
+  url_backend_show_movies_genres: `${url_base}api/media/movie/show-movies-genres`,
+  url_backend_get_movie_genres: `${url_base}api/media/movie/get-movie-with-genres`
 };
 
 onMounted( async() => {
       try {
         checkMovies.value = await axios.get(`${url_backend}/api/user/check-movies`)
         .then((response) => {
-           if (response.data.code === 200) {
-            return true
-           } else {
-            return false
-           }
+            return response.data.code
         })
         .catch((error) => {
             return error.response.status;
         });
+        if (checkMovies.value === 200) {
         await loadMoviesWithGenres()
+        }
       } catch (error) {
-        console.log("error onMounted"+error);
+        console.log(error);
       }
 })
 

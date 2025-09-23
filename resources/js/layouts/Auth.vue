@@ -93,7 +93,7 @@ async function checkEmailLogin() {
     formData.append("email", formUserEmail.value);
 
     const response = await axios
-        .post(`${url_backend}/api/user/check-email-`, formData)
+        .post(`${url_backend}/api/user/check-email`, formData)
         .then((response) => {
             return response.data;
         })
@@ -116,9 +116,11 @@ async function checkEmailRegister() {
             return response.data;
         })
         .catch((error) => {
-            return error.response.data;
+            return error.response;
         });
- 
+        console.log(response);
+
+
     checkErrorMail.value = response.code === 400 ? false : true;
     messageError.value = response.code === 400 ? "" : response.message;
 }

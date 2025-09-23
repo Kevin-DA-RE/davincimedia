@@ -36,31 +36,29 @@ const url_backend = window.location.hostname == "127.0.0.1" ? "http://127.0.0.1:
 const url_base = window.location.hostname == "127.0.0.1" ?  "http://127.0.0.1:8000" : import.meta.env.VITE_API_URL_MOVIE
 
 const api = {
-  url_backend_create_series: `${url_base}/create-series`,
-  url_backend_update_serie: `${url_base}/update-serie`,
-  url_backend_delete_serie: `${url_base}/delete-serie`,
-  url_backend_show_series_by_user: `${url_base}/show-series-by-user`,
-  url_backend_show_genres_series: `${url_base}/show-genres-series`,
-  url_backend_show_series_genres: `${url_base}/show-series-genres`,
-  url_backend_get_serie_genres: `${url_base}/get-serie-with-genres`
+  url_backend_create_series: `${url_base}api/media/serie/create-series`,
+  url_backend_update_serie: `${url_base}api/media/serie/update-serie`,
+  url_backend_delete_serie: `${url_base}api/media/serie/delete-serie`,
+  url_backend_show_series_by_user: `${url_base}api/media/serie/show-series-by-user`,
+  url_backend_show_genres_series: `${url_base}api/media/serie/show-genres-series`,
+  url_backend_show_series_genres: `${url_base}api/media/serie/show-series-genres`,
+  url_backend_get_serie_genres: `${url_base}api/media/serie/get-serie-with-genres`
 };
 
 onMounted( async() => {
       try {
         checkSeries.value = await axios.get(`${url_backend}/api/user/check-series`)
         .then((response) => {
-           if (response.data.code === 200) {
-            return true
-           } else {
-            return false
-           }
+            return response.data.code
         })
         .catch((error) => {
             return error.response.status;
         });
+        if (checkSeries.value === 200) {
         await loadSeriesWithGenres()
+        }
       } catch (error) {
-        console.log("error onMounted"+error);
+        console.log(error);
       }
 })
 

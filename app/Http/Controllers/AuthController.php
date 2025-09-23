@@ -26,7 +26,7 @@ class AuthController extends Controller
     public function checkSeries(): mixed
     {
         $seriesController = new MediasController();
-        if (count($seriesController->showSeries()->getData()) >0) {
+        if (count($seriesController->showSeriesByUser()->getData()) >0) {
            return response()->json(['code'=> 200,'message' => "Des series sont enregistres"]);
         } else {
             return response()->json(['code'=> 400,'message' => "Aucune serie n'est enregistre"]);
@@ -38,6 +38,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'email' => 'required', 'string',
         ]);
+
         $user = User::where('email', $validated['email'])->first();
         if ($user) {
             return response()->json(['code'=> 200, 'message' => "l'adresse e-mail est presente en base"]);
