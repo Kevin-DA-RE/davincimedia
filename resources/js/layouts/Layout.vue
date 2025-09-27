@@ -12,7 +12,7 @@ const search = ref("")
 const url_backend = "http://127.0.0.1:8000"
 
 onMounted(async () => {
-    isAuthentified.value = await axios.get(`${url_backend}/api/user/check-user`)
+    isAuthentified.value = await axios.get(`${url_backend}/api/user/check-user`,{withCredentials: true})
         .then((response) => {
             if (response.data.code === 200) {
                 return true
