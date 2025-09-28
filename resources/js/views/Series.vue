@@ -55,7 +55,7 @@ onMounted( async() => {
            }
         })
         .catch((error) => {
-            return error.response.status;
+            return error.response;
         });
         await loadSeriesWithGenres()
       } catch (error) {
@@ -65,21 +65,21 @@ onMounted( async() => {
 
 
 async function loadSeriesWithGenres(){
-  await showSeries()
+  await showSeriesByUser()
   await showGenres()
 }
 
 
-async function showSeries(){
+async function showSeriesByUser(){
   try {
-        const movies = await axios
+        const series = await axios
                   .get(api.url_backend_show_series_by_user, {
                         headers: {
                         accept: "application/json",
                         },
               })
 
-        seriesListLoaded.value = movies.data
+        seriesListLoaded.value = series.data
             }
             catch (error) {
                 return error.response.data
@@ -111,7 +111,7 @@ async function showSeriesWithGenres(genre) {
   } else {
     const url = `${api.url_backend_show_series_genres}/${genre.id}`
     panelGenre.value = genre.name
-    const moviesWithGenres = await axios
+    const seriesWithGenres = await axios
                                 .get(url, {"id": genre.id},{
                                 headers: {
                                     accept: "application/json",
@@ -121,7 +121,7 @@ async function showSeriesWithGenres(genre) {
                                 .catch((error) => {
                                   return error.response.data;
                                 });
-                                seriesListLoaded.value = moviesWithGenres
+                                seriesListLoaded.value = seriesWithGenres
   }
 
 }

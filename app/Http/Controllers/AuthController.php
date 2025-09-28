@@ -26,7 +26,7 @@ class AuthController extends Controller
     public function checkSeries(): mixed
     {
         $seriesController = new MediasController();
-        if (count($seriesController->showSeries()->getData()) >0) {
+        if (count($seriesController->showSeriesByUser()->getData()) >0) {
            return response()->json(['code'=> 200,'message' => "Des series sont enregistres"]);
         } else {
             return response()->json(['code'=> 400,'message' => "Aucune serie n'est enregistre"]);
