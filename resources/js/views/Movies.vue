@@ -204,7 +204,7 @@ try {
                       .then((response) => {return response.data.code}
                       )
                       .catch((error) =>
-                        console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+                        console.log(`Erreur lors de la création de datas sur le film \n ${error}`)
                       );
 } catch (error) {
 return error.message

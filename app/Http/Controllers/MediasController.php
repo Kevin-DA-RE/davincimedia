@@ -272,7 +272,7 @@ class MediasController extends Controller
                   );
 
                 $serie->users()->attach(auth()->id());
-                $serie->genre()->attach($genre_ids);
+                $serie->genres()->attach($genre_ids);
 
               }
               return response()->json(["code"=> 200, "message" => "toutes les series ont bien ete enregistrés"]);

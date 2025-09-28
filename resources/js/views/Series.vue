@@ -205,7 +205,8 @@ await axios.post(api.url_backend_create_series, formData, {
                       .then((response) => {return response.data.code}
                       )
                       .catch((error) =>
-                        console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+                      console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+
                       );
 } catch (error) {
     return error.message
@@ -235,7 +236,7 @@ return await axios.post(url, formData, {
                       .then((response) => {return response.data.code}
                       )
                       .catch((error) =>
-                        console.log(`Erreur lors de la récupération de datas sur le film \n ${error}`)
+                        console.log(`Erreur lors de la mise a jour de datas sur le film \n ${error}`)
                       );
 }
 
