@@ -40,7 +40,7 @@ const api = {
   url_backend_delete_serie: `${url_base}/delete-serie`,
   url_backend_show_series_by_user: `${url_base}/show-series-by-user`,
   url_backend_show_genres_series: `${url_base}/show-genres-series`,
-  url_backend_show_series_genres: `${url_base}/show-series-genres`,
+  url_backend_show_genres_series: `${url_base}/show-genres-series`,
   url_backend_get_serie_genres: `${url_base}/get-serie-with-genres`
 };
 
@@ -107,9 +107,9 @@ async function showGenres(){
 
 async function showSeriesWithGenres(genre) {
   if (genre.id ===0) {
-    await showSeries()
+    await showSeriesByUser()
   } else {
-    const url = `${api.url_backend_show_series_genres}/${genre.id}`
+    const url = `${api.url_backend_show_genres_series}/${genre.id}`
     panelGenre.value = genre.name
     const seriesWithGenres = await axios
                                 .get(url, {"id": genre.id},{

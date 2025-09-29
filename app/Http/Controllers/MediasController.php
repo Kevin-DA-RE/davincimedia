@@ -191,22 +191,42 @@ class MediasController extends Controller
     }
 
     public function showMovieGenres(){
-        $genres = GenresResources::collection(Genre::whereHas('movies')->get());
+        $genres = GenresResources::collection(
+            Genre::whereHas('movies', function ($query) {
+                $query->whereHas('users', function ($q) {
+                    $q->where('users.id', auth()->id());
+                });
+            })->get()
+        );
         return response()->json($genres);
     }
 
     public function showGenresSeries(){
-        $genres = GenresResources::collection(Genre::whereHas('series')->get());
+        $genres = GenresResources::collection(
+            Genre::whereHas('series', function ($query) {
+                $query->whereHas('users', function ($q) {
+                    $q->where('users.id', auth()->id());
+                });
+            })->get()
+        );
         return response()->json($genres);
     }
 
     public function showMoviesWithGenres(Genre $genre){
-        $moviesWithGenres = MediasResources::collection($genre->movies);
+        $moviesWithGenres = MediasResources::collection(
+            $genre->movies()->whereHas('users', function ($query) {
+                $query->where('users.id', auth()->id());
+            })->get()
+        );
         return response()->json($moviesWithGenres);
     }
 
     public function showSeriesWithGenres(Genre $genre){
-        $seriesWithGenres = MediasResources::collection($genre->series);
+        $seriesWithGenres = MediasResources::collection(
+            $genre->series()->whereHas('users', function ($query) {
+                $query->where('users.id', auth()->id());
+            })->get()
+        );
         return response()->json($seriesWithGenres);
     }
 

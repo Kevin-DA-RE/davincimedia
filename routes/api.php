@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/delete-serie/{serie}', [MediasController::class,'deleteSerie']);
             Route::get('/show-series-by-user', [MediasController::class,'showSeriesByUser']);
             Route::get('/show-genres-series', [MediasController::class,'showGenresSeries']);
-            Route::get('/show-series-genres/{genre}', [MediasController::class,'showSeriesWithGenres']);
+            Route::get('/show-genres-series/{genre}', [MediasController::class,'showSeriesWithGenres']);
             Route::get('/get-serie-with-genres/{name}', [MediasController::class,'getSerieWithGenres']);
         });
     });

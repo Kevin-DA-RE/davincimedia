@@ -41,7 +41,6 @@ const api = {
   url_backend_delete_movie: `${url_base}/delete-movie`,
   url_backend_show_movies_by_user: `${url_base}/show-movies-by-user`,
   url_backend_show_genres: `${url_base}/show-movies-genres`,
-  url_backend_show_movies_genres: `${url_base}/show-movies-genres`,
   url_backend_get_movie_genres: `${url_base}/get-movie-with-genres`
 };
 
@@ -110,7 +109,7 @@ async function showMoviesWithGenres(genre) {
   if (genre.id ===0) {
     await showMoviesByUser()
   } else {
-    const url = `${api.url_backend_show_movies_genres}/${genre.id}`
+    const url = `${api.url_backend_show_genres}/${genre.id}`
     panelGenre.value = genre.name
     const moviesWithGenres = await axios
                                 .get(url, {"id": genre.id},{

@@ -59,7 +59,13 @@ class MediasResources extends JsonResource
         'name' => $this->name,
         'synopsis' => $this->synopsis,
         'url_img' => $this->url_img,
-        'genres' =>  $this->genres
+        'genres' =>  $this->genres->map(function($genre) {
+            return [
+               'id' => $genre->id,
+                'id_genre' => $genre->id_genre,
+                'name' => $genre->name
+            ];
+        })
        ];
     }
 
@@ -70,7 +76,13 @@ class MediasResources extends JsonResource
         'name' => $this->name,
         'synopsis' => $this->synopsis,
         'url_img' => $this->url_img,
-        'genres' =>  $this->genres
+        'genres' =>  $this->genres->map(function($genre) {
+            return [
+               'id' => $genre->id,
+                'id_genre' => $genre->id_genre,
+                'name' => $genre->name
+            ];
+        })
        ];
     }
 
