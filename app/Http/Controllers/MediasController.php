@@ -319,7 +319,7 @@ class MediasController extends Controller
             array_push($genre_ids, $genre->id);
 
         }
-        $movie->genre()->sync($genre_ids);
+        $movie->genres()->sync($genre_ids);
         return response()->json(["code"=> 200, "message" => "le film a bien été modifié"]);
     }
 

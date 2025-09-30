@@ -59,11 +59,10 @@ class MediasResources extends JsonResource
         'name' => $this->name,
         'synopsis' => $this->synopsis,
         'url_img' => $this->url_img,
-        'genres' =>  $this->genres->map(function($genre) {
+        'genres' => collect($this->genres)->map(function($genre) {
             return [
-               'id' => $genre->id,
-                'id_genre' => $genre->id_genre,
-                'name' => $genre->name
+                'id_genre' => $genre['id_genre'],
+                'name' => $genre['name']
             ];
         })
        ];
