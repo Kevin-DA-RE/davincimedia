@@ -290,7 +290,6 @@ class MediasController extends Controller
                                   "url_img" => $request_serie["url_img"]
                       ]
                   );
-
                 $serie->users()->attach(auth()->id());
                 $serie->genres()->attach($genre_ids);
 
@@ -344,7 +343,7 @@ class MediasController extends Controller
             array_push($genre_ids, $genre->id);
 
         }
-        $serie->genre()->sync($genre_ids);
+        $serie->genres()->sync($genre_ids);
         return response()->json(["code"=> 200, "message" => "la serie a bien été modifié"]);
     }
 
@@ -360,7 +359,7 @@ class MediasController extends Controller
         foreach ($item["genres"] as $movie_genre) {
             array_push($genre_ids, $movie_genre['id_genre']);
         }
-        $movie->genre()->detach($genre_ids);
+        $movie->genres()->detach($genre_ids);
         $movie->delete();
         return response()->json(["code"=> 200, "message" => "le film a bien été supprimé"]);
     }
@@ -377,7 +376,7 @@ class MediasController extends Controller
         foreach ($item["genres"] as $movie_genre) {
             array_push($genre_ids, $movie_genre['id_genre']);
         }
-        $serie->genre()->detach($genre_ids);
+        $serie->genres()->detach($genre_ids);
         $serie->delete();
         return response()->json(["code"=> 200, "message" => "la serie a bien été supprimé"]);
     }
