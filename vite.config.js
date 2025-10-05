@@ -1,12 +1,12 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue'
-import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
+import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
+import vue from "@vitejs/plugin-vue";
+import { quasar, transformAssetUrls } from "@quasar/vite-plugin";
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: ["resources/css/app.css", "resources/js/app.js"],
             refresh: true,
         }),
         vue({
@@ -17,11 +17,16 @@ export default defineConfig({
                 },
             },
         }),
-        quasar()
+        quasar(),
     ],
     resolve: {
         alias: {
-            vue: 'vue/dist/vue.esm-bundler.js',
+            vue: "vue/dist/vue.esm-bundler.js",
         },
     },
-})
+    build: {
+        outDir: "public/build", // dossier de sortie
+        emptyOutDir: true, // nettoie le dossier avant chaque build
+        sourcemap: false, // désactive les sourcemaps en production
+    },
+});

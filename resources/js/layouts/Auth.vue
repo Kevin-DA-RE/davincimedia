@@ -20,7 +20,7 @@ const messageError = ref()
 const quasar = useQuasar();
 
 const emit = defineEmits(['authValidated'])
-const url_backend = "http://127.0.0.1:8000"
+const url_backend = window.location.hostname == "127.0.0.1" ? "http://127.0.0.1:8000" : import.meta.env.VITE_API_URL
 
 async function onRegister() {
     // Init FormData pour envoyer les datas
@@ -207,7 +207,7 @@ function Login() {
             </q-card-actions>
         </q-card>
     </q-dialog>
-    <div v-if="quasar.screen.lt.sm" v-show="initAuthMobile">
+    <div v-if="quasar.screen.lt.md" v-show="initAuthMobile">
         <div v-if="modeForm === 'register'" class="q-mb-md">
             <FormUser :mode="modeForm" @submit="onSubmit" @reset="onReset">
                 <q-input filled v-model="formUserName" label="Votre pseudo" class="q-pa-md" />
