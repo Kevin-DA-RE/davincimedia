@@ -61,16 +61,15 @@ async function onLogout() {
                             class="flex items-center justify-center"
                         >
                             <img
-                                src="../../assets/cine_hightech_3.png"
+                                src="/assets/cine_hightech_3.png"
                                 alt="cine_hight_tech"
-                                style="width: 100px; height: 100px"
                             />
                         </div>
 
                         <!-- Affichage sur écrans moyens et grands -->
                         <div v-else class="flex items-center">
                             <img
-                                src="../../assets/cine_hightech_3.png"
+                                src="/assets/cine_hightech_3.png"
                                 alt="cine_hight_tech"
                                 style="width: 100px; height: 100px"
                             />
