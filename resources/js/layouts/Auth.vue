@@ -6,6 +6,9 @@ import { useQuasar } from "quasar";
 
 const initAuthDialog = ref(true);
 const initAuthMobile = ref(false);
+const showFormLogin = ref(true);
+const showFormRegister = ref(false);
+const showFormForgotPassword = ref(false);
 const modeForm = ref("login");
 const formUserName = ref("");
 const formUserEmail = ref("");
@@ -145,16 +148,19 @@ function onReset() {
     formUserPassword.value = "";
     formForgotPassword.value = "";
     confirmFormForgotPassword.value = "";
+
     switch (modeForm.value) {
-        case "login":
-            modeForm.value = "register";
-            break;
         case "forgotPassword":
+            showFormLogin.value = true;
+            showFormForgotPassword.value = false;
+            showFormRegister.value = false;
             modeForm.value = "login";
             break;
 
-        default:
-            modeForm.value = "register";
+        case "register":
+            showFormLogin.value = false;
+            showFormForgotPassword.value = false;
+            showFormRegister.value = true;
             break;
     }
 }
@@ -162,6 +168,9 @@ function dialogFormForgotPassword() {
     modeForm.value = "forgotPassword";
     checkAccount.value = false;
     checkErrorMail.value = false;
+    showFormLogin.value = false;
+    showFormRegister.value = false;
+    showFormForgotPassword.value = true;
 }
 
 function redirectRegister() {
@@ -169,35 +178,41 @@ function redirectRegister() {
     onReset();
     checkAccount.value = false;
     checkErrorMail.value = false;
+    showFormLogin.value = false;
+    showFormRegister.value = true;
 }
 
 function redirectLogin() {
     modeForm.value = "login";
     checkAccount.value = false;
     checkErrorMail.value = false;
+    showFormLogin.value = true;
+    showFormRegister.value = false;
 }
 </script>
 
 <template>
     <div v-if="quasar.screen.xs">mobile</div>
-    <div v-else class="bg-dark row items-center" :v-model="initAuthDialog">
-        <q-img
-            src="assets/cine_hightech_3_v2.jpeg"
-            height="100vh"
-            width="100vw"
-        >
-            <div class="absolute-top text-center text-h2 text-cyan-12">
+    <div
+        v-else
+        class="bg-dark row items-center justify-around"
+        :v-model="initAuthDialog"
+    >
+        <q-img src="assets/cine_hightech_3.png" height="100vh" width="800px">
+            <div
+                class="absolute-top bg-transparent text-center text-h2 text-cyan-12"
+            >
                 DavinciMedia
             </div>
         </q-img>
         <!--LOGIN-->
-        <div v-if="modeForm === 'login'">
+        <div v-show="showFormLogin">
             <FormUser
                 :mode="modeForm"
                 @submit="onSubmit"
                 @reset="onReset"
                 @redirectRegister="redirectRegister"
-                class="q-my-auto bg-blue-grey-14 q-mr-xs absolute-right rounded-lg text-white"
+                class="q-my-auto bg-grey-14 rounded-lg text-white"
                 style="
                     width: max-content;
                     height: max-content;
@@ -209,6 +224,7 @@ function redirectLogin() {
                     type="mail"
                     v-model="formUserEmail"
                     class="q-pa-md text-white"
+                    color="grey-11"
                     label="Votre adresse Email"
                     @change="checkEmailLogin()"
                 />
@@ -216,7 +232,8 @@ function redirectLogin() {
                     filled
                     type="password"
                     v-model="formUserPassword"
-                    class="q-pa-md"
+                    class="q-pa-md text-white"
+                    color="grey-11"
                     label="Votre mot de passe"
                 />
                 <p
@@ -238,12 +255,12 @@ function redirectLogin() {
         </div>
 
         <!--REGISTER-->
-        <div v-if="modeForm === 'register'">
+        <div v-show="showFormRegister">
             <FormUser
                 :mode="modeForm"
                 @submit="onSubmit"
                 @reset="onReset"
-                class="q-my-auto bg-blue-grey-14 q-mr-xs absolute-right rounded-lg text-white"
+                class="q-my-auto bg-grey-14 rounded-lg text-white"
                 style="
                     width: max-content;
                     height: max-content;
@@ -253,7 +270,8 @@ function redirectLogin() {
                 <q-input
                     v-model="formUserName"
                     label="Votre pseudo"
-                    class="q-pa-md"
+                    class="q-pa-md text-white"
+                    color="grey-11"
                 />
 
                 <q-input
@@ -261,7 +279,8 @@ function redirectLogin() {
                     type="mail"
                     v-model="formUserEmail"
                     label="Votre adresse Email"
-                    class="q-pa-md"
+                    class="q-pa-md text-white"
+                    color="grey-11"
                     @change="checkEmailRegister()"
                 />
                 <q-input
@@ -283,13 +302,13 @@ function redirectLogin() {
                 </p>
             </FormUser>
         </div>
-        <div v-else>
+        <div v-show="showFormForgotPassword">
             <FormUser
                 v-if="modeForm === 'forgotPassword'"
                 :mode="modeForm"
                 @submit="onSubmit"
                 @reset="onReset"
-                class="q-my-auto bg-blue-grey-14 q-mr-xs absolute-right rounded-lg text-white"
+                class="q-my-auto bg-grey-14 rounded-lg text-white"
                 style="
                     width: max-content;
                     height: max-content;
@@ -300,7 +319,8 @@ function redirectLogin() {
                     filled
                     type="mail"
                     v-model="formUserEmail"
-                    class="q-pa-md"
+                    class="q-pa-md text-white"
+                    color="grey-11"
                     label="Votre adresse Email"
                     @change="checkEmailLogin()"
                 />
@@ -309,14 +329,16 @@ function redirectLogin() {
                         filled
                         type="password"
                         v-model="formForgotPassword"
-                        class="q-pa-md"
+                        class="q-pa-md text-white"
+                        color="grey-11"
                         label="Votre nouveau mot de passe"
                     />
                     <q-input
                         filled
                         type="password"
                         v-model="confirmFormForgotPassword"
-                        class="q-pa-md"
+                        class="q-pa-md text-white"
+                        color="grey-11"
                         label="Confirmer votre mot de passe"
                     />
                 </div>
