@@ -192,7 +192,173 @@ function redirectLogin() {
 </script>
 
 <template>
-    <div v-if="quasar.screen.xs">mobile</div>
+    <div
+        v-if="quasar.screen.xs"
+        style="width: 100vw; height: 100vh"
+        class="bg-grey-14"
+    >
+        <!--LOGIN-->
+        <div v-show="showFormLogin">
+            <div class="row justify-center">
+                <q-img
+                    src="assets/cine_hightech_3.png"
+                    width="100px"
+                    class="bg-transparent"
+                />
+                <h6 class="text-white">DavinciMedia</h6>
+            </div>
+
+            <FormUser
+                :mode="modeForm"
+                @submit="onSubmit"
+                @reset="onReset"
+                @redirectRegister="redirectRegister"
+                class="q-my-auto bg-grey-14 rounded-lg text-white"
+            >
+                <q-input
+                    filled
+                    type="mail"
+                    v-model="formUserEmail"
+                    class="q-pa-md text-white"
+                    color="grey-11"
+                    label="Votre adresse Email"
+                    @change="checkEmailLogin()"
+                />
+                <q-input
+                    filled
+                    type="password"
+                    v-model="formUserPassword"
+                    class="q-pa-md text-white"
+                    color="grey-11"
+                    label="Votre mot de passe"
+                />
+                <p
+                    class="forgotPassword q-pl-md"
+                    @click="dialogFormForgotPassword()"
+                >
+                    Mot de passe oublié ?
+                </p>
+                <div v-show="checkErrorMail" class="q-pl-md">
+                    <p style="color: orange">{{ messageError }}</p>
+                </div>
+                <q-btn
+                    label="S'inscrire"
+                    @click="redirectRegister()"
+                    class="q-ma-md"
+                    color="secondary"
+                />
+            </FormUser>
+        </div>
+
+        <!--REGISTER-->
+        <div v-show="showFormRegister">
+            <div class="row justify-center">
+                <q-img
+                    src="assets/cine_hightech_3.png"
+                    width="100px"
+                    class="bg-transparent"
+                />
+                <h6 class="text-white">DavinciMedia</h6>
+            </div>
+            <FormUser
+                :mode="modeForm"
+                @submit="onSubmit"
+                @reset="onReset"
+                class="q-my-auto bg-grey-14 rounded-lg text-white"
+            >
+                <q-input
+                    v-model="formUserName"
+                    label="Votre pseudo"
+                    class="q-pa-md text-white"
+                    color="grey-11"
+                />
+
+                <q-input
+                    filled
+                    type="mail"
+                    v-model="formUserEmail"
+                    label="Votre adresse Email"
+                    class="q-pa-md text-white"
+                    color="grey-11"
+                    @change="checkEmailRegister()"
+                />
+                <q-input
+                    filled
+                    type="password"
+                    v-model="formUserPassword"
+                    class="q-pa-md"
+                    label="Votre mot de passe"
+                />
+                <div v-show="checkErrorMail">
+                    <p style="color: red">{{ messageError }}</p>
+                </div>
+                <p style="color: blue" class="q-pl-sm">
+                    Vous souhaitez vous connecter ? <br />
+                    veuillez cliquez
+                    <strong style="cursor: pointer" @click="redirectLogin()"
+                        >ici
+                    </strong>
+                </p>
+            </FormUser>
+        </div>
+        <div v-show="showFormForgotPassword">
+            <div class="row justify-center">
+                <q-img
+                    src="assets/cine_hightech_3.png"
+                    width="100px"
+                    class="bg-transparent"
+                />
+                <h6 class="text-white">DavinciMedia</h6>
+            </div>
+            <FormUser
+                v-if="modeForm === 'forgotPassword'"
+                :mode="modeForm"
+                @submit="onSubmit"
+                @reset="onReset"
+                class="q-my-auto bg-grey-14 rounded-lg text-white"
+            >
+                <q-input
+                    filled
+                    type="mail"
+                    v-model="formUserEmail"
+                    class="q-pa-md text-white"
+                    color="grey-11"
+                    label="Votre adresse Email"
+                    @change="checkEmailLogin()"
+                />
+                <div v-show="checkAccount">
+                    <q-input
+                        filled
+                        type="password"
+                        v-model="formForgotPassword"
+                        class="q-pa-md text-white"
+                        color="grey-11"
+                        label="Votre nouveau mot de passe"
+                    />
+                    <q-input
+                        filled
+                        type="password"
+                        v-model="confirmFormForgotPassword"
+                        class="q-pa-md text-white"
+                        color="grey-11"
+                        label="Confirmer votre mot de passe"
+                    />
+                </div>
+                <div v-show="checkErrorMail" class="q-pl-md">
+                    <p style="color: red">{{ messageError }}</p>
+                    <p style="color: red" class="q-pl-sm">
+                        Revenir à l'écran d'inscription ? <br />
+                        veuillez cliquez
+                        <strong
+                            style="cursor: pointer"
+                            @click="redirectRegister()"
+                            >ici
+                        </strong>
+                    </p>
+                </div>
+            </FormUser>
+        </div>
+    </div>
     <div
         v-else
         class="bg-dark row items-center justify-around"
@@ -213,11 +379,7 @@ function redirectLogin() {
                 @reset="onReset"
                 @redirectRegister="redirectRegister"
                 class="q-my-auto bg-grey-14 rounded-lg text-white"
-                style="
-                    width: max-content;
-                    height: max-content;
-                    border-radius: 20px;
-                "
+                style="width: 320px; height: max-content; border-radius: 20px"
             >
                 <q-input
                     filled
@@ -261,11 +423,7 @@ function redirectLogin() {
                 @submit="onSubmit"
                 @reset="onReset"
                 class="q-my-auto bg-grey-14 rounded-lg text-white"
-                style="
-                    width: max-content;
-                    height: max-content;
-                    border-radius: 20px;
-                "
+                style="width: 320px; height: 450px; border-radius: 20px"
             >
                 <q-input
                     v-model="formUserName"
@@ -309,11 +467,7 @@ function redirectLogin() {
                 @submit="onSubmit"
                 @reset="onReset"
                 class="q-my-auto bg-grey-14 rounded-lg text-white"
-                style="
-                    width: max-content;
-                    height: max-content;
-                    border-radius: 20px;
-                "
+                style="width: 320px; height: max-content; border-radius: 20px"
             >
                 <q-input
                     filled

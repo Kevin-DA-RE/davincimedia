@@ -1,9 +1,11 @@
 <script setup>
 import { computed } from "vue";
+import { useQuasar } from "quasar";
 
 const props = defineProps({
     mode: String,
 });
+const quasar = useQuasar();
 
 const emit = defineEmits(["submit", "reset"]);
 
@@ -70,11 +72,23 @@ function onResetForm() {
     <q-form
         @submit.prevent="onSubmitForm"
         @reset="onResetForm"
-        class="bg-white"
+        class="q-my-auto bg-grey-14 rounded-lg text-white"
+        style="width: 100vw; height: 100vh"
     >
         <p class="text-h6 q-pl-md q-pt-md">{{ title }}</p>
         <slot></slot>
-        <div class="flex justify-start">
+        <div v-if="quasar.screen.xs">
+            <div class="flex justify-between q-my-auto">
+                <q-btn label="Annuler" type="reset" flat class="q-ma-md" />
+                <q-btn
+                    class="q-ma-md"
+                    :label="labelSubmit"
+                    type="submit"
+                    color="primary"
+                />
+            </div>
+        </div>
+        <div v-else class="flex justify-start">
             <q-btn label="Annuler" type="reset" flat class="q-ma-md" />
             <q-btn
                 class="q-ma-md"
