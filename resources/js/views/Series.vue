@@ -34,7 +34,7 @@ const panelGenre = ref("");
 
 const url_backend =
     window.location.hostname == "127.0.0.1"
-        ? "http://127.0.0.1:8000"
+        ? "http://127.0.0.1:8000/"
         : import.meta.env.VITE_API_URL;
 const url_base =
     window.location.hostname == "127.0.0.1"
@@ -53,7 +53,7 @@ const api = {
 onMounted(async () => {
     try {
         checkSeries.value = await axios
-            .get(`${url_backend}/api/user/check-series`)
+            .get(`${url_backend}api/user/check-series`)
             .then((response) => {
                 if (response.data.code === 200) {
                     return true;
@@ -343,7 +343,7 @@ const filteredSeries = computed(() => {
 
 <template>
     <!-- Menu Affichage Ecran Petit -->
-    <div v-if="quasar.screen.lt.md" class="bg-dark">
+    <div v-if="quasar.screen.xs" class="bg-dark">
         <div
             v-if="filteredSeries.length > 0"
             class="flex justify-around q-mb-sm"
@@ -417,7 +417,7 @@ const filteredSeries = computed(() => {
         </q-scroll-area>
     </div>
     <!-- Menu Affichage Ecran Large -->
-    <div v-if="!quasar.screen.lt.md">
+    <div v-if="!quasar.screen.xs">
         <div v-if="checkSeries === true">
             <q-splitter v-model="splitterModel" dark>
                 <template v-slot:before>
@@ -579,7 +579,7 @@ const filteredSeries = computed(() => {
     </div>
 
     <!-- Formulaire d'ajout de film -->
-    <div v-if="quasar.screen.lt.md">
+    <div v-if="quasar.screen.xs">
         <q-dialog v-model="formAddSeries" persistent full-width full-height>
             <div class="bg-white column q-gutter-sm">
                 <div class="row justify-between q-ml-sm q-mr-sm">
@@ -640,7 +640,7 @@ const filteredSeries = computed(() => {
             </div>
         </q-dialog>
     </div>
-    <div v-if="!quasar.screen.lt.md">
+    <div v-if="!quasar.screen.xs">
         <q-dialog v-model="formAddSeries" persistent full-width full-height>
             <div class="row bg-white q-pa-md">
                 <div class="col-4">

@@ -10,12 +10,12 @@ const isAuthentified = ref();
 const search = ref("");
 const url_backend =
     window.location.hostname == "127.0.0.1"
-        ? "http://127.0.0.1:8000"
+        ? "http://127.0.0.1:8000/"
         : import.meta.env.VITE_API_URL;
 
 onMounted(async () => {
     isAuthentified.value = await axios
-        .get(`${url_backend}/api/user/check-user`, { withCredentials: true })
+        .get(`${url_backend}api/user/check-user`, { withCredentials: true })
         .then((response) => {
             if (response.data.code === 200) {
                 return true;
@@ -34,7 +34,7 @@ function authValidated() {
 
 async function onLogout() {
     const response = await axios
-        .post(`${url_backend}/api/user/logout`, {}, { withCredentials: true })
+        .post(`${url_backend}api/user/logout`, {}, { withCredentials: true })
         .then((response) => {
             return response.status;
         })
@@ -57,7 +57,7 @@ async function onLogout() {
                     <q-toolbar-title class="q-mr-md">
                         <!-- Affichage sur petits écrans -->
                         <div
-                            v-if="quasar.screen.lt.md"
+                            v-if="quasar.screen.xs"
                             class="flex items-center justify-center"
                         >
                             <img

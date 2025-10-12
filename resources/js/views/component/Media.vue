@@ -23,7 +23,7 @@ const detailCard = ref(false);
             @click="detailCard = true"
         />
     </div>
-    <div v-if="quasar.screen.lt.md">
+    <div v-if="quasar.screen.xs">
         <q-dialog v-model="detailCard">
             <q-card
                 class="bg-dark text-white my-card columnq-pa-sm"
@@ -68,7 +68,7 @@ const detailCard = ref(false);
         </q-dialog>
     </div>
 
-    <div v-if="!quasar.screen.lt.md">
+    <div v-if="!quasar.screen.xs">
         <q-dialog v-model="detailCard" full-width full-height>
             <q-card
                 class="bg-dark text-white my-card columnq-pa-sm"
