@@ -3,7 +3,7 @@ import { ref } from "vue";
 import axios from "axios";
 import FormUser from "../views/slot/Form.vue";
 import { useQuasar } from "quasar";
-import cineHightTech from "../../assets/cine_hightech_3.png";
+import cineHightTech from "@img/logo_davincimedia.png";
 
 const initAuthDialog = ref(true);
 const showFormLogin = ref(true);
