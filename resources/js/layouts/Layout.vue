@@ -60,18 +60,20 @@ async function onLogout() {
                             v-if="quasar.screen.xs"
                             class="flex items-center justify-center"
                         >
-                            <img
-                                src="/assets/cine_hightech_3.png"
-                                alt="cine_hight_tech"
+                            <q-img
+                                src="/logo_davincimedia.png"
+                                alt="DavinciMedia"
+                                width="100px"
                             />
                         </div>
 
                         <!-- Affichage sur écrans moyens et grands -->
                         <div v-else class="flex items-center">
-                            <img
-                                src="/assets/cine_hightech_3.png"
-                                alt="cine_hight_tech"
-                                style="width: 100px; height: 100px"
+                            <q-img
+                                src="/logo_davincimedia.png"
+                                alt="DavinciMedia"
+                                width="100px"
+                                height="100px"
                             />
                             <p class="text-h5 m-0">DaVinciMedia</p>
                         </div>
