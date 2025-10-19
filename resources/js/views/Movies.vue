@@ -364,9 +364,9 @@ const filteredMovies = computed(() => {
                 icon="manage_search"
                 title="Sélection par genres"
             >
-                <q-menu max-height="130px">
+                <q-menu>
                     <div v-for="genre in genresListLoaded" key="genre.id">
-                        <q-list dense>
+                        <q-list dense style="min-width: 100px">
                             <q-item clickable v-close-popup>
                                 <q-item-section>
                                     <q-item-label
