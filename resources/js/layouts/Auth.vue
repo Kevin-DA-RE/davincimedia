@@ -3,7 +3,6 @@ import { ref } from "vue";
 import axios from "axios";
 import FormUser from "../views/slot/Form.vue";
 import { useQuasar } from "quasar";
-import cineHightTech from "@img/logo_davincimedia.png";
 
 const initAuthDialog = ref(true);
 const showFormLogin = ref(true);
@@ -198,9 +197,12 @@ function redirectLogin() {
         class="bg-grey-14"
     >
         <div class="row justify-center">
-            <q-img :src="cineHightTech"
-             width="100px"
-             class="bg-transparent" />
+            <q-img
+                src="/logo_davincimedia.png"
+                alt="DavinciMedia"
+                width="100px"
+            />
+
             <h6 class="text-white">DavinciMedia</h6>
         </div>
         <!--LOGIN-->
@@ -347,7 +349,7 @@ function redirectLogin() {
         class="bg-dark row items-center justify-around"
         :v-model="initAuthDialog"
     >
-        <q-img :src="cineHightTech" height="100vh" width="800px">
+        <q-img src="/logo_davincimedia.png" height="100vh" width="800px">
             <div
                 class="absolute-top bg-transparent text-center text-h2 text-cyan-12"
             >

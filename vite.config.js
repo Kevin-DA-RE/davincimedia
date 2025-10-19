@@ -23,7 +23,6 @@ export default defineConfig({
     resolve: {
         alias: {
             vue: "vue/dist/vue.esm-bundler.js",
-            '@img': '/storage/app/public/img',
         },
     },
     build: {
