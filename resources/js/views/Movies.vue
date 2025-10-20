@@ -15,7 +15,6 @@ axios.defaults.withCredentials = true;
 
 const checkMovies = ref();
 const quasar = useQuasar();
-const carouselSlide = ref(0);
 const moviesList = ref([]);
 const moviesListLoaded = ref([]);
 const genresListLoaded = ref([]);
@@ -32,6 +31,8 @@ const movieIndex = ref();
 const tab = ref("all");
 const splitterModel = ref(20);
 const panelGenre = ref("");
+const slide = ref(0);
+const createmovie = ref(false);
 
 const url_backend =
     window.location.hostname == "127.0.0.1"
@@ -154,6 +155,7 @@ function AddMovie(movie) {
     moviesList.value.push(movie);
     movieSearched.value = {};
     movieName.value = "";
+    createmovie.value = true;
 }
 
 async function onSubmit(form) {
@@ -162,7 +164,6 @@ async function onSubmit(form) {
             await createMoviesToBackEnd(moviesList.value);
             moviesList.value.length = 0;
             await loadMoviesWithGenres();
-            checkMovies.value = true;
             formAddMovies.value = false;
             break;
         case "updateMovie":
@@ -182,6 +183,16 @@ async function onSubmit(form) {
     movie.value = {};
     movieName.value = "";
 
+    await loadMoviesWithGenres();
+}
+
+async function createMovies(movies) {
+    await createMoviesToBackEnd(movies);
+    movie.value = {};
+    movieName.value = "";
+    formAddMovies.value = false;
+    moviesList.value.length = 0;
+    createmovie.value = false
     await loadMoviesWithGenres();
 }
 
@@ -578,7 +589,7 @@ const filteredMovies = computed(() => {
 
     <!-- Formulaire d'ajout de film -->
     <div v-if="quasar.screen.xs">
-        <q-dialog v-model="formAddMovies" persistent full-width full-height>
+        <q-dialog v-model="formAddMovies" persistent>
             <div class="bg-white column q-gutter-sm">
                 <div class="row justify-between q-ml-sm q-mr-sm">
                     <q-input
@@ -603,38 +614,36 @@ const filteredMovies = computed(() => {
                         @click="AddMovie(movieSearched)"
                     />
                 </div>
-                <Form
-                    :mode="'addMovies'"
-                    @submit="onSubmit('addMovies')"
-                    @reset="onReset('addMovies')"
+                <q-carousel
+                    transition-prev="slide-right"
+                    transition-next="slide-left"
+                    swipeable
+                    animated
+                    v-model="slide"
+                    control-color="primary"
+                    navigation-icon="radio_button_unchecked"
+                    navigation
+                    padding
+                    height="200px"
+                    class="bg-white q-ma-lg shadow-1 rounded-borders"
                 >
-                    <div v-if="moviesList.length > 0">
-                        <q-carousel
-                            v-model="carouselSlide"
-                            transition-prev="scale"
-                            transition-next="scale"
-                            swipeable
-                            animated
-                            control-color="white"
-                            navigation
-                            arrows
-                            height="max-content"
-                            class="shadow-1 rounded-borders"
-                        >
-                            <q-carousel-slide
-                                v-for="(movie, index) in moviesList"
-                                :key="movie.id"
-                                :name="index"
-                                class="column no-wrap flex-center"
-                            >
-                                <Media :media="movie" />
-                            </q-carousel-slide>
-                        </q-carousel>
-                    </div>
-                    <div v-else class="text-center">
-                        <p>Aucun film n'est ajouté</p>
-                    </div>
-                </Form>
+                    <q-carousel-slide
+                        v-for="(movie, index) in moviesList"
+                        :key="movie.id"
+                        :name="index"
+                        class="column no-wrap flex-center"
+                    >
+                        <Media :media="movie" />
+                    </q-carousel-slide>
+                </q-carousel>
+                <q-btn
+                    v-show="createmovie"
+                    class="q-ma-xs"
+                    color="secondary"
+                    @click="createMovies(moviesList)"
+                    title="Enregistrer le/les films"
+                    >Enregistrer la liste
+                </q-btn>
             </div>
         </q-dialog>
     </div>
