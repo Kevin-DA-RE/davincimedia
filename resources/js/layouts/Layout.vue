@@ -118,7 +118,7 @@ async function onLogout() {
                 </q-toolbar>
             </q-header>
 
-            <q-page-container>
+            <q-page-container class="bg-dark">
                 <router-view :search="search"></router-view>
             </q-page-container>
         </div>

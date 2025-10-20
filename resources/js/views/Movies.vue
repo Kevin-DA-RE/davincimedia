@@ -363,7 +363,7 @@ const filteredMovies = computed(() => {
     <div v-if="quasar.screen.xs" class="bg-dark">
         <div
             v-if="filteredMovies.length > 0"
-            class="flex justify-around q-mb-sm"
+            class="flex justify-around q-my-sm"
         >
             <q-btn
                 color="secondary"
