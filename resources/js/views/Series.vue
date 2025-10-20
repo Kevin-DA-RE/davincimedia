@@ -31,6 +31,8 @@ const serieIndex = ref();
 const tab = ref("all");
 const splitterModel = ref(20);
 const panelGenre = ref("");
+const slide = ref(0);
+const createserie = ref(false);
 
 const url_backend =
     window.location.hostname == "127.0.0.1"
@@ -155,6 +157,7 @@ function AddSerie(serie) {
     seriesList.value.push(serie);
     serieSearched.value = {};
     serieName.value = "";
+    createserie.value = true;
 }
 
 async function onSubmit(form) {
@@ -185,7 +188,15 @@ async function onSubmit(form) {
 
     await loadSeriesWithGenres();
 }
-
+async function createSeries(movies) {
+    await createSeriesToBackEnd(movies);
+    serie.value = {};
+    serieName.value = "";
+    formAddSeries.value = false;
+    seriesList.value.length = 0;
+    createserie.value = false;
+    await loadSeriesWithGenres();
+}
 async function createSeriesToBackEnd(series) {
     // Init FormDatata pour envoyer les datas
     const formData = new FormData();
@@ -245,21 +256,24 @@ async function updateSerieToBackEnd(serie) {
         );
         formData.append(`genres[${genreIndex}][name]`, genre.name);
     });
-
-    return await axios
-        .post(url, formData, {
-            headers: {
-                Accept: "multipart/form-data",
-            },
-        })
-        .then((response) => {
-            return response.data.code;
-        })
-        .catch((error) =>
-            console.log(
-                `Erreur lors de la mise a jour de datas sur le film \n ${error}`
-            )
-        );
+    try {
+        await axios
+            .post(url, formData, {
+                headers: {
+                    Accept: "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                return response.data.code;
+            })
+            .catch((error) =>
+                console.log(
+                    `Erreur lors de la mise a jour de datas sur le film \n ${error}`
+                )
+            );
+    } catch (error) {
+        return error.message;
+    }
 }
 
 async function deleteSerieToBackEnd(serie) {
@@ -277,21 +291,24 @@ async function deleteSerieToBackEnd(serie) {
             name: genre.name,
         });
     });
-
-    await axios
-        .post(url, jsonData, {
-            headers: {
-                Accept: "applicaton/json",
-            },
-        })
-        .then((response) => {
-            return response.data.code;
-        })
-        .catch((error) =>
-            console.log(
-                `Erreur lors de la suppression des datas sur le film \n ${error}`
-            )
-        );
+    try {
+        await axios
+            .post(url, jsonData, {
+                headers: {
+                    Accept: "applicaton/json",
+                },
+            })
+            .then((response) => {
+                return response.data.code;
+            })
+            .catch((error) =>
+                console.log(
+                    `Erreur lors de la suppression des datas sur le film \n ${error}`
+                )
+            );
+    } catch (error) {
+        return error.message;
+    }
 }
 
 function showFormulary(serie, index, icon) {
@@ -346,7 +363,7 @@ const filteredSeries = computed(() => {
     <div v-if="quasar.screen.xs" class="bg-dark">
         <div
             v-if="filteredSeries.length > 0"
-            class="flex justify-around q-mb-sm"
+            class="flex justify-around q-my-sm"
         >
             <q-btn
                 color="secondary"
@@ -605,38 +622,36 @@ const filteredSeries = computed(() => {
                         @click="AddSerie(serieSearched)"
                     />
                 </div>
-                <Form
-                    :mode="'addSeries'"
-                    @submit="onSubmit('addSeries')"
-                    @reset="onReset('addSeries')"
+                <q-carousel
+                    transition-prev="slide-right"
+                    transition-next="slide-left"
+                    swipeable
+                    animated
+                    v-model="slide"
+                    control-color="primary"
+                    navigation-icon="radio_button_unchecked"
+                    navigation
+                    padding
+                    height="200px"
+                    class="bg-white q-ma-lg shadow-1 rounded-borders"
                 >
-                    <div v-if="seriesList.length > 0">
-                        <q-carousel
-                            v-model="carouselSlide"
-                            transition-prev="scale"
-                            transition-next="scale"
-                            swipeable
-                            animated
-                            control-color="white"
-                            navigation
-                            arrows
-                            height="max-content"
-                            class="shadow-1 rounded-borders"
-                        >
-                            <q-carousel-slide
-                                v-for="(serie, index) in seriesList"
-                                :key="serie.id"
-                                :name="index"
-                                class="column no-wrap flex-center"
-                            >
-                                <Media :media="serie" />
-                            </q-carousel-slide>
-                        </q-carousel>
-                    </div>
-                    <div v-else class="text-center">
-                        <p>Aucun film n'est ajouté</p>
-                    </div>
-                </Form>
+                    <q-carousel-slide
+                        v-for="(serie, index) in seriesList"
+                        :key="serie.id"
+                        :name="index"
+                        class="column no-wrap flex-center"
+                    >
+                        <Media :media="serie" />
+                    </q-carousel-slide>
+                </q-carousel>
+                <q-btn
+                    v-show="createserie"
+                    class="q-ma-xs"
+                    color="secondary"
+                    @click="createSeries(seriesList)"
+                    title="Enregistrer le/les series"
+                    >Enregistrer la liste
+                </q-btn>
             </div>
         </q-dialog>
     </div>
@@ -703,20 +718,20 @@ const filteredSeries = computed(() => {
                     icon="search"
                     @click="getSerieWithGenre(serieName)"
                 />
+                <Form
+                    :mode="'updateSerie'"
+                    @submit="onSubmit('updateSerie')"
+                    @reset="onReset('updateSerie')"
+                >
+                    <Media :media="serieSelected" />
+                </Form>
             </div>
-            <Form
-                :mode="'updateSerie'"
-                @submit="onSubmit('updateSerie')"
-                @reset="onReset('updateSerie')"
-            >
-                <Media :media="serieSelected" />
-            </Form>
         </div>
     </q-dialog>
 
     <!-- Formulaire de suppression d'un film -->
     <q-dialog v-model="formDeleteSerie" persistent>
-        <div class="column">
+        <div class="column bg-white">
             <Form
                 :mode="'deleteSerie'"
                 @submit="onSubmit('deleteSerie')"
