@@ -43,7 +43,7 @@ const labelSubmit = computed(() => {
         case "forgotPassword":
             return "Modifier";
         case "addMovies":
-            return "Ajouter";
+            return "Enregistrer le/les films";
         case "addSeries":
             return "Ajouter";
         case "updateMovie":
@@ -72,10 +72,10 @@ function onResetForm() {
     <q-form
         @submit.prevent="onSubmitForm"
         @reset="onResetForm"
-        class="q-my-auto bg-grey-14 rounded-lg text-white"
-        style="width: 100vw; height: 100vh"
+        class="q-my-auto rounded-lg text-dark"
+        style="width: 100%; height: 100%"
     >
-        <p class="text-h6 q-pl-md q-pt-md">{{ title }}</p>
+        <p class="text-h6 q-pl-md q-pt-md text-center">{{ title }}</p>
         <slot></slot>
         <div v-if="quasar.screen.xs">
             <div class="flex justify-between q-my-auto">
@@ -88,7 +88,7 @@ function onResetForm() {
                 />
             </div>
         </div>
-        <div v-else class="flex justify-start">
+        <div v-else class="flex justify-center">
             <q-btn label="Annuler" type="reset" flat class="q-ma-md" />
             <q-btn
                 class="q-ma-md"

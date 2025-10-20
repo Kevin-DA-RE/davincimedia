@@ -682,7 +682,7 @@ const filteredMovies = computed(() => {
                         @reset="onReset('addMovies')"
                     >
                         <div v-if="moviesList.length > 0">
-                            <div class="row justify-start">
+                            <div class="row justify-center">
                                 <div
                                     v-for="(movie, index) in moviesList"
                                     :key="movie.id"
