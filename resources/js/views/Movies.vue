@@ -255,20 +255,24 @@ async function updateMovieToBackEnd(movie) {
         formData.append(`genres[${genreIndex}][name]`, genre.name);
     });
 
-    return await axios
-        .post(url, formData, {
-            headers: {
-                Accept: "multipart/form-data",
-            },
-        })
-        .then((response) => {
-            return response.data.code;
-        })
-        .catch((error) =>
-            console.log(
-                `Erreur lors de la récupération de datas sur le film \n ${error}`
-            )
-        );
+    try {
+        await axios
+            .post(url, formData, {
+                headers: {
+                    Accept: "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                return response.data.code;
+            })
+            .catch((error) =>
+                console.log(
+                    `Erreur lors de la récupération de datas sur le film \n ${error}`
+                )
+            );
+    } catch (error) {
+        return error.message;
+    }
 }
 
 async function deleteMovieToBackEnd(movie) {
@@ -287,20 +291,24 @@ async function deleteMovieToBackEnd(movie) {
         });
     });
 
-    await axios
-        .post(url, jsonData, {
-            headers: {
-                Accept: "applicaton/json",
-            },
-        })
-        .then((response) => {
-            return response.data.code;
-        })
-        .catch((error) =>
-            console.log(
-                `Erreur lors de la suppression des datas sur le film \n ${error}`
-            )
-        );
+    try {
+        await axios
+            .post(url, jsonData, {
+                headers: {
+                    Accept: "applicaton/json",
+                },
+            })
+            .then((response) => {
+                return response.data.code;
+            })
+            .catch((error) =>
+                console.log(
+                    `Erreur lors de la suppression des datas sur le film \n ${error}`
+                )
+            );
+    } catch (error) {
+        return error.message;
+    }
 }
 
 function showFormulary(movie, index, icon) {
@@ -723,7 +731,7 @@ const filteredMovies = computed(() => {
 
     <!-- Formulaire de suppression d'un film -->
     <q-dialog v-model="formDeleteMovie" persistent>
-        <div class="column bg-white ">
+        <div class="column bg-white">
             <Form
                 :mode="'deleteMovie'"
                 @submit="onSubmit('deleteMovie')"
