@@ -192,7 +192,7 @@ async function createMovies(movies) {
     movieName.value = "";
     formAddMovies.value = false;
     moviesList.value.length = 0;
-    createmovie.value = false
+    createmovie.value = false;
     await loadMoviesWithGenres();
 }
 
@@ -710,20 +710,20 @@ const filteredMovies = computed(() => {
                     icon="search"
                     @click="getMovieWithGenre(movieName)"
                 />
+                <Form
+                    :mode="'updateMovie'"
+                    @submit="onSubmit('updateMovie')"
+                    @reset="onReset('updateMovie')"
+                >
+                    <Media :media="movieSelected" />
+                </Form>
             </div>
-            <Form
-                :mode="'updateMovie'"
-                @submit="onSubmit('updateMovie')"
-                @reset="onReset('updateMovie')"
-            >
-                <Media :media="movieSelected" />
-            </Form>
         </div>
     </q-dialog>
 
     <!-- Formulaire de suppression d'un film -->
     <q-dialog v-model="formDeleteMovie" persistent>
-        <div class="column">
+        <div class="column bg-white ">
             <Form
                 :mode="'deleteMovie'"
                 @submit="onSubmit('deleteMovie')"
