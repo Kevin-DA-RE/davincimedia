@@ -44,8 +44,9 @@ async function onRegister() {
         .catch((error) => {
             return error.response.data;
         });
-
     modeForm.value = response === 204 ? "login" : "register";
+    showFormRegister.value=false
+    showFormLogin.value =true
 }
 
 async function onLogin() {
@@ -121,8 +122,8 @@ async function checkEmailRegister() {
             return error.response.data;
         });
 
-    checkErrorMail.value = response.code === 400 ? true : false;
-    messageError.value = response.code === 400 ? "" : response.message;
+    checkErrorMail.value = response.code === 200 ? true : false;
+    messageError.value = response.code === 200 ? response.message :"";
 }
 
 async function onSubmit() {
@@ -282,10 +283,10 @@ function redirectLogin() {
                     label="Votre mot de passe"
                     bg-color="blue-grey-2"
                 />
-                <div v-show="checkErrorMail">
+                <div v-show="checkErrorMail" class="q-pl-md">
                     <p style="color: red">{{ messageError }}</p>
                 </div>
-                <p style="color: blue" class="q-pl-sm">
+                <p style="color: blue" class="q-pl-md">
                     Vous souhaitez vous connecter ? <br />
                     veuillez cliquez
                     <strong style="cursor: pointer" @click="redirectLogin()"
@@ -331,7 +332,7 @@ function redirectLogin() {
                 </div>
                 <div v-show="checkErrorMail" class="q-pl-md">
                     <p style="color: red">{{ messageError }}</p>
-                    <p style="color: red" class="q-pl-sm">
+                    <p style="color: red" class="q-pl-md">
                         Revenir à l'écran d'inscription ? <br />
                         veuillez cliquez
                         <strong
@@ -435,10 +436,10 @@ function redirectLogin() {
                     label="Votre mot de passe"
                     bg-color="blue-grey-2"
                 />
-                <div v-show="checkErrorMail">
+                <div v-show="checkErrorMail" class="q-pl-md">
                     <p style="color: red">{{ messageError }}</p>
                 </div>
-                <p style="color: blue" class="q-pl-sm">
+                <p style="color: blue" class="q-pl-md">
                     Vous souhaitez vous connecter ? <br />
                     veuillez cliquez
                     <strong style="cursor: pointer" @click="redirectLogin()"
@@ -485,7 +486,7 @@ function redirectLogin() {
                 </div>
                 <div v-show="checkErrorMail" class="q-pl-md">
                     <p style="color: red">{{ messageError }}</p>
-                    <p style="color: red" class="q-pl-sm">
+                    <p style="color: red" class="q-pl-md">
                         Revenir à l'écran d'inscription ? <br />
                         veuillez cliquez
                         <strong
