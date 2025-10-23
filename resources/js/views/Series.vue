@@ -48,7 +48,6 @@ const api = {
     url_backend_delete_serie: `${url_base}/delete-serie`,
     url_backend_show_series_by_user: `${url_base}/show-series-by-user`,
     url_backend_show_genres_series: `${url_base}/show-genres-series`,
-    url_backend_show_genres_series: `${url_base}/show-genres-series`,
     url_backend_get_serie_genres: `${url_base}/get-serie-with-genres`,
 };
 

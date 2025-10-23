@@ -20,6 +20,9 @@ export default defineConfig({
         }),
         quasar(),
     ],
+    server: {
+        historyApiFallback: true,
+    },
     resolve: {
         alias: {
             vue: "vue/dist/vue.esm-bundler.js",
