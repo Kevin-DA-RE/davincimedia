@@ -28,8 +28,8 @@ onMounted(async () => {
         });
 });
 
-function authValidated() {
-    isAuthentified.value = true;
+function authValidated(statut) {
+    isAuthentified.value = statut === 204 ? true : false;
 }
 
 async function onLogout() {

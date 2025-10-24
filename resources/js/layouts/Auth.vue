@@ -45,34 +45,39 @@ async function onRegister() {
             return error.response.data;
         });
     modeForm.value = response === 204 ? "login" : "register";
-    showFormRegister.value=false
-    showFormLogin.value =true
+    showFormRegister.value = false;
+    showFormLogin.value = true;
 }
 
 async function onLogin() {
+    
     // Init FormData pour envoyer les datas
     const formData = new FormData();
     formData.append("email", formUserEmail.value);
     formData.append("password", formUserPassword.value);
 
-    await axios
-        .post(`${url_backend}api/user/login`, formData, {
-            headers: {
-                accept: "multipart/form-data",
-            },
-            withCredentials: true,
-        })
-        .then((response) => {
-            return {
-                statut: response.status,
-                data: response.data,
-            };
-        })
-        .catch((error) => {
-            return error.response.data;
-        });
+    try {
+        const login = await axios
+            .post(`${url_backend}api/user/login`, formData, {
+                headers: {
+                    accept: "multipart/form-data",
+                },
+                withCredentials: true,
+            })
+            .then((response) => {
+                return {
+                    statut: response.status,
+                    data: response.data,
+                };
+            })
+            .catch((error) => {
+                return error.response.data;
+            });
+        emit("authValidated", login.statut);
+    } catch (error) {
+        console.log(error.message);
 
-    emit("authValidated");
+    }
 }
 
 async function onResetPassword() {
@@ -123,7 +128,7 @@ async function checkEmailRegister() {
         });
 
     checkErrorMail.value = response.code === 200 ? true : false;
-    messageError.value = response.code === 200 ? response.message :"";
+    messageError.value = response.code === 200 ? response.message : "";
 }
 
 async function onSubmit() {
