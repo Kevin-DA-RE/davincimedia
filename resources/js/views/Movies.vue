@@ -52,6 +52,9 @@ const api = {
 };
 
 onMounted(async () => {
+    quasar.loading.show({
+        message: "Chargement des films en cours ...",
+    });
     try {
         checkMovies.value = await axios
             .get(`${url_backend}api/user/check-movies`)
@@ -68,6 +71,8 @@ onMounted(async () => {
         await loadMoviesWithGenres();
     } catch (error) {
         console.log("error onMounted" + error);
+    } finally {
+        quasar.loading.hide();
     }
 });
 
@@ -161,20 +166,32 @@ function AddMovie(movie) {
 async function onSubmit(form) {
     switch (form) {
         case "addMovies":
+            quasar.loading.show({
+                message: "Enregistrement des films en cours ...",
+            });
             await createMoviesToBackEnd(moviesList.value);
             moviesList.value.length = 0;
             await loadMoviesWithGenres();
             formAddMovies.value = false;
+            quasar.loading.hide();
             break;
         case "updateMovie":
+            quasar.loading.show({
+                message: "Mise a jour du film en cours ...",
+            });
             moviesListLoaded.value[movieIndex.value] = movieSelected.value;
             await updateMovieToBackEnd(movieSelected.value);
             formUpdateMovie.value = false;
+            quasar.loading.hide();
             break;
         case "deleteMovie":
+            quasar.loading.show({
+                message: "Suppression du film en cours ...",
+            });
             moviesListLoaded.value[movieIndex.value] = movieSelected.value;
             await deleteMovieToBackEnd(movieSelected.value);
             formDeleteMovie.value = false;
+            quasar.loading.hide();
             break;
         default:
             console.log("le formulaire n'est pas détectée");
@@ -187,6 +204,9 @@ async function onSubmit(form) {
 }
 
 async function createMovies(movies) {
+    quasar.loading.show({
+        message: "Enregistrement des films en cours ...",
+    });
     await createMoviesToBackEnd(movies);
     movie.value = {};
     movieName.value = "";
@@ -194,6 +214,7 @@ async function createMovies(movies) {
     moviesList.value.length = 0;
     createmovie.value = false;
     await loadMoviesWithGenres();
+    quasar.loading.hide();
 }
 
 async function createMoviesToBackEnd(movies) {
