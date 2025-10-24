@@ -176,8 +176,9 @@ class MediasController extends Controller
         $movies = MediasResources::collection(Movie::with('genres')
         ->whereHas('users', function (Builder $query) {
             $query->where('users.id', auth()->id());
-        })
+        })->orderBy('created_at', 'desc')
         ->get());
+
         return response()->json($movies);
     }
 
