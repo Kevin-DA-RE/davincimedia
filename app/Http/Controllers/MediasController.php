@@ -163,7 +163,7 @@ class MediasController extends Controller
         } else {
             return response()->json([
                 "code" => 400,
-                "message" => "Aucun film trouvé"
+                "message" => "Aucune série trouvée"
             ]);
         }
     }

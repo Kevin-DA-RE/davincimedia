@@ -52,6 +52,9 @@ const api = {
 };
 
 onMounted(async () => {
+    quasar.loading.show({
+        message: "Chargement des series en cours ...",
+    });
     try {
         checkSeries.value = await axios
             .get(`${url_backend}api/user/check-series`)
@@ -68,6 +71,8 @@ onMounted(async () => {
         await loadSeriesWithGenres();
     } catch (error) {
         console.log("error onMounted" + error);
+    } finally {
+        quasar.loading.hide();
     }
 });
 
@@ -153,30 +158,44 @@ async function getSerieWithGenre(name) {
 }
 
 function AddSerie(serie) {
-    seriesList.value.push(serie);
-    serieSearched.value = {};
-    serieName.value = "";
-    createserie.value = true;
+    if (serie.id_serie) {
+        seriesList.value.push(serie);
+        serieSearched.value = {};
+        serieName.value = "";
+        createserie.value = true;
+    }
 }
 
 async function onSubmit(form) {
     switch (form) {
         case "addSeries":
+            quasar.loading.show({
+                message: "Enregistrement des series en cours ...",
+            });
             await createSeriesToBackEnd(seriesList.value);
             seriesList.value.length = 0;
             await loadSeriesWithGenres();
             checkSeries.value = true;
             formAddSeries.value = false;
+            quasar.loading.hide();
             break;
         case "updateSerie":
+            quasar.loading.show({
+                message: "Mise a jour de la série en cours ...",
+            });
             seriesListLoaded.value[serieIndex.value] = serieSelected.value;
             await updateSerieToBackEnd(serieSelected.value);
             formUpdateSerie.value = false;
+            quasar.loading.hide();
             break;
         case "deleteSerie":
+            quasar.loading.show({
+                message: "Suppression de la série en cours ...",
+            });
             seriesListLoaded.value[serieIndex.value] = serieSelected.value;
             await deleteSerieToBackEnd(serieSelected.value);
             formDeleteSerie.value = false;
+            quasar.loading.hide();
             break;
         default:
             console.log("le formulaire n'est pas détectée");
@@ -188,6 +207,9 @@ async function onSubmit(form) {
     await loadSeriesWithGenres();
 }
 async function createSeries(movies) {
+    quasar.loading.show({
+        message: "Enregistrement des series en cours ...",
+    });
     await createSeriesToBackEnd(movies);
     serie.value = {};
     serieName.value = "";
@@ -195,6 +217,7 @@ async function createSeries(movies) {
     seriesList.value.length = 0;
     createserie.value = false;
     await loadSeriesWithGenres();
+    quasar.loading.hide();
 }
 async function createSeriesToBackEnd(series) {
     // Init FormDatata pour envoyer les datas
@@ -596,7 +619,7 @@ const filteredSeries = computed(() => {
 
     <!-- Formulaire d'ajout de film -->
     <div v-if="quasar.screen.xs">
-        <q-dialog v-model="formAddSeries" persistent full-width full-height>
+        <q-dialog v-model="formAddSeries" persistent>
             <div class="bg-white column q-gutter-sm">
                 <div class="row justify-between q-ml-sm q-mr-sm">
                     <q-input

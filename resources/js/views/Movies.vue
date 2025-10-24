@@ -171,8 +171,6 @@ async function onSubmit(form) {
             quasar.loading.show({
                 message: "Enregistrement des films en cours ...",
             });
-            console.log(moviesList.value);
-
             await createMoviesToBackEnd(moviesList.value);
             moviesList.value.length = 0;
             await loadMoviesWithGenres();
