@@ -157,10 +157,12 @@ async function getMovieWithGenre(name) {
 }
 
 function AddMovie(movie) {
-    moviesList.value.push(movie);
-    movieSearched.value = {};
-    movieName.value = "";
-    createmovie.value = true;
+    if (movie.id_movie) {
+        moviesList.value.push(movie);
+        movieSearched.value = {};
+        movieName.value = "";
+        createmovie.value = true;
+    }
 }
 
 async function onSubmit(form) {
@@ -169,6 +171,8 @@ async function onSubmit(form) {
             quasar.loading.show({
                 message: "Enregistrement des films en cours ...",
             });
+            console.log(moviesList.value);
+
             await createMoviesToBackEnd(moviesList.value);
             moviesList.value.length = 0;
             await loadMoviesWithGenres();
