@@ -24,35 +24,22 @@ const detailCard = ref(false);
         />
     </div>
     <div v-if="quasar.screen.xs">
-        <q-dialog v-model="detailCard">
+        <q-dialog v-model="detailCard"  full-width full-height>
             <q-card
-                class="bg-dark text-white my-card columnq-pa-sm"
+                class="bg-dark text-white my-card column q-pa-sm"
                 style="height: 100%"
             >
-                <q-card-section class="row items-center q-pb-none">
+                <q-card-section class="row items-center no-padding">
                     <q-space />
                     <q-btn icon="close" fix round dense v-close-popup />
                 </q-card-section>
 
-                <q-card-section
-                    class="flex justify-between"
-                    style="max-width: 100%"
-                >
-                    <div v-for="genres in media.genres" :key="genres.id">
-                        <q-badge
-                            outline
-                            color="primary"
-                            :label="genres.name"
-                            class="text-h5"
-                        />
-                    </div>
-                </q-card-section>
-                <q-card-section>
-                    <q-img :src="media.url_img" fit="contain" width="80px" />
+                <q-card-section class="q-mx-auto">
+                    <q-img :src="media.url_img" fit="contain" width="50vw"/>
                 </q-card-section>
                 <!-- Section scrollable contenant le synopsis -->
                 <q-card-section class="q-px-sm q-pt-none scrollable-synopsis">
-                    <h4>Résumé</h4>
+
                     <div class="text-h6">
                         {{ media.synopsis }}
                     </div>
