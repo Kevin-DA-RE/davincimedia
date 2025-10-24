@@ -186,7 +186,7 @@ class MediasController extends Controller
         $series = MediasResources::collection(Serie::with('genres')
         ->whereHas('users', function (Builder $query) {
             $query->where('users.id', auth()->id());
-        })
+        })->orderBy('created_at', 'desc')
         ->get());
         return response()->json($series);
     }
