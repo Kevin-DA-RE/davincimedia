@@ -48,14 +48,7 @@ const detailCard = ref(false);
                     </div>
                 </q-card-section>
                 <q-card-section>
-                    <q-img
-                        :src="media.url_img"
-                        style="
-                            max-width: 100%;
-                            height: auto;
-                            background-size: contain;
-                        "
-                    />
+                    <q-img :src="media.url_img" fit="contain" width="80px" />
                 </q-card-section>
                 <!-- Section scrollable contenant le synopsis -->
                 <q-card-section class="q-px-sm q-pt-none scrollable-synopsis">
@@ -79,8 +72,8 @@ const detailCard = ref(false);
                     <q-btn icon="close" fix round dense v-close-popup />
                 </q-card-section>
 
-                <div class="row">
-                    <div class="col">
+                <div class="row flew justify-between">
+                    <div>
                         <q-card-section class="flex justify-around">
                             <div
                                 v-for="genres in media.genres"
@@ -97,15 +90,12 @@ const detailCard = ref(false);
                         <q-card-section>
                             <q-img
                                 :src="media.url_img"
-                                style="
-                                    max-width: 100%;
-                                    height: 500px;
-                                    background-size: contain;
-                                "
+                                fit="contain"
+                                width="30vw"
+                                height="70vh"
                             />
                         </q-card-section>
                     </div>
-                    <div class="col">
                         <q-card-section
                             class="q-px-sm q-pt-none scrollable-synopsis"
                         >
@@ -114,7 +104,6 @@ const detailCard = ref(false);
                                 {{ media.synopsis }}
                             </div>
                         </q-card-section>
-                    </div>
                 </div>
             </q-card>
         </q-dialog>
