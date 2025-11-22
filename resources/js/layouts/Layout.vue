@@ -29,7 +29,7 @@ onMounted(async () => {
 });
 
 function authValidated(statut) {
-    isAuthentified.value = statut === 204 ? true : false;
+    isAuthentified.value = statut === 200 ? true : false;
 }
 
 async function onLogout() {
