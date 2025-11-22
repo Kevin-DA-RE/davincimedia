@@ -50,7 +50,7 @@ async function onRegister() {
 }
 
 async function onLogin() {
-    
+
     // Init FormData pour envoyer les datas
     const formData = new FormData();
     formData.append("email", formUserEmail.value);
@@ -65,10 +65,16 @@ async function onLogin() {
                 withCredentials: true,
             })
             .then((response) => {
-                return {
-                    statut: response.status,
-                    data: response.data,
+                if (response.status === 200) {
+                     return {
+                    statut: 200
                 };
+                } else {
+                    return {
+                        statut: response.status,
+                        message: response.data.message,
+                    };
+                }
             })
             .catch((error) => {
                 return error.response.data;
