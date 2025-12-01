@@ -15,7 +15,7 @@ const url_backend =
 
 onMounted(async () => {
     isAuthentified.value = await axios
-        .get(`${url_backend}api/user/check-user`, { withCredentials: true })
+        .get(`${url_backend}/api/user/check-user`, { withCredentials: true })
         .then((response) => {
             if (response.data.code === 200) {
                 return true;
@@ -34,7 +34,7 @@ function authValidated(statut) {
 
 async function onLogout() {
     const response = await axios
-        .post(`${url_backend}api/user/logout`, {}, { withCredentials: true })
+        .post(`${url_backend}/api/user/logout`, {}, { withCredentials: true })
         .then((response) => {
             return response.status;
         })
@@ -42,7 +42,7 @@ async function onLogout() {
             return error.response.data;
         });
 
-    isAuthentified.value = response === 204 ? false : true;
+    isAuthentified.value = response === 204 || response === 200 ? false : true;
 }
 </script>
 

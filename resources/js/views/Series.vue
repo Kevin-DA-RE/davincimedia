@@ -57,7 +57,7 @@ onMounted(async () => {
     });
     try {
         checkSeries.value = await axios
-            .get(`${url_backend}api/user/check-series`)
+            .get(`${url_backend}/api/user/check-series`)
             .then((response) => {
                 if (response.data.code === 200) {
                     return true;

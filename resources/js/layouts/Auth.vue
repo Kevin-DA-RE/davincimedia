@@ -33,7 +33,7 @@ async function onRegister() {
     formData.append("password", formUserPassword.value);
 
     const response = await axios
-        .post(`${url_backend}api/user/register`, formData, {
+        .post(`${url_backend}/api/user/register`, formData, {
             headers: {
                 accept: "multipart/form-data",
             },
@@ -44,7 +44,7 @@ async function onRegister() {
         .catch((error) => {
             return error.response.data;
         });
-    modeForm.value = response === 204 ? "login" : "register";
+    modeForm.value = response === 200 || response === 204 ? "login" : "register";
     showFormRegister.value = false;
     showFormLogin.value = true;
 }
@@ -58,28 +58,19 @@ async function onLogin() {
 
     try {
         const login = await axios
-            .post(`${url_backend}api/user/login`, formData, {
+            .post(`${url_backend}/api/user/login`, formData, {
                 headers: {
                     accept: "multipart/form-data",
                 },
                 withCredentials: true,
             })
             .then((response) => {
-                if (response.status === 200) {
-                     return {
-                    statut: 200
-                };
-                } else {
-                    return {
-                        statut: response.status,
-                        message: response.data.message,
-                    };
-                }
+               return response.status;
             })
             .catch((error) => {
                 return error.response.data;
             });
-        emit("authValidated", login.statut);
+        emit("authValidated", login);
     } catch (error) {
         console.log(error.message);
 
@@ -88,7 +79,7 @@ async function onLogin() {
 
 async function onResetPassword() {
     await axios
-        .post(`${url_backend}api/user/forgot-password`, {
+        .post(`${url_backend}/api/user/forgot-password`, {
             email: formUserEmail.value,
             password: formForgotPassword.value,
         })
@@ -106,7 +97,7 @@ async function checkEmailLogin() {
     formData.append("email", formUserEmail.value);
 
     const response = await axios
-        .post(`${url_backend}api/user/check-email`, formData)
+        .post(`${url_backend}/api/user/check-email`, formData)
         .then((response) => {
             return response.data;
         })
@@ -125,7 +116,7 @@ async function checkEmailRegister() {
     formData.append("email", formUserEmail.value);
 
     const response = await axios
-        .post(`${url_backend}api/user/check-email`, formData)
+        .post(`${url_backend}/api/user/check-email`, formData)
         .then((response) => {
             return response.data;
         })

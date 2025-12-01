@@ -57,7 +57,7 @@ onMounted(async () => {
     });
     try {
         checkMovies.value = await axios
-            .get(`${url_backend}api/user/check-movies`)
+            .get(`${url_backend}/api/user/check-movies`)
             .then((response) => {
                 if (response.data.code === 200) {
                     return true;
